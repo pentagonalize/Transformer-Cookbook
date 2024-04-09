@@ -1,0 +1,55 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{scrbook}
+
+\input{config}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{Transformer Cookbook}
+\subtitle{A recipe book by the FLaNN family\\\vspace{1cm}\includegraphics[width=0.5\textwidth]{logo.png}}
+
+% New authors should be added here :)
+\author{Andy Yang \and Lena Strobl \and David Chiang \and Dana Angluin}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% \begin{center}
+%     \includegraphics[width=0.5\textwidth]{logo.png}
+% \end{center}
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	LECTURE NOTES CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\include{chapters/introduction}
+\include{chapters/feed-forward}
+\include{chapters/self-attention}
+\include{chapters/positional_encodings}
+\include{chapters/layernorm}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliography{main}
+\bibliographystyle{plain}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

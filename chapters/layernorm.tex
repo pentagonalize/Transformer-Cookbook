@@ -1,0 +1,9 @@
+\chapter{Layer Normalization}
+
+\subsection{Zero Mean}
+
+Duplicate all dimensions, negate them, so that mean in each position is $0$, then LayerNorm only applies scaling factor
+
+\subsection{Normalize to $\pm1$}
+
+Use FFNN to clip all values to same magnitude, then every value will get scaled to $\pm 1$

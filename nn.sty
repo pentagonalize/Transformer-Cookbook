@@ -1,0 +1,39 @@
+\tikzset{weight/.style={font={\small},inner sep=0pt,outer sep=2pt}}
+\tikzset{every edge/.style={draw,auto=right,every node/.style=weight}}
+\tikzset{unit/.style={draw,circle,inner sep=0mm,minimum size=5mm}}
+\tikzset{input/.style={unit,node contents={}}}
+\tikzset{output/.style={unit,node contents={}}}
+\tikzset{linear/.style={unit,node contents={\begin{tikzpicture}[x=1.5mm,y=1.5mm,baseline=0]
+\draw (-1,-1) -- (1,1);
+\end{tikzpicture}%
+}}}
+\tikzset{stepfn/.style={unit,node contents={%
+\begin{tikzpicture}[x=1mm,y=1mm,baseline=0]
+\draw (-2,-1) -- (0,-1) -- (0,1) -- (2,1);
+\end{tikzpicture}%
+}}}
+\tikzset{relu/.style={unit,node contents={%
+\begin{tikzpicture}[x=2.5mm,y=2.5mm,baseline=0]
+\draw (-1,0) -- (0,0) -- (0.707,0.707);
+\end{tikzpicture}%
+}}}
+\tikzset{slu/.style={unit,node contents={%
+\begin{tikzpicture}[x=2.5mm,y=2.5mm,baseline=0]
+\draw (-0.5,0) -- (0,0) -- (0.707,0.707) -- (1.207,0.707);
+\end{tikzpicture}%
+}}}
+\tikzset{sigmoid/.style={unit,node contents={%
+\begin{tikzpicture}[baseline=0]
+\begin{axis}[axis x line=none,axis y line=none,scale only axis,width=3.5mm,height=3.5mm]
+\addplot[mark=none] {1/(1+exp(-x))};
+\end{axis}
+\end{tikzpicture}%
+}}}
+\tikzset{gate/.style={unit,node contents={%
+\begin{tikzpicture}[x=2.5mm,y=2.5mm,baseline=0]
+\draw (0,-0.5) -- (0,0) -- (0.707,0.707);
+\draw (0,0.8) -- (0,1.5);  
+\end{tikzpicture}%
+}}}
+\tikzset{att/.style={draw,rectangle,minimum width=1.5cm,minimum height=1cm,node contents={Att},text depth={0.5cm},label={[anchor=east]east:{\tiny Q}},label={[anchor=west]west:{\tiny K}},label={[anchor=south]south:{\tiny V}}}}
+\tikzset{every label/.style={font={\small}}}

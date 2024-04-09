@@ -1,0 +1,101 @@
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+
+\usepackage[gen]{eurosym}
+
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+\usepackage[english]{babel}
+
+\addtokomafont{paragraph}{\rmfamily}
+
+\usepackage[breakable,skins]{tcolorbox}
+\tcbuselibrary{theorems}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref} % should go after \tcbuselibrary and \usepackage{hyperref} but before \newtcbtheorem
+
+% tikz stuff
+\usepackage{tikz}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{arrows,positioning,shapes,decorations,automata,petri,backgrounds,arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usepackage{pgfplots}
+
+% David's NN package
+\usepackage{nn}
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+\newcommand{\blank}{\text{\textvisiblespace}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand*{\bqed}{\hfill\ensuremath{\blacksquare}}
+
+\tcbset{theorembox/.style={%
+    skin=standard jigsaw,% Better drawing engine
+    breakable,% Allow breaking box on two pages
+    parbox=false,% Make text flow like normal text
+    boxrule=0mm,% In general no border
+    leftrule=1mm,% Only left border
+    boxsep=2mm,% General padding around text
+    arc=0mm,% No rounded border
+    outer arc=0mm,% No rounded border
+    left=0mm,% Additional padding left of text
+    right=0mm,% Additional padding right of text
+    top=0mm,% Additional padding above text
+    bottom=0mm,% Additional padding below text
+    oversize,% Box content should be as wide as normal text
+    enlarge top initially by=1mm,% Add some margin before the box starts
+    description delimiters parenthesis,
+    separator sign none,
+    fonttitle=\bfseries,
+    description font=\mdseries,
+    terminator sign=.,
+    coltitle=black,
+}}
+
+\colorlet{Light-CadetBlue}{CadetBlue!50!white}
+
+\newtcbtheorem[crefname={definition}{Definition},Crefname={Definition}{Definition}]{definition}{Definition}{theorembox,colframe=RoyalBlue,colback=RoyalBlue!3,colbacktitle=RoyalBlue!3}{definition}
+
+\newtcbtheorem[]{prf}{Proof}{theorembox,colframe=CadetBlue,colback=CadetBlue!3,colbacktitle=CadetBlue!3}{prf}
+
+\newtcbtheorem[crefname={claim}{Claim},Crefname={Claim}{Claim}]{clm}{Claim}{theorembox,colframe=CarnationPink,colback=CarnationPink!3,colbacktitle=CarnationPink!3}{clm}
+
+\newtcbtheorem[crefname={theorem}{Theorem},Crefname={Theorem}{Theorem}]{theorem}{Theorem}{theorembox,colframe=DarkOrchid,colback=DarkOrchid!3,colbacktitle=DarkOrchid!3}{thm}
+
+\newtcbtheorem[crefname={corollary}{Corollary},Crefname={Corollary}{Corollary}]{cor}{Corollary}{theorembox,colframe=Dandelion,colback=Dandelion!3,colbacktitle=Dandelion!3}{cor}
+
+\newtcbtheorem[crefname={example}{Example},Crefname={Example}{Example}]{exmp}{Example}{theorembox,colframe=ForestGreen,colback=ForestGreen!3,colbacktitle=ForestGreen!3}{exmp}
+
+\newtcbtheorem[]{rem}{Remark}{theorembox,colframe=Peach,colback=Peach!3,colbacktitle=Peach!3}{rem}
+
+% Transformer component shortcuts
+\newcommand{\ReLU}{\text{ReLU}}
+
+% Math shortcuts
+\def\R{\mathbb{R}}
+\def\N{\mathbb{N}}
+\def\Z{\mathbb{Z}}
+\def\C{\mathbb{C}}
+\def\Q{\mathbb{Q}}
+\def\Ccal{\mathcal{C}}
+\def\Rcal{\mathcal{R}}
+\def\Fcal{\mathcal{F}}
+\def\Lcal{\mathcal{L}}
+\def\Mcal{\mathcal{M}}
+\def\Ncal{\mathcal{N}}
+\def\F{\mathbb{F}}
+
+% colorful comments
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\Instruction}[1]{{\textcolor{red}{\textbf{Instruction:} #1}}}

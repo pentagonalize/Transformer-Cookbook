@@ -1,0 +1,39 @@
+%-----------------------------------
+%
+\chapter{Self-Attention Layers}
+%
+%-----------------------------------
+
+\section{Trivial Cases}
+
+Identity function: zero values, use residual connection
+
+Uniform attention: zero queries and/or keys
+
+\section{Table Lookup}
+
+Table lookup is just the special case of self-attention where the query and the key are equal.
+
+\subsection{Single query}
+
+If there is a single query that is broadcast to all positions, 
+there is a minimum distance $\delta$ between all keys, and we can compute $\delta$ at all positions,
+then just use a FFNN to test for equality.
+
+\citep{chiang-cholak-2022-parity}
+
+\subsection{Layernorm hash}
+
+\citep{merrill-sabharwal-2024-cot}
+
+\subsection{Quadratic maximization}
+
+\citep{barcelo-etal-2024-logical}
+
+\subsection{$-|\text{Dot-product}|$ attention}
+
+\citep{perez-etal-2021-turing}
+
+\section{Tie Breaking}
+
+When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
