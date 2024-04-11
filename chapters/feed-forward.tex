@@ -7,7 +7,7 @@
 
 \DC{Should preface this with theorems about being able to express any continuous piecewise linear function. Special cases: $\R \to \R$ can be one with one hidden layer, Boolean functions with one hidden layer. General case: number of layers is $\log(\text{number of pieces})$}
 
-\AY{Potentially how we can structure this}\AY{Testing git}
+\AY{Potentially how we can structure this}\AY{Testing git}\AY{git works! }
 
 Feed-Forward layers are an essential component of any good transformer! They allow you to compute position-wise functions etc etc etc and more background information
 
@@ -122,7 +122,7 @@ A two-layer feed-forward network with ReLU activations on the first layer and no
       \end{tikzpicture}
   \end{center}
 
-    For an arbitrary Boolean formula, convert it to \emph{canonical} disjunctive normal form, which is a disjunction $\phi_1 \lor \cdots \lor \phi_n$ of clauses, at most one of which can be true for any value of the inputs. 
+    For an arbitrary Boolean formula, convert it to \emph{canonical} disjunctive normal form, which is a disjunction $\phi_1 \lor \cdots \lor \phi_n$ of clauses, at most one of which can be true for any value of the inputs. \AY{wait what was going on here? I forget}
 
     Each clause is of the form $\phi_m = \bigwedge_{k\in K_m} \psi_k$, where each $\phi_k$ is an input or a negated input and $K_m$ is a set of indices for each clause. A slightly different construction can be used to compute $\land$ over inputs in $K_m$. Observe that:
 
