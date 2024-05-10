@@ -10,9 +10,7 @@ def Linear(W):
     return lambda x: x @ W
 
 
-@dataclass
 class Sequential:
-    layers: List[Callable]
 
     def __init__(self, layers):
         self.layers = layers
@@ -27,3 +25,8 @@ class Sequential:
 
     def __str__(self):
         return str(self.activations)
+
+
+def FF(input_layer, output_layer):
+    layers = [Linear(input_layer), ReLU(), Linear(output_layer)]
+    return Sequential(layers)
