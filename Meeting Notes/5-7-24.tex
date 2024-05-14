@@ -1,0 +1,76 @@
+% I've been looking at the paper "Chain of Thought Empowers Transformers to Solve Inherently Serial Problems" that David posted to the FLaNN channel.  Their proof of Theorem 3.3 (simulating circuits) is enabled by their assumption of finite precision and their lemmas that exp(-L) rounds to 0, and exp(L) rounds to L, where L is the largest representable number.  
+
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments 
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
+\newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{May 7, 2024}
+\begin{document}
+\maketitle
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+   \item Will: 
+    One question I had but couldn't quite formulate is whether there's a role for non-constructive or less-constructive recipes in this cookbook. For example: what if the "construction" is an appropriate RASP program or LTL formula for a certain operation rather than transformer weights? Would we still want to include such a construction?
+    
+    It seems like as the field progresses we will have more abstractions that are lower bounds for different transformer variants, so maybe these types of constructions would get more plentiful and useful rather than constructions using weights themselves \response{I agree. Once the basics are pinned down, this is where we should head towards.}
+    \item \response{Also, welcome, everyone!}
+\end{itemize}
+
+\section{Attendees}
+Andy, Lena, Emile, Anton, Akos, Yuval (and the animals at the zoo)
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Thanks Anton! Thanks Will! Thanks Andy! \LS{Andy, I think this should say not ``Thanks Andy but \url{https://www.youtube.com/watch?v=xOD2lSE2Pmo}''}
+    \item Onboarding: Message Andy for Github access, message Lena for overleaf access...
+    \item ReCap
+    \item Style?
+    \item GeLU? \cite{feng2024towards} Lemma C.1 does multiplication.
+    \item Start a bibliography
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item Add disclaimers on activation functions
+    \item LLMs: SwiGLU introduced here \url{https://arxiv.org/abs/2002.05202v1} Popularized by PaLM, used in Mistra, Mixtral, Llama \url{https://arxiv.org/abs/2204.02311}, tanH, sigmoid
+    \item LLMs not using layernorm, use RMSNorm \url{https://arxiv.org/abs/1910.07467}. Changes mean. Learnable gain in practice. 
+    \item As long as data binarized, can separate pos and neg bits using hyperplane property. As long as layernorm preserves this, expressivity should be same (or none lost at least)
+    \item LayerNorm role in expressivity \url{https://arxiv.org/pdf/2305.02582}
+\end{itemize}
+
+TO DO;
+\begin{itemize}
+    \item Edit the FFN section
+    \item Start building a bibliography/ list of constructions that we want to write up
+    \item Andy will make a document for this after the meeting.
+    \item Difference in expressivity between activation functions?
+    \item Check with David if everything is on the right track.
+    \item Everyone can edit/read over things. Andy will clean up his sections, add diagrams for somethings. Emile will work on the activation functions. Anton will work on finishing the CPWL. 
+    \item Need to add in citations! Citations are important!
+\end{itemize}
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+

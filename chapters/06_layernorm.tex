@@ -1,8 +1,14 @@
 \chapter{Layer Normalization}
 
-\subsection{Zero Mean}
+\section{Circumventing Layer Normalization}
+
+\subsection{Zero mean}
 
 Duplicate all dimensions, negate them, so that mean in each position is $0$, then LayerNorm only applies scaling factor
+
+\section{Using Layer Normalization}
+
+\subsection{$\varepsilon$ and Lipschitz-continuity}
 
 \subsection{Normalize to $\pm1$}
 

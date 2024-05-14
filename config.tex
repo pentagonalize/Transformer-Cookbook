@@ -2,12 +2,17 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{natbib}
-
 \usepackage[gen]{eurosym}
+\usepackage{url}
+
+% tables and such
+\usepackage{blkarray}
+\usepackage{colortbl}
 
 \usepackage[dvipsnames]{xcolor} %more colors for frame boxes
 
 \usepackage[english]{babel}
+% \usepackage{textcomp}
 
 \addtokomafont{paragraph}{\rmfamily}
 
@@ -24,10 +29,14 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{fit}
 \usepackage{pgfplots}
-\usepackage{dirtytalk}
+\usepackage{dirtytalk}  % use \say{} for quotes
+\usepackage{booktabs}
 
 % David's NN package
 \usepackage{nn}
+
+% % Andy slightly prefers dashes instead of dots, if nobody else cares
+% \renewcommand{\labelitemi}{--}
 
 \clubpenalty=10000
 \widowpenalty=10000
@@ -79,6 +88,23 @@
 % Transformer component shortcuts
 \newcommand{\ReLU}{\text{ReLU}}
 
+% RASP shortcuts
+% B-RASP
+\DeclareMathOperator{\leftmost}{{\mathbf{\blacktriangleleft}}}
+\DeclareMathOperator{\rightmost}{{\mathbf{\blacktriangleright}}}
+\newcommand{\BRASP}{\textbf{B-RASP}}
+\newcommand{\att}[5]{\ensuremath{{#1}_{#2} \left[#3, #4\right] \; #5}}
+\newcommand{\attl}[4]{\att{\leftmost}{#1}{#2}{#3}{#4}}
+\newcommand{\attr}[4]{\att{\rightmost}{#1}{#2}{#3}{#4}}
+\newcommand{\longatt}[5]{\begin{aligned}[t]{#1}_{#2} &\left[#3, #4\right] \\ &#5\end{aligned}}
+\newcommand{\longattl}[4]{\longatt{\leftmost}{#1}{#2}{#3}{#4}}
+\newcommand{\longattr}[4]{\longatt{\rightmost}{#1}{#2}{#3}{#4}}
+% C-RASP
+\newcommand{\cttn}[2]{\ensuremath{\textsc{\textbf{\#}} \left[ #1 \right] \; #2}}
+\newcommand{\cif}[3]{\ensuremath{#1\;\mathbf{?}\; #2\; \textbf{:} \;#3}}
+\newcommand{\cifop}{\ensuremath{\mathbf{?}}}
+
+
 % Math shortcuts
 \def\R{\mathbb{R}}
 \def\N{\mathbb{N}}
@@ -93,7 +119,24 @@
 \def\Ncal{\mathcal{N}}
 \def\F{\mathbb{F}}
 
-% colorful comments
+% Groupings
+\DeclarePairedDelimiter\parens{(}{)}
+\DeclarePairedDelimiter\bracks{[}{]}
+\DeclarePairedDelimiter\braces{\{}{\}}
+\DeclarePairedDelimiter\angles{\langle}{\rangle}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Fonts in math mode
+\newcommand\mbb[1]{\mathbb{#1}}
+\newcommand\mbf[1]{\mathbf{#1}}
+\newcommand\mcal[1]{\mathcal{#1}}
+\newcommand\mrm[1]{\mathrm{#1}}
+\newcommand\msf[1]{\mathsf{#1}}
+
+% colorful comments 
 \newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
 \newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
 \newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
@@ -101,5 +144,9 @@
 \newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
 \newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
 \newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
 
 \newcommand{\Instruction}[1]{{\textcolor{red}{\textbf{Instruction:} #1}}}
