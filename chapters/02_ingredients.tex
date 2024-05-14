@@ -1,0 +1,28 @@
+%-----------------------------------
+%
+\chapter{Basic Ingredients}
+%
+%-----------------------------------
+
+\AY{Introduce basic ingredients and the most rudimentry of constructions. Boolean representations, residual stream, routing, etc}
+
+\uvp{Training practice? Masking strategies? \textleftarrow{} this has some very interesting theoretical discussions around it}
+
+\section{Boolean Representations}
+
+\begin{center}
+  \begin{tabular}{@{}cc|cccc@{}}
+    \toprule
+    false & true & fixed mean/var & zero-mean/scale-invariant & $\neg$ continuous \\
+    \midrule
+    $0$ & $1$ & no & no & yes \\
+    $0$ & $\delta$ & no & no & no \\
+    $(0,1)$ & $(1,0)$ & yes & no & yes \\
+    $(0,\delta)$ & $(\delta,0)$ & no & no & yes \\
+    $-1$ & $1$ & no & no & yes \\
+    $-\delta$ & $\delta$ & no & no & yes \\
+    $(-1, 1)$ & $(1, -1)$ & yes & no & yes \\
+    $(-\delta,\delta)$ & $(\delta,-\delta)$ & no & yes & yes \\
+    \bottomrule
+  \end{tabular}
+\end{center}

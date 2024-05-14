@@ -1,0 +1,380 @@
+%-----------------------------------
+%
+\chapter{Feed-Forward Layers}
+%
+%-----------------------------------
+
+
+Feed-Forward layers are an essential component of any good transformer! They allow you to compute position-wise functions etc etc etc and more background information
+
+\AY{Need to add citations for everything}
+
+TODO. Add References:
+\begin{enumerate}
+    \item Diagrams for Residual. Think about the best way to handle layernorm and residual connection order when presenting this
+\end{enumerate}
+\AY{Draw diagrams for some subset of everything}
+\AY{Emile can define GeLU if he has time}
+\AY{Maybe look into defining the other activation functions?}
+\section{Activation functions}
+
+The activation function component of feed-forward layers enables them to approximate non-linear functions. We define two popular activation functions. Other notable activation functions include sigmoid, softmax, hyperbolic tangent, Exponential Linear Unit (ELU) and Gated Linear Unit (GLU).
+
+\begin{definition}{ReLU}{}
+    $\ReLU : \R^d\to \R^d$, or Rectified Linear Unit, is a non-linear activation function as defined below \cite{Fukushima1975}.
+
+    \[\ReLU\left(\begin{bmatrix}
+                x_1    \\
+                x_2    \\
+                \vdots \\
+                x_d    \\
+            \end{bmatrix}\right) = \begin{bmatrix}
+            \max(0,x_1) \\
+            \max(0,x_2) \\
+            \vdots      \\
+            \max(0,x_d) \\
+        \end{bmatrix}\]
+\end{definition}
+
+\begin{definition}{GELU}{}
+    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
+
+    \[\GELU\left(\begin{bmatrix}
+                x_1    \\
+                x_2    \\
+                \vdots \\
+                x_d    \\
+            \end{bmatrix}\right) = \begin{bmatrix}
+            x_1 \Phi(x_1) \\
+            x_2 \Phi(x_2) \\
+            \vdots        \\
+            x_d \Phi(x_d) \\
+        \end{bmatrix} \approx \begin{bmatrix}
+            x_1 \sigma(1.702 x_1) \\
+            x_2 \sigma(1.702 x_2) \\
+            \vdots                \\
+            x_d \sigma(1.702 x_d) \\
+        \end{bmatrix} \]
+\end{definition}
+\DC{Should be a standard convention for component-wise application of functions}
+
+\begin{definition}{Feed-Forward Layer}{hidden text?}
+    A feed-forward network is a function $f:\R^d\to \R^d$ that computes 
+
+    \[FFN\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_d\\
+    \end{bmatrix}\right)= L_2\left(\ReLU\left(L_1\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_d\\
+    \end{bmatrix}\right)\right)\right)\]
+
+    Where $L_1: \R^d \to \R^{d_{\text{ff}}}$ and $L_2: \R^{d_{\text{ff}}} \to \R^{d}$ are affine transformations. $L_1$ uses linear transformation $W_1:\R^d\to \R^{d_{\text{ff}}}$ and bias $b_1\in\R^{d_{\text{ff}}}$
+
+    \[L_1\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_d\\
+    \end{bmatrix}\right)=W_1\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_{d}\\
+    \end{bmatrix}\right)+b_1\]
+
+    And $L_2$ uses linear transformation $W_2:\R^{d_{\text{ff}}}\to \R^d$ and bias $b_2\in\R^{d}$
+    \[L_2\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_d\\    \end{bmatrix}\right)=W_2\left(\ReLU\left(\begin{bmatrix}
+        x_1\\
+        x_2\\
+        \vdots\\
+        x_{d_{\text{ff}}}\\
+    \end{bmatrix}\right)\right)+b_2\]
+\end{definition}
+
+\section{Continuous Piecewise Linear Functions}
+
+\begin{definition}{continuous piecewise linear}{there}
+A \emph{continuous piecewise linear (CPWL)} function is....
+
+finite number of pieces
+\end{definition}
+
+Suppose we want to construct a CPWL function \(f \colon \mathbb{R} \to \mathbb{R}\) using the points \(x_1 < \ldots < x_n\) and values \(y_1, \ldots, y_n\) such that:
+\begin{itemize}
+    \item \(f(x_k) = y_k\) for \(k = 1, \ldots, n\)
+    \item \(f(x) = y_1\) when \(x < x_1\)
+    \item \(f(x) = y_n\) when \(x > x_n\)
+\end{itemize}
+\DC{extreme segments don't necessarily have to have zero slope}
+To do this, we first define the slopes \(m_0, m_1, \ldots, m_n\):
+\begin{align*}
+    m_0 = m_{n} = 0,
+    \qquad
+    m_k = \frac{y_{k+1} - y_{k}}{x_{k+1} - x_{k}}
+    \enskip \text{for} \enskip k = 1, \ldots, n-1
+\end{align*}
+Then, define \(f\) as the following one-layer neural network:
+\begin{align*}
+    f(x) &= y_1 + \sum_{k = 1}^{n} (m_{k} - m_{k-1}) \mathrm{ReLU}(x - x_k)
+    = \begin{dcases}
+        y_1, &x \leq x_1, \\
+        y_k + m_{k} (x - x_k), & x_k \leq x < x_{k+1}, \\
+        y_n, & x > x_n
+    \end{dcases}
+\end{align*}
+
+For the multivariate case ($f \colon \R^d \to \R$), any CPWL function with $k$ pieces can be computed exactly by a FFNN with $O(\log k)$ layers \citep{arora+:2018}.
+
+\section{Identity Function}
+
+This one is very easy: zero out the FFNN itself and let the residual connection do all the work.
+\begin{align*}
+W_1 = W_2 &= \mathbf{0} \\ 
+b_1 = b_2 &= 0.
+\end{align*}
+
+\section{Canceling Residual Connections}
+
+    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+        \hline
+        \rowcolor{orange!20} % Set header color here
+        \textbf{Input} & \textbf{Output} \\
+        \hline
+        $\mathbb{R}^d$ & $\mathbb{R}^d$ \\
+        \hline
+    \end{tabular}
+
+    We can ignore residual connections in FFN's. That is, if $f:\R^d\to \R^d$ is a FFN, there is a FFN 
+
+    \begin{align*}
+        W_-^{(1)}&=\begin{bmatrix}
+            W^{(1)}\\
+            \textbf{I}\\
+            \textbf{-I}
+        \end{bmatrix}  &\quad b_-^{(1)}&=\begin{bmatrix}
+            b^{(1)}\\
+            \textbf{0}\\
+            \textbf{0}
+        \end{bmatrix}\\
+        W_-^{(2)}&=\begin{bmatrix}
+            W^{(2)}& \textbf{-I} & \textbf{I}
+        \end{bmatrix}
+        & \quad b_-^{(2)} &= b^{(2)}
+    \end{align*}
+
+\AY{Add Diagram, cite tighter bounds paper}
+
+\section{Min and Max}
+    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+        \hline
+        \rowcolor{orange!20} % Set header color here
+        \textbf{Input} & \textbf{Output} \\
+        \hline
+        $\R\times\R$ & $\R$ \\
+        \hline
+    \end{tabular}
+
+    
+    Recall that $\ReLU(x)=\max(0,x)$. Then  $\min(x,y) = x-\ReLU(x-y)$. 
+    % $= y-\ReLU(y-x)$. To see this, there are two cases:
+    \begin{itemize}
+        \item If $x<y$, then $\ReLU(x-y)=0$, so $x-\ReLU(x-y)=x = \min(x,y)$.
+        \item If $x\geq y$, then $\ReLU(x-y)=x-y$, so $x-\ReLU(x-y)=x-(x-y)=y = \min(x,y)$.
+    \end{itemize}
+    Similarly, $\max(x,y) = x+\ReLU(y-x)$. Therefore there exist FFNs to compute the min or max of two real numbers:
+    \begin{center}
+    \begin{tabular}{c@{\hspace*{4em}}c}
+      \begin{tikzpicture}[x=1.5cm,y=1.5cm,baseline=1cm]
+        \node (x1) at (0,0) [input,label=below:{$x$}];
+        \node (x2) at (1,0) [input,label=below:{$y$}];
+        \node (h1) at (-0.5,1) [relu] edge node[near start] {$1$} (x1);
+        \node (h2) at (0.5,1) [relu] edge node {$-1$} (x1);
+        \node (h3) at (1.5,1) [relu] edge node[near start] {$1$} (x1) edge node[auto=left,near start] {$-1$} (x2);
+        \node (y) at (0.5,2) [output,label=above:{$\min(x,y)$}] edge node {$1$} (h1) edge node[auto=left] {$-1$} (h2) edge node[auto=left] {$-1$} (h3);
+      \end{tikzpicture} &
+      \begin{tikzpicture}[x=1.5cm,y=1.5cm,baseline=1cm]
+        \node (x1) at (0,0) [input,label=below:{$x$}];
+        \node (x2) at (1,0) [input,label=below:{$y$}];
+        \node (h1) at (-0.5,1) [relu] edge node[near start] {$1$} (x1);
+        \node (h2) at (0.5,1) [relu] edge node {$-1$} (x1);
+        \node (h3) at (1.5,1) [relu] edge node[near start] {$-1$} (x1) edge node[auto=left,near start] {$1$} (x2);
+        \node (y) at (0.5,2) [output,label=above:{$\max(x,y)$}] edge node {$1$} (h1) edge node[auto=left] {$-1$} (h2) edge node[auto=left] {$1$} (h3);
+      \end{tikzpicture}
+    \end{tabular}
+    \end{center}    
+
+
+\section{Addition and Subtraction}
+
+\AY{Discuss numerical representations and LayerNorm?}
+
+    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+        \hline
+        \rowcolor{orange!20} % Set header color here
+        \textbf{Input} & \textbf{Output} \\
+        \hline
+        $\R^d$ & $\R$ \\
+        \hline
+    \end{tabular}
+
+If you have a tensor of dimensions $\R^{d\times n}$, and you want to add 
+$d_1$ and $d_2$ into $d_3$, then use FFN with $W_1:\R^d\to \R^4$ and $W_2:\R^4\to \R^d$
+
+    \begin{equation*}
+        W_1=
+        \begin{blockarray}{cccccccc}
+            & & d_1 & & d_2 & & d_3 & \\
+            \begin{block}{c[ccccccc]}
+                    1& \cdots & 1 & \cdots & 0 & \cdots & 0 & \cdots \\
+                    2& \cdots & -1 & \cdots & 0 & \cdots & 0 & \cdots \\
+                    3& \cdots & 0 & \cdots & 1 & \cdots & 0 & \cdots \\
+                    4& \cdots & 0 & \cdots & -1 & \cdots & 0 & \cdots \\
+            \end{block}
+        \end{blockarray}
+    \end{equation*}
+
+    Regardless whether the values in $d_1$ and $d_2$ are positive or negative, after applying $\ReLU$ the resulting tensor $\begin{bmatrix}
+        \ReLU(A_{d_1,*})\phantom- \\
+        \ReLU(-A_{d_1,*})\\
+        \ReLU(A_{d_2,*})\phantom- \\
+        \ReLU(-A_{d_2,*})\\
+    \end{bmatrix}$ will store a copy of $|x|$ in the even dimensions if $x$ was positive, and the even dimension if $x$ was negative. Using this, we can construct $W_2$ to add the correct original values together into $d_3$
+    
+    \begin{equation*}
+    W_1=
+    \begin{blockarray}{ccccc}
+        & 1& 2& 3&4 \\
+        \begin{block}{c[cccc]}
+                & \vdots &\vdots & \vdots & \vdots \\
+                d_1 & 0 &\ 0 & 0 & 0 \\
+                & \vdots &\vdots & \vdots & \vdots \\
+                d_2 & 0 & 0 & 0 & 0 \\
+                & \vdots &\vdots & \vdots & \vdots \\
+                d_3 & 1  & -1 & 1 & -1 \\
+                & \vdots &\vdots & \vdots & \vdots \\
+        \end{block}
+    \end{blockarray}
+    \end{equation*}
+
+    We assume $d_3$ originally held $0$'s, or we canceling the residual connection using an earlier construction.
+    
+\section{Boolean Functions}
+    \AY{Need some note on Boolean representations}\AY{The other boolean representations can be reconstructed from this one using FFN}
+
+    \begin{tabular}{|c|c|}
+        \hline
+        \rowcolor{orange!20} % Set header color here
+        \textbf{Input} & \textbf{Output} \\
+        \hline
+        $\left\{\begin{bmatrix}
+            -1\\\phantom- 1
+        \end{bmatrix}, \begin{bmatrix}
+            \phantom- 1\\-1
+        \end{bmatrix}\right\}$ & $\left\{\begin{bmatrix}
+            -1\\\phantom- 1
+        \end{bmatrix}, \begin{bmatrix}
+            \phantom- 1\\-1
+        \end{bmatrix}\right\}$ \\
+        \hline
+    \end{tabular}
+
+    
+    The Boolean operations $\land$ and $\lnot$ can be computed by FFNNs with $\ReLU$ activations. Conjunction ($\land$) is equivalent to min/max:
+  \begin{align*}
+  \begin{bmatrix} \vdots \\ -2B_1+1 \\ \phantom{-}2B_1-1 \\ \vdots \end{bmatrix} \land \begin{bmatrix} \vdots \\ -2B_2+1 \\ \phantom{-}2B_2-1 \\ \vdots \end{bmatrix} &= \begin{bmatrix} \vdots \\ \max(-2B_1+1,-2B_2+1) \\ \min(\phantom{-}2B_1-1,\phantom{-}2B_2-1) \\ \vdots \end{bmatrix}.
+  \end{align*}
+
+  Logical negation ($\lnot$) is equivalent to arithmetic negation, or swapping the positive and negative components:
+  \begin{center}
+      \begin{tikzpicture}[x=2cm,y=1.5cm,baseline=1cm]
+        \node (x1) at (0,0) [input,label=below:{$2B-1$}];
+        \node (x2) at (1,0) [input,label=below:{$-2B+1$}];
+        \node (h1) at (0,1) [relu] edge node {$1$} (x1);
+        \node (h2) at (1,1) [relu] edge node {$1$} (x2);
+        \node (y1) at (0,2) [output] edge node {$1$} (h1) edge node[near start] {$-1$} (h2);
+        \node (y2) at (1,2) [output] edge node[auto=left,near start] {$-1$} (h1) edge node[auto=left] {$1$} (h2);
+      \end{tikzpicture}
+  \end{center}
+
+    For an arbitrary Boolean formula, convert it to \emph{canonical} disjunctive normal form, which is a disjunction $\phi_1 \lor \cdots \lor \phi_n$ of clauses, at most one of which can be true for any value of the inputs.
+    
+    Each clause is of the form $\phi_m = \bigwedge_{k\in K_m} \psi_k$, where each $\phi_k$ is an input or a negated input and $K_m$ is a set of indices for each clause. A slightly different construction can be used to compute $\land$ over inputs in $K_m$. Observe that:
+
+    \begin{align*}
+    \bigwedge_{k\in K_m} B_k &= \ReLU\left(\left(\sum_{k\in K_m} (B_k)\right) -(|K_m|-1)\right) \\ &=\ReLU\left(\left(\sum_{k\in K_m} \frac{1}{2}(2B_k-1) \right) - \frac{3|K_m|}{2}+1)\right).
+    \end{align*}
+    
+    And this can be computed for each clause using the first layer and $\ReLU$ of a feed-forward layer. Recall again that if the constant $m$ is fixed, we can retrieve it by multiplying the constant $\pm 1$ from dimensions $2k_0-1,2k_0$ as described in \AY{Somewhere}. Then, because at most one clause can be true, the sum of all clauses will either be $1$ or $0$. Then, we convert back to the $\pm1$ representation of truth values. 
+
+    \[\bigvee_{m=1}^n \left(\bigwedge_{k\in K_m} B_k \right)=2\cdot\left(\sum_{m=1}^n\ReLU\left(\left(\sum_{k\in K_m} \frac{1}{2}(2B_k-1) \right) - \frac{3|K_m|}{2}+1)\right)\right)-1.\]
+
+    This can all be done in a single feed-forward layer.
+
+
+
+\section{Conditionals}
+
+    \begin{tabular}{|c|p{1.5cm}|}
+        \hline
+        \rowcolor{orange!20} % Set header color here
+        \textbf{Input} & \textbf{Output} \\
+        \hline
+        $\{0,1\}\times \R\times\R$ & $\R$ \\
+        \hline
+    \end{tabular}
+
+
+We assume the input representation to a feedforward net (after layer-norm) contains three values: a mask $p \in \{0, 1\}$, a first option $\phi$, and second option $\psi$. The goal is to compute the ``ternary'' expression:
+\begin{equation*}
+    \cif{p}{\phi}{\psi} =
+    \begin{cases}
+        \phi & \textrm{if} \; p \\
+        \psi & \textrm{otherwise.}
+    \end{cases}
+\end{equation*}
+
+We adapt a construction used in \citep{merrill2024the} (Theorem 1, arXiv version) for two-layer ReLU feedforward nets.
+Let $\vec 1$ be a vector of ones.
+In the first layer, we define two neurons:
+\begin{align*}
+    h_1 &= \ReLU(-p \vec 1 + \vec 1 + \phi) \\
+    h_2 &= \ReLU(p \vec 1 - \vec 1 + \psi) .
+\end{align*}
+The second layer then simply computes $h_1 + h_2$, which by construction computes $\cif{p}{\phi}{\psi}$.
+
+\WM{Can justify this by writing out cases when $p = 0$ or $p = 1$}
+
+
+\section{Multiplication}
+
+By definition~\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}}:
+\begin{align*}
+    \mrm{GeLU}(x) \equiv \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
+\end{align*}
+and so from~\citep[Lemma 4]{akyurek2022learning}:
+\begin{align*}
+    \sqrt{\frac{\pi}{2}}
+    (\mrm{GeLU}(x + y) - \mrm{GeLU}(x) - \mrm{GeLU}(y))
+    = xy + \mcal{O}(x^3 + y^3)
+\end{align*}
+wherein the authors note that
+\begin{align*}
+    \mrm{GeLU}(x) &= \frac{x}{2} + \sqrt{\frac{2}{\pi}}x^2 + \mcal{O}(x^3) \\
+    \mrm{GeLU}(x + y) &- \mrm{GeLU}(x) - \mrm{GeLU}(y) = \sqrt{\frac{2}{\pi}} xy + \mcal{O}(x^3 + y^3)
+\end{align*}
+
+% \subsection{Modulo}
+
+% \AY{Uses sinusoidal positional encodings. Does it fit in this section?}\AY{Double check where this should go}
+
+
+

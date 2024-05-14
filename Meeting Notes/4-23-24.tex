@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{xcolor}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{April 23, 2024}
+\begin{document}
+\maketitle
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+    \item Gabriel: By the way, would a chapter aggregating Transformer implementations of certain algorithms be interesting? I'm talking about algorithms like recognizers for the parity language, bounded-depth Dyck-k languages, and even Turing-machine simulators? \response{Yes, probably in the assembly chapter. Dana was wondering which transformers we should target. We think that doing both soft and hard attention transformers will be informative}
+    \item Emile: I've created some PRs on the repo. Perhaps you could invite me as a GitHub collaborator, so that I can contribute frictionlessly and help with PRs. \response{Sure, anyone else who wants to get involved with this can also message in the chat. I presume most edits will come directly from the overleaf, though.}
+    \item Marco: Whats the plan for the tokenization section. I would like to contribute to that part (tokenization is my current focus) \response{We will be in ongoing discussion, haven't pinned this down yet. Emile suggested we can think of tokenization as a homomorphism}
+    \item Gail: is there a goal of practical implementation for the cookbook? because if not, i've been slowly iterating on a base repo that i'm wondering if people here would be interested in \response{Probably eventually.... maybe some form of RASP? Let's see how the scope of the project evolves}
+\end{itemize}
+
+\section{Attendees}
+Anton, Will, Emile, Andy, Lena, Brian, Dana
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Scope of project wrt tokenization, training, code
+    \item Github access: Just message Andy
+    \item Making progress towards writing up FFN chapter
+    \item Seeing who will be getting involved
+    \item Future meeting times
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item Need to organize transformer variants
+    \item Andy: Publicize/post the cookbook link better
+    \item Maybe RASP for implementation? Question for later as the project takes shape....
+    \item Annotate the FFN entries with the relevant sources
+    \item State the assumptions before each recipe
+    \item Andy: Find the relevant references and send a message in the chat later if people want to help write them up!
+    \item How to implement modulo? Parity paper used PE, we can also do it with S-RASP.
+    \item Average Hard Attention -- it would be helpful to provide constructions for AHAT too. These can provide intuition, and are generally shorter and more understandable than directly showing for soft attention. For example, Dana mentioned the shortcuts paper has a cool construction for soft attention, but it's... very long....
+\end{itemize}
+
+\section{To Do on FFN section}
+\begin{itemize}
+    \item Anton will put in the continuous piecewise linear function proof
+    \item Will will put in the stuff about conditional
+    \item Andy will put in some stuff on Comparison
+\end{itemize}
+
+\end{document}
+
+
