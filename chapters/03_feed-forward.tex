@@ -14,22 +14,46 @@ TODO. Add References:
     \item Diagrams for Residual. Think about the best way to handle layernorm and residual connection order when presenting this
 \end{enumerate}
 \AY{Draw diagrams for some subset of everything}
-\AY{Emile can define GeLU if he has time}
-\AY{Maybe look into defining the other activation functions?}
-\begin{definition}{$\ReLU$}{}
-    The activation function $\ReLU \colon \R^d\to \R^d$, which stands for \say{Rectified Linear Unit}, is a standard component of feed-forward layers, where
+
+\section{Activation functions}
+
+The activation function component of feed-forward layers enables them to approximate non-linear functions. We define two popular activation functions. Other notable activation functions include sigmoid, softmax, hyperbolic tangent, Exponential Linear Unit (ELU) and Gated Linear Unit (GLU).
+
+\begin{definition}{ReLU}{}
+    $\ReLU : \R^d\to \R^d$, or Rectified Linear Unit, is a non-linear activation function as defined below \cite{Fukushima1975}.
 
     \[\ReLU\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_d\\
-    \end{bmatrix}\right) = \begin{bmatrix}
-        \max(0,x_1)\\
-        \max(0,x_2)\\
-        \vdots\\
-        \max(0,x_d)\\
-    \end{bmatrix}\]
+                x_1    \\
+                x_2    \\
+                \vdots \\
+                x_d    \\
+            \end{bmatrix}\right) = \begin{bmatrix}
+            \max(0,x_1) \\
+            \max(0,x_2) \\
+            \vdots      \\
+            \max(0,x_d) \\
+        \end{bmatrix}\]
+\end{definition}
+
+\begin{definition}{GELU}{}
+    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
+
+    \[\GELU\left(\begin{bmatrix}
+                x_1    \\
+                x_2    \\
+                \vdots \\
+                x_d    \\
+            \end{bmatrix}\right) = \begin{bmatrix}
+            x_1 \Phi(x_1) \\
+            x_2 \Phi(x_2) \\
+            \vdots        \\
+            x_d \Phi(x_d) \\
+        \end{bmatrix} \approx \begin{bmatrix}
+            x_1 \sigma(1.702 x_1) \\
+            x_2 \sigma(1.702 x_2) \\
+            \vdots                \\
+            x_d \sigma(1.702 x_d) \\
+        \end{bmatrix} \]
 \end{definition}
 \DC{Should be a standard convention for component-wise application of functions}
 
@@ -350,7 +374,6 @@ wherein the authors note that
 % \subsection{Modulo}
 
 % \AY{Uses sinusoidal positional encodings. Does it fit in this section?}\AY{Double check where this should go}
-
 
 
 
