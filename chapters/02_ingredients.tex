@@ -9,20 +9,32 @@
 \uvp{Training practice? Masking strategies? \textleftarrow{} this has some very interesting theoretical discussions around it}
 
 \section{Boolean Representations}
+\label{sec:booleans}
 
-\begin{center}
-  \begin{tabular}{@{}cc|cccc@{}}
-    \toprule
-    false & true & fixed mean/var & zero-mean/scale-invariant & $\neg$ continuous \\
-    \midrule
-    $0$ & $1$ & no & no & yes \\
-    $0$ & $\delta$ & no & no & no \\
-    $(0,1)$ & $(1,0)$ & yes & no & yes \\
-    $(0,\delta)$ & $(\delta,0)$ & no & no & yes \\
-    $-1$ & $1$ & no & no & yes \\
-    $-\delta$ & $\delta$ & no & no & yes \\
-    $(-1, 1)$ & $(1, -1)$ & yes & no & yes \\
-    $(-\delta,\delta)$ & $(\delta,-\delta)$ & no & yes & yes \\
-    \bottomrule
-  \end{tabular}
-\end{center}
+A very common ingredient is truth (Boolean) values, and there are many choices for how to represent them.
+There are two main issues to think about: how the Boolean operators are defined, and how they interact with layer normalization.
+
+\paragraph{Boolean operations} are covered in detail in \cref{sec:ffnn_boolean}. We want them to be continuous functions, because transformers are continuous functions. This rules out $\text{false}=0, \text{true}>0$, because negation is not continuous.
+And sometimes, we want Boolean $\lor$ and $\land$ to be computed using arithmetic $+$ and $\times$ (namely, when using a dot-product to simulate disjunctive normal form, \cref{sec:att_dnf}). We can get this with
+\begin{align*}
+  \text{false} &= 0 &\text{true} &\ge 1.
+\end{align*}
+
+\paragraph{Layer normalization} is covered in detail in \cref{sec:layernorm}. Usually, we want layer normalization to preserve truth values (false stays false, true stays true). Two schemes to do this are:
+\begin{itemize}
+\item If the components of a feature vector have \emph{fixed mean and variance}, then we can set the layer normalization to the same mean and variance, and it will have no effect. Representations that have this property are
+  \begin{align*}
+    \text{true} &= (0, 1) & \text{false} &= (1, 0) \\
+    \intertext{or}
+    \text{true} &= (-1, +1) & \text{false} &= (+1, -1).
+  \end{align*}
+\item However, sometimes we can't guarantee fixed mean and variance (for example, because the feature vectors also contain integer representations, \cref{sec:integers}). If the components of a feature vector have \emph{zero mean} and are \emph{scale-invariant}, that is, $\mathbf{v}$ and $k\mathbf{v}$ have the same meaning, then we can set the layer normalization to have zero mean and any variance, and it will not change the meaning of anything. A representation that has this property is
+  \begin{align*}
+    \text{true} &= (-\delta, +\delta) \quad (\delta>0) & \text{false} &= (+\delta, -\delta) \quad (\delta>0).
+  \end{align*}
+\end{itemize}
+
+Unfortunately, there doesn't seem to be any one representation that has all the properties we want. It may be necessary to switch between representations as needed.
+
+\section{Integer Representations}
+\label{sec:integers}
