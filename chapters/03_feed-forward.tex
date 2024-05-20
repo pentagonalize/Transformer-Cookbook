@@ -19,84 +19,33 @@ TODO. Add References:
 
 The activation function component of feed-forward layers enables them to approximate non-linear functions. We define two popular activation functions. Other notable activation functions include sigmoid, softmax, hyperbolic tangent, Exponential Linear Unit (ELU) and Gated Linear Unit (GLU).
 
+\begin{definition}{Pointwise function application}{}
+  For any function $f \colon \R^d \to \R^d$ and any vector $\mathbf{x} = [x_i]_{i=1}^d \in \R^d$, we write
+  \begin{equation*}
+    f\mleft(\begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_d \end{bmatrix}\mright) =  \begin{bmatrix} f(x_1) \\ f(x_2) \\ \vdots \\ f(x_d) \end{bmatrix}.
+  \end{equation*}
+\end{definition}
+
 \begin{definition}{ReLU}{}
     $\ReLU : \R^d\to \R^d$, or Rectified Linear Unit, is a non-linear activation function as defined below \cite{Fukushima1975}.
 
-    \[\ReLU\left(\begin{bmatrix}
-                x_1    \\
-                x_2    \\
-                \vdots \\
-                x_d    \\
-            \end{bmatrix}\right) = \begin{bmatrix}
-            \max(0,x_1) \\
-            \max(0,x_2) \\
-            \vdots      \\
-            \max(0,x_d) \\
-        \end{bmatrix}\]
+    \[\ReLU(x) = \max(0,x).\]
 \end{definition}
 
 \begin{definition}{GELU}{}
     Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
 
-    \[\GELU\left(\begin{bmatrix}
-                x_1    \\
-                x_2    \\
-                \vdots \\
-                x_d    \\
-            \end{bmatrix}\right) = \begin{bmatrix}
-            x_1 \Phi(x_1) \\
-            x_2 \Phi(x_2) \\
-            \vdots        \\
-            x_d \Phi(x_d) \\
-        \end{bmatrix} \approx \begin{bmatrix}
-            x_1 \sigma(1.702 x_1) \\
-            x_2 \sigma(1.702 x_2) \\
-            \vdots                \\
-            x_d \sigma(1.702 x_d) \\
-        \end{bmatrix} \]
+    \[\GELU(x) = x\,\Phi(x) \approx \sigma(1.702 x).\]
 \end{definition}
-\DC{Should be a standard convention for component-wise application of functions}
+\DC{This definition doesn't agree with the one in \cref{sec:ffnn_multiplication}.}
 
 \begin{definition}{Feed-Forward Layer}{hidden text?}
     A feed-forward network is a function $f:\R^d\to \R^d$ that computes 
-
-    \[FFN\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_d\\
-    \end{bmatrix}\right)= L_2\left(\ReLU\left(L_1\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_d\\
-    \end{bmatrix}\right)\right)\right)\]
-
-    Where $L_1: \R^d \to \R^{d_{\text{ff}}}$ and $L_2: \R^{d_{\text{ff}}} \to \R^{d}$ are affine transformations. $L_1$ uses linear transformation $W_1:\R^d\to \R^{d_{\text{ff}}}$ and bias $b_1\in\R^{d_{\text{ff}}}$
-
-    \[L_1\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_d\\
-    \end{bmatrix}\right)=W_1\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_{d}\\
-    \end{bmatrix}\right)+b_1\]
-
-    And $L_2$ uses linear transformation $W_2:\R^{d_{\text{ff}}}\to \R^d$ and bias $b_2\in\R^{d}$
-    \[L_2\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_d\\    \end{bmatrix}\right)=W_2\left(\ReLU\left(\begin{bmatrix}
-        x_1\\
-        x_2\\
-        \vdots\\
-        x_{d_{\text{ff}}}\\
-    \end{bmatrix}\right)\right)+b_2\]
+    \[f(\mathbf{x})) = L_2(\ReLU(L_1(\mathbf{x})))\]
+    where $L_1: \R^d \to \R^{d_{\text{ff}}}$ and $L_2: \R^{d_{\text{ff}}} \to \R^{d}$ are affine transformations. $L_1$ uses linear transformation $W_1:\R^d\to \R^{d_{\text{ff}}}$ and bias $b_1\in\R^{d_{\text{ff}}}$
+    \[L_1(\mathbf{x}) = W_1 \mathbf{x} + b_1\]
+    and $L_2$ uses linear transformation $W_2:\R^{d_{\text{ff}}}\to \R^d$ and bias $b_2\in\R^{d}$
+    \[L_2(\mathbf{x}) = W_2 \mathbf{x} + b_2.\]
 \end{definition}
 
 \section{Continuous Piecewise Linear Functions}
@@ -354,6 +303,7 @@ The second layer then simply computes $h_1 + h_2$, which by construction compute
 
 
 \section{Multiplication}
+\label{sec:ffnn_multiplication}
 
 By definition~\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}}:
 \begin{align*}
