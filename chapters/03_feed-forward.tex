@@ -272,7 +272,7 @@ b_1 = b_2 &= 0.
         \rowcolor{orange!20} % Set header color here
         \textbf{Input} & \textbf{Output} \\
         \hline
-        $\{0,1\}\times \R\times\R$ & $\R$ \\
+        $\{0,1\}\times \R \times \R$ & $\R$ \\
         \hline
     \end{tabular}
 
@@ -285,17 +285,14 @@ b_1 = b_2 &= 0.
         \end{cases}
     \end{equation*}
 
-    We adapt a construction used in \citep{merrill2024the} (Theorem 1, arXiv version) for two-layer ReLU feedforward nets.
+    We adapt a construction used by \citep{merrill2024the} (Theorem 1) for two-layer ReLU feedforward nets.
     Let $\vec 1$ be a vector of ones.
     In the first layer, we define two neurons:
     \begin{align*}
         h_1 &= \ReLU(-p \vec 1 + \vec 1 + \phi) \\
         h_2 &= \ReLU(p \vec 1 - \vec 1 + \psi) .
     \end{align*}
-    The second layer then simply computes $h_1 + h_2$, which by construction computes $\cif{p}{\phi}{\psi}$.
-
-    \WM{Can justify this by writing out cases when $p = 0$ or $p = 1$}
-
+    The second layer then computes $h_1 + h_2$, which by construction is $\cif{p}{\phi}{\psi}$.
 
 \section{Multiplication}
 \label{sec:ffnn_multiplication}
