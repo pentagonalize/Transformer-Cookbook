@@ -214,57 +214,34 @@ b_1 = b_2 &= 0.
         \rowcolor{orange!20} % Set header color here
         \textbf{Input} & \textbf{Output} \\
         \hline
-        $\left\{\begin{bmatrix}
-            -\delta\\\phantom- \delta1
-        \end{bmatrix}, \begin{bmatrix}
-            \phantom- \delta\\-\delta
-        \end{bmatrix}\right\}$ & $\left\{\begin{bmatrix}
-            -\delta\\\phantom- \delta
-        \end{bmatrix}, \begin{bmatrix}
-            \phantom- \delta\\-\delta
-        \end{bmatrix}\right\}$ \\
+        $\{0, 1\}$ & $\{0,1\}$ \\
         \hline
     \end{tabular}
 
     In this section, we show how to compute arbitrary Boolean functions using a single feed-forward network.
-    This presentation was found in \cite{yang2024counting} \AY{Maybe there's an older one?}
-    We show the construction for a zero-mean Boolean representation (as discussed in \cref{sec:booleans}).
-    It is straightforwardly adapted to other representations.
+    We show the construction for $\text{true}=1, \text{false}=0$ (see \cref{sec:booleans}).
+    This is probably the easiest case, but the others are not much more difficult.
 
-    First, a single $\land$ and $\lnot$ can be computed by FFNNs with $\ReLU$ activations. Conjunction ($\land$) is equivalent to min/max:
+    First, the connectives $\land$, $\lor$, $\lnot$ can be computed by FFNNs with $\ReLU$ activations. Conjunction ($\land$) is equivalent to $\min$, disjunction ($\lor$) is equivalent to $\max$, and logical negation ($\lnot$) is just $(1-x)$.
 
-    \begin{align*}
-    \begin{bmatrix} \vdots \\ -2B_1+\delta \\ \phantom{-}2B_1-\delta \\ \vdots \end{bmatrix} \land \begin{bmatrix} \vdots \\ -2B_2+\delta \\ \phantom{-}2B_2-\delta \\ \vdots \end{bmatrix} &= \begin{bmatrix} \vdots \\ \max(-2B_1+\delta,-2B_2+\delta) \\ \min(\phantom{-}2B_1-\delta,\phantom{-}2B_2-\delta) \\ \vdots \end{bmatrix}.
-    \end{align*}
-
-    Logical negation ($\lnot$) is equivalent to arithmetic negation, or swapping the positive and negative components:
-    \begin{center}
-        \begin{tikzpicture}[x=2cm,y=1.5cm,baseline=1cm]
-        \node (x1) at (0,0) [input,label=below:{$2B-\delta$}];
-        \node (x2) at (1,0) [input,label=below:{$-2B+\delta$}];
-        \node (h1) at (0,1) [relu] edge node {$1$} (x1);
-        \node (h2) at (1,1) [relu] edge node {$1$} (x2);
-        \node (y1) at (0,2) [output] edge node {$1$} (h1) edge node[near start] {$-1$} (h2);
-        \node (y2) at (1,2) [output] edge node[auto=left,near start] {$-1$} (h1) edge node[auto=left] {$1$} (h2);
-        \end{tikzpicture}
-    \end{center}
-
-    For an arbitrary Boolean formula, it can be more involved. First convert it to \emph{canonical} disjunctive normal form, which is a disjunction $\phi_1 \lor \cdots \lor \phi_n$ of clauses, at most one of which can be true for any value of the inputs.
-    Each clause is of the form $\phi_m = \bigwedge_{k\in K_m} \psi_k$, where each $\phi_k$ is an input or a negated input and $K_m$ is a set of indices for each clause. A slightly different construction can be used to compute $\land$ over inputs in $K_m$. Observe that:
-
-    \begin{align*}
-    \bigwedge_{k\in K_m} B_k &= \ReLU\left(\left(\sum_{k\in K_m} (B_k)\right) -(|K_m|-1)\right) \\ &=\ReLU\left(\left(\sum_{k\in K_m} \frac{1}{2}(2B_k-\delta) \right) - \frac{3|K_m|}{2}+1\right).
-    \end{align*}
-
-    And this can be computed for each clause using the first layer and $\ReLU$ of a feed-forward layer.
-    Note that the value of $\delta$ can be stored in every feature vector using an appropriate word embedding, as described \AY{Somewhere}.
-    Then, because at most one clause can be true, the sum of all clauses will either be $1$ or $0$. Then, we convert back to the $\pm\delta$ representation of truth values.
-
-    \[\bigvee_{m=1}^n \left(\bigwedge_{k\in K_m} B_k \right)=2\cdot\left(\sum_{m=1}^n\ReLU\left(\left(\sum_{k\in K_m} \frac{1}{2}(2B_k-\delta) \right) - \frac{3|K_m|}{2}+1\right)\right)-\delta.\]
-
-    This can all be done in a single feed-forward layer.
-
-
+    For an arbitrary Boolean formula $\phi(x_1, \ldots, x_n)$, it can be more involved.
+    We treat $\phi$ as a function $\phi \colon \{0,1\}^n \to \{0,1\}$.
+    First, convert $\phi$ to \emph{full} disjunctive normal form (DNF), which is a disjunction of clauses, at most one of which can be true for any value of the inputs. The easiest (not necessarily the most efficient) way to do this is to write one clause for every possible combination of inputs that makes $\phi$ true:
+    \begin{align}
+      \phi(x_1, \ldots, x_n) &= \bigvee_{\substack{\xi_1, \ldots, \xi_n \in \{0, 1\} \\ \phi(\xi_1, \ldots, \xi_n) = 1}} ( x_1 \leftrightarrow \xi_1 \land \cdots \land x_n \leftrightarrow \xi_n ).
+    \end{align}
+    Note that $x \leftrightarrow 1$ is equivalent to $x$, and $x \leftrightarrow 0$ is equivalent to $\lnot x$.
+    For example, the XOR function can be written in full DNF as \[ \text{XOR}(x_1, x_2) = (x_1 \land \neg x_2) \lor (\neg x_1 \land x_2).\]
+    As before, logical negation can be computed as $(1-x)$. The $n$-way conjunction can be computed by a slight generalization of the construction for a two-way conjunction. And because at most one clause can be true, the disjunction can be computed simply by addition. So we create a FFNN with $2^n$ hidden units:
+    \begin{align}
+      \lambda_{i,\xi} &= \begin{cases}
+        x_i & \xi = 1 \\
+        1-x_i & \xi = 0 
+      \end{cases} && i \in [n], \xi \in \{0,1\} && \text{negations} \\
+      h_{\xi_1, \ldots, \xi_n} &= \ReLU(\lambda_{1,\xi_1} + \cdots + \lambda_{n,\xi_1} - n + 1) && \xi_1, \ldots, \xi_n \in \{0, 1\} && \text{conjunctions} \\
+      y &= \sum_{\substack{\xi_1, \ldots, \xi_n \in \{0,1\} \\ \phi(\xi_1, \ldots, \xi_n) = 1}} h_{\xi_1, \ldots, \xi_n}. && && \text{disjunction}
+    \end{align}
+    
 \section{Conditionals}\label{sec:ffnn_conditional}
 
     \begin{tabular}{|c|p{1.5cm}|}
