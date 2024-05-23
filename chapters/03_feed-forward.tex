@@ -55,7 +55,7 @@ To do this, we first define the slopes \(m_1, \ldots, m_n\):
 \end{align*}
 Then, \(f\) is computed by the following two-layer neural network:
 \begin{align*}
-    f(x) &= y_1 + m_1 x + \sum_{k=2}^{n} (m_k - m_{k-1}) \, \ReLU(x - x_k) \\
+    f(x) &= y_1 + m_1 (x-x_1) + \sum_{k=2}^{n} (m_k - m_{k-1}) \, \ReLU(x - x_k) \\
     &= \begin{dcases}
         y_1 + m_1 (x - x_1) &x \leq x_2 \\
         y_k + m_{k} (x - x_k) & x_k \leq x \leq x_{k+1} \\
