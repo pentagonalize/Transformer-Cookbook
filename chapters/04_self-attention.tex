@@ -10,6 +10,10 @@ Identity function: zero values, use residual connection
 
 Uniform attention: zero queries and/or keys
 
+\section{Tie Breaking}
+
+When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
+
 \section{Table Lookup}
 
 Table lookup is just the special case of self-attention where the query and the key are equal.
@@ -37,6 +41,3 @@ then just use a FFNN to test for equality.
 \section{Dot-product and Disjunctive Normal Form}
 \label{sec:att_dnf}
 
-\section{Tie Breaking}
-
-When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
