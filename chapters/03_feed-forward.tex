@@ -29,9 +29,12 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 \begin{definition}{GELU}{}
     Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
 
-    \[\GELU(x) = x\,\Phi(x) \approx \sigma(1.702 x) \approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) .\]
+    \begin{align}
+        \GELU(x) &= x\,\Phi(x) \\
+        &\approx \sigma(1.702 x)\\
+        &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) .
+    \end{align}
 \end{definition}
-\DC{This definition doesn't agree with the one in \cref{sec:ffnn_multiplication}.}
 
 \begin{definition}{Feed-Forward Layer}{hidden text?}
     A feed-forward network is a function $f:\R^d\to \R^d$ that computes
