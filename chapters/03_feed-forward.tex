@@ -31,8 +31,8 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 
     \begin{align}
         \GELU(x) &= x\,\Phi(x) \\
-        &\approx \sigma(1.702 x)\\
-        &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) .
+        &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) \\
+        &\approx x\,\sigma(1.702 x).
     \label{eq:gelu}
     \end{align}
 \end{definition}
