@@ -303,18 +303,18 @@ b_1 = b_2 &= 0.
 
 GELU is implemented\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}} as in Equation~\eqref{eq:gelu}, hence:
 \begin{align*}
-    \mrm{GELU}(x) = \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
+    \GELU(x) = \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
 \end{align*}
-and so from~\citep[Lemma 4]{akyurek2022learning}:
+and so \citep[Lemma 4]{akyurek2022learning}:
 \begin{align*}
     \sqrt{\frac{\pi}{2}}
-    (\mrm{GELU}(x + y) - \mrm{GELU}(x) - \mrm{GELU}(y))
+    (\GELU(x + y) - \GELU(x) - \GELU(y))
     = xy + \mcal{O}(x^3 + y^3)
 \end{align*}
 wherein the authors note that
 \begin{align*}
-    \mrm{GELU}(x) &= \frac{x}{2} + \sqrt{\frac{2}{\pi}}x^2 + \mcal{O}(x^3) \\
-    \mrm{GELU}(x + y) &- \mrm{GELU}(x) - \mrm{GELU}(y) = \sqrt{\frac{2}{\pi}} xy + \mcal{O}(x^3 + y^3)
+    \GELU(x) &= \frac{x}{2} + \sqrt{\frac{2}{\pi}}x^2 + \mcal{O}(x^3) \\
+    \GELU(x + y) &- \GELU(x) - \GELU(y) = \sqrt{\frac{2}{\pi}} xy + \mcal{O}(x^3 + y^3)
 \end{align*}
 
 
