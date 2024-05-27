@@ -33,6 +33,7 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
         \GELU(x) &= x\,\Phi(x) \\
         &\approx \sigma(1.702 x)\\
         &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) .
+    \label{eq:gelu}
     \end{align}
 \end{definition}
 
@@ -300,9 +301,9 @@ b_1 = b_2 &= 0.
 \section{Multiplication}
 \label{sec:ffnn_multiplication}
 
-By definition~\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}}:
+GELU is implemented\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}} as in Equation~\eqref{eq:gelu}, hence:
 \begin{align*}
-    \mrm{GELU}(x) \equiv \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
+    \mrm{GELU}(x) = \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
 \end{align*}
 and so from~\citep[Lemma 4]{akyurek2022learning}:
 \begin{align*}
