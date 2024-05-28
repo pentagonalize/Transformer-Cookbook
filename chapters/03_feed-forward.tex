@@ -27,11 +27,16 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 \end{definition}
 
 \begin{definition}{GELU}{}
-    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
+    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution, $\erf$ is the Gauss error function, and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
 
-    \[\GELU(x) = x\,\Phi(x) \approx \sigma(1.702 x).\]
+    \begin{align}
+        \GELU(x) &= x\,\Phi(x) \\
+        &= \frac{x}{2} \left(1 + \erf\left(\frac{x}{\sqrt{2}}\right)\right) \\
+        \label{eq:gelu}
+        &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) \\
+        &\approx x\,\sigma(1.702 x).
+    \end{align}
 \end{definition}
-\DC{This definition doesn't agree with the one in \cref{sec:ffnn_multiplication}.}
 
 \begin{definition}{Feed-Forward Layer}{hidden text?}
     A feed-forward network is a function $f:\R^d\to \R^d$ that computes
@@ -297,20 +302,20 @@ b_1 = b_2 &= 0.
 \section{Multiplication}
 \label{sec:ffnn_multiplication}
 
-By definition~\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}}:
+GELU is implemented\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}} as in Equation~\eqref{eq:gelu}, hence:
 \begin{align*}
-    \mrm{GeLU}(x) \equiv \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
+    \GELU(x) = \frac{x}{2} \parens*{1 + \tanh\parens*{\sqrt{\frac{2}{\pi}} (x + 0.044715x^3)}}
 \end{align*}
-and so from~\citep[Lemma 4]{akyurek2022learning}:
+and so \citep[Lemma 4]{akyurek2022learning}:
 \begin{align*}
     \sqrt{\frac{\pi}{2}}
-    (\mrm{GeLU}(x + y) - \mrm{GeLU}(x) - \mrm{GeLU}(y))
+    (\GELU(x + y) - \GELU(x) - \GELU(y))
     = xy + \mcal{O}(x^3 + y^3)
 \end{align*}
 wherein the authors note that
 \begin{align*}
-    \mrm{GeLU}(x) &= \frac{x}{2} + \sqrt{\frac{2}{\pi}}x^2 + \mcal{O}(x^3) \\
-    \mrm{GeLU}(x + y) &- \mrm{GeLU}(x) - \mrm{GeLU}(y) = \sqrt{\frac{2}{\pi}} xy + \mcal{O}(x^3 + y^3)
+    \GELU(x) &= \frac{x}{2} + \sqrt{\frac{2}{\pi}}x^2 + \mcal{O}(x^3) \\
+    \GELU(x + y) &- \GELU(x) - \GELU(y) = \sqrt{\frac{2}{\pi}} xy + \mcal{O}(x^3 + y^3)
 \end{align*}
 
 
