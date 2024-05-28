@@ -27,10 +27,11 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 \end{definition}
 
 \begin{definition}{GELU}{}
-    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
+    Gaussian Error Linear Unit (GELU) is a non-linear activation function. $\GELU : \R^d\to \R^d$ is computed as follows, where $\Phi$ is the cumulative distribution function of the standard normal distribution, $\erf$ is the Gauss error function, and $\sigma(x) = 1/(1+e^{-x})$ \cite{hendrycks2023}.
 
     \begin{align}
         \GELU(x) &= x\,\Phi(x) \\
+        &= \frac{x}{2} \left(1 + \erf\left(\frac{x}{\sqrt{2}}\right)\right) \\
         &\approx \frac{x}{2} \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}} \left(x + 0.044715x^3\right)\right)\right) \\
         &\approx x\,\sigma(1.702 x).
     \label{eq:gelu}
