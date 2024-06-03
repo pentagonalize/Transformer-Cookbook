@@ -45,7 +45,7 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 \section{Continuous Piecewise Linear Functions}
 
 \begin{definition}{continuous piecewise linear}{}
-  Let $X \subseteq \R^d$. A function $f \colon X \to \R$ is called \emph{continuous piecewise linear (CPWL)} if there are closed subsets $X_1, \ldots, X_n \subseteq X$ such that $\bigcup_{i\in [n]}  X_i = X$, and for all $i \in [n]$, $\left.f\right|_{X_i}$ is affine.
+  Let $X \subseteq \R^d$. A function $f \colon X \to \R$ is called \emph{continuous piecewise linear (CPWL)} if there are closed polyhedral subsets $X_1, \ldots, X_n \subseteq X$ such that $\bigcup_{i\in [n]}  X_i = X$, and for all $i \in [n]$, $\left.f\right|_{X_i}$ is affine.
 \end{definition}
 
 For the univariate case ($d=1$), suppose we want to construct a FFNN that computes a CPWL function \(f \colon \mathbb{R} \to \mathbb{R}\). Assume that $f$ has $n \ge 2$ pieces (of which the first and last extend to infinity) and is represented by points \(x_1 < \ldots < x_{n+1}\) and values \(y_1, \ldots, y_{n+1}\) such that \(f(x_k) = y_k\) for \(k = 1, \ldots, n+1\).
