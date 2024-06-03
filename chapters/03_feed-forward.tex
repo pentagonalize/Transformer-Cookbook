@@ -40,7 +40,7 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 
 \begin{definition}{Feed-Forward Layer}{hidden text?}
     A feed-forward network is a function $f:\R^d\to \R^d$ that computes
-    \[f(\mathbf{x})) = L_2(\ReLU(L_1(\mathbf{x})))\]
+    \[f(\mathbf{x}) = L_2(\ReLU(L_1(\mathbf{x})))\]
     where $L_1: \R^d \to \R^{d_{\text{ff}}}$ and $L_2: \R^{d_{\text{ff}}} \to \R^{d}$ are affine transformations. $L_1$ uses linear transformation $W_1:\R^d\to \R^{d_{\text{ff}}}$ and bias $b_1\in\R^{d_{\text{ff}}}$
     \[L_1(\mathbf{x}) = W_1 \mathbf{x} + b_1\]
     and $L_2$ uses linear transformation $W_2:\R^{d_{\text{ff}}}\to \R^d$ and bias $b_2\in\R^{d}$
@@ -49,33 +49,22 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
 
 \section{Continuous Piecewise Linear Functions}
 
-\begin{definition}{continuous piecewise linear}{there}
-A \emph{continuous piecewise linear (CPWL)} function is....
-
-finite number of pieces
+\begin{definition}{continuous piecewise linear}{}
+  Let $X \subseteq \R^d$. A function $f \colon X \to \R$ is called \emph{continuous piecewise linear (CPWL)} if there are closed subsets $X_1, \ldots, X_n \subseteq X$ such that $\bigcup_{i\in [n]}  X_i = X$, and for all $i \in [n]$, $\left.f\right|_{X_i}$ is affine.
 \end{definition}
 
-Suppose we want to construct a CPWL function \(f \colon \mathbb{R} \to \mathbb{R}\) using the points \(x_1 < \ldots < x_n\) and values \(y_1, \ldots, y_n\) such that:
-\begin{itemize}
-    \item \(f(x_k) = y_k\) for \(k = 1, \ldots, n\)
-    \item \(f(x) = y_1\) when \(x < x_1\)
-    \item \(f(x) = y_n\) when \(x > x_n\)
-\end{itemize}
-\DC{extreme segments don't necessarily have to have zero slope}
-To do this, we first define the slopes \(m_0, m_1, \ldots, m_n\):
+For the univariate case ($d=1$), suppose we want to construct a FFNN that computes a CPWL function \(f \colon \mathbb{R} \to \mathbb{R}\). Assume that $f$ has $n \ge 2$ pieces (of which the first and last extend to infinity) and is represented by points \(x_1 < \ldots < x_{n+1}\) and values \(y_1, \ldots, y_{n+1}\) such that \(f(x_k) = y_k\) for \(k = 1, \ldots, n+1\).
+To do this, we first define the slopes \(m_1, \ldots, m_n\):
 \begin{align*}
-    m_0 = m_{n} = 0,
-    \qquad
-    m_k = \frac{y_{k+1} - y_{k}}{x_{k+1} - x_{k}}
-    \enskip \text{for} \enskip k = 1, \ldots, n-1
+  m_k &= \frac{y_{k+1} - y_{k}}{x_{k+1} - x_{k}} \enskip \text{for} \enskip k = 1, \ldots, n.
 \end{align*}
-Then, define \(f\) as the following one-layer neural network:
+Then, \(f\) is computed by the following two-layer neural network:
 \begin{align*}
-    f(x) &= y_1 + \sum_{k = 1}^{n} (m_{k} - m_{k-1}) \mathrm{ReLU}(x - x_k)
-    = \begin{dcases}
-        y_1, &x \leq x_1, \\
-        y_k + m_{k} (x - x_k), & x_k \leq x < x_{k+1}, \\
-        y_n, & x > x_n
+    f(x) &= y_1 + m_1 (x-x_1) + \sum_{k=2}^{n} (m_k - m_{k-1}) \, \ReLU(x - x_k) \\
+    &= \begin{dcases}
+        y_1 + m_1 (x - x_1) &x \leq x_2 \\
+        y_k + m_{k} (x - x_k) & x_k \leq x \leq x_{k+1} \\
+        y_n + m_n (x - x_n) & x \geq x_n.
     \end{dcases}
 \end{align*}
 
@@ -100,25 +89,23 @@ b_1 = b_2 &= 0.
         \hline
     \end{tabular}
 
-    We can ignore residual connections in FFN's. That is, if $f:\R^d\to \R^d$ is a FFN, there is a FFN
-
+    We can cancel out residual connections in FFNs. If $f\colon\R^d\to \R^d$ is a FFN with parameters $W_1, b_1, W_2, b_2$, there is a FFN $f'$ with parameters
     \begin{align*}
-        W_-^{(1)}&=\begin{bmatrix}
-            W^{(1)}\\
+        W_1'&=\begin{bmatrix}
+            W_1\\
             \textbf{I}\\
-            \textbf{-I}
-        \end{bmatrix}  &\quad b_-^{(1)}&=\begin{bmatrix}
-            b^{(1)}\\
+            -\textbf{I}
+        \end{bmatrix}  &\quad b_1'&=\begin{bmatrix}
+            b_1\\
             \textbf{0}\\
             \textbf{0}
         \end{bmatrix}\\
-        W_-^{(2)}&=\begin{bmatrix}
-            W^{(2)}& \textbf{-I} & \textbf{I}
+        W_2'&=\begin{bmatrix}
+            W_2& -\textbf{I} & \textbf{I}
         \end{bmatrix}
-        & \quad b_-^{(2)} &= b^{(2)}
+        & \quad b_2' &= b_2
     \end{align*}
-
-    This construction was first introduced in \cite{chiang+:icml2023}.
+    so that $f'(\mathbf{x}) + \mathbf{x} = f(\mathbf{x})$, that is, it behaves like $f$ without a residual connection \citep{chiang+:icml2023}.
 
 \section{Min and Max}\label{sec:ffnn_minmax}
     \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
