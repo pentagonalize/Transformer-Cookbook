@@ -12,7 +12,8 @@ Uniform attention: zero queries and/or keys
 
 \section{Table Lookup}
 
-In table lookup, each position stores some integer $a_i$ and each position $i$ must attend to position $j$ where $a_i = j$.
+Given that position $i$ stores some integer $a_i$, a table lookup is a self-attention layer in which each position $i$ attends to position $a_j$. 
+If $f \colon [n] \to \R$ is any function and we can use the position embedding to store $f(j)$ at position $j$, then table lookup makes it possible to compute $f(a_i)$ at each position $i$.
 
 \iffalse
 \subsection{Single query}
@@ -30,12 +31,12 @@ If every position has the same query ($q^{(i)} = q$ for all $i$) and there is a 
 
 \subsection{Layernorm hash}
 
-\Citet{merrill-sabharwal-2024-cot} store an integer $a$ as
+\Citet{merrill-sabharwal-2024-cot} store integer $a_i$ as
 \begin{align*}
-  \textnormal{lh}(k) &= \textnormal{LayerNorm}\left(\begin{bmatrix} a \\ 1 \\ -a \\ -1 \end{bmatrix}\right) \\
-  &= \frac1{\sqrt{2a^2+2}} \begin{bmatrix} a \\ 1 \\ -a \\ -1 \end{bmatrix}.
+  \textnormal{lh}(k) &= \textnormal{LayerNorm}\left(\begin{bmatrix} a_i \\ 1 \\ -a_i \\ -1 \end{bmatrix}\right) \\
+  &= \frac1{\sqrt{2a_i^2+2}} \begin{bmatrix} a_i \\ 1 \\ -a_i \\ -1 \end{bmatrix}.
 \end{align*}
-One advantage of this representation is that if we're only able to compute $a/i$ (where $i$ is the current position) and $1/i$, we can still compute $\textnormal{lh}(a)$.
+One advantage of this representation is that if we're only able to compute $a_i/i$ and $1/i$, we can still compute $\textnormal{lh}(a_i)$.
 
 So if we let
 \begin{align*}
