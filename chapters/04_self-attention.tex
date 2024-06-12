@@ -81,13 +81,16 @@ Identity function: zero values, use residual connection
 
 Uniform attention: zero queries and/or keys
 
+\section{Counting}
+\label{sec:attn_counting}
+
 \section{Table Lookup}
 
 Table lookup is just the special case of self-attention where the query and the key are equal.
 
 \subsection{Single query}
 
-If there is a single query that is broadcast to all positions, 
+If there is a single query that is broadcast to all positions,
 there is a minimum distance $\delta$ between all keys, and we can compute $\delta$ at all positions,
 then just use a FFNN to test for equality.
 
