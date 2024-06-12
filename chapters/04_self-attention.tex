@@ -12,29 +12,62 @@ Uniform attention: zero queries and/or keys
 
 \section{Table Lookup}
 
-Table lookup is just the special case of self-attention where the query and the key are equal.
+In table lookup, each position stores some integer $a_i$ and each position $i$ must attend to position $j$ where $a_i = j$.
 
+\iffalse
 \subsection{Single query}
 
-If there is a single query that is broadcast to all positions, 
-there is a minimum distance $\delta$ between all keys, and we can compute $\delta$ at all positions,
-then just use a FFNN to test for equality.
-
-\citep{chiang-cholak-2022-parity}
+If every position has the same query ($q^{(i)} = q$ for all $i$) and there is a minimum distance $\delta$ between all keys ($|k^{(i)}-k^{(j)}| \ge \delta$ for all $i,j$), then we can just use a FFNN to compute $\mathbb{I}[k^{(i)} = q^{(i)}] \delta$, which is piecewise linear \citep{chiang-cholak-2022-parity}:
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[xtick={-1,0,1},xticklabels={$-\delta$,$0$,$\delta$,ytick={0,1},yticklabels={$0$,$\delta$}}}]
+      \addplot[mark=none] coordinates { (-5,0) (-1,0) (0,1) (1,0) (5,0) };
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+(Since this doesn't use attention, it doesn't strictly belong in this chapter.)
+\fi
 
 \subsection{Layernorm hash}
 
-\citep{merrill-sabharwal-2024-cot}
+\Citet{merrill-sabharwal-2024-cot} store an integer $a$ as
+\begin{align*}
+  \textnormal{lh}(k) &= \textnormal{LayerNorm}\left(\begin{bmatrix} a \\ 1 \\ -a \\ -1 \end{bmatrix}\right) \\
+  &= \frac1{\sqrt{2a^2+2}} \begin{bmatrix} a \\ 1 \\ -a \\ -1 \end{bmatrix}.
+\end{align*}
+One advantage of this representation is that if we're only able to compute $a/i$ (where $i$ is the current position) and $1/i$, we can still compute $\textnormal{lh}(a)$.
+
+So if we let
+\begin{align*}
+  q_i &= \textnormal{lh}(a_i) \\
+  k_j &= \textnormal{lh}(j)
+\end{align*}
+then the dot product $s_{i,j} = \textnormal{lh}(a_i) \cdot \textnormal{lh}(j)$ is uniquely maximized when $a_i = j$, so that self-attention will retrieve the value $v_j$ such that $a_i = j$.
+
+The other advantage of this representation is that $\textnormal{lh}(a) \cdot \textnormal{lh}(b)$ is uniquely maximized when $a=b$. 
+
+The disadvantage of this representation is that it requires the ability to selectively apply $\textnormal{LayerNorm}$ to just four components of a vector. We can't do this with standard transformer layers (either pre-norm or post-norm), but we can if we use pre-norm \emph{and} insert a linear transformation $\mathbf{W}^{(\textnormal{N})}$ before the layer normalization:
+\begin{align*}
+  \mathbf{y} &= \textnormal{Sublayer}(\textnormal{LayerNorm}(\mathbf{W}^{(\textnormal{N})} \mathbf{x})) + \mathbf{x}.
+\end{align*}
 
 \subsection{Quadratic maximization}
 
-\citep{barcelo-etal-2024-logical}
+\Citet{barcelo-etal-2024-logical} include $j$ and $j^2$ in the position embedding, allowing table lookup as follows:
+\begin{align*}
+  q_i &= \begin{bmatrix} a_i \\ 1 \end{bmatrix} \\
+  k_j &= \begin{bmatrix} 2j \\ -j^2 \end{bmatrix}
+\end{align*}
+The dot product $s_{i,j}$ is $2a_ij - j^2$, which is uniquely maximized when $j=a_i$.
+This is true even if either $q_i$ or $k_j$ is scaled by some factor.
 
+\iffalse
 \subsection{$-|\text{Dot-product}|$ attention}
 
 \citep{perez-etal-2021-turing}
+\fi
 
-\section{Dot-product and Disjunctive Normal Form}
+\section{Dot-Product and Disjunctive Normal Form}
 \label{sec:att_dnf}
 
 \section{Tie Breaking}
