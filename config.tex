@@ -91,23 +91,12 @@
 \newcommand{\ReLU}{\text{ReLU}}
 \newcommand{\GELU}{\text{GELU}}
 \newcommand{\erf}{\text{erf}}
-
-% RASP shortcuts
-% B-RASP
-\DeclareMathOperator{\leftmost}{{\mathbf{\blacktriangleleft}}}
-\DeclareMathOperator{\rightmost}{{\mathbf{\blacktriangleright}}}
-\newcommand{\BRASP}{\textbf{B-RASP}}
-\newcommand{\att}[5]{\ensuremath{{#1}_{#2} \left[#3, #4\right] \; #5}}
-\newcommand{\attl}[4]{\att{\leftmost}{#1}{#2}{#3}{#4}}
-\newcommand{\attr}[4]{\att{\rightmost}{#1}{#2}{#3}{#4}}
-\newcommand{\longatt}[5]{\begin{aligned}[t]{#1}_{#2} &\left[#3, #4\right] \\ &#5\end{aligned}}
-\newcommand{\longattl}[4]{\longatt{\leftmost}{#1}{#2}{#3}{#4}}
-\newcommand{\longattr}[4]{\longatt{\rightmost}{#1}{#2}{#3}{#4}}
-% C-RASP
-\newcommand{\cttn}[2]{\ensuremath{\textsc{\textbf{\#}} \left[ #1 \right] \; #2}}
-\newcommand{\cif}[3]{\ensuremath{#1\;\mathbf{?}\; #2\; \textbf{:} \;#3}}
-\newcommand{\cifop}{\ensuremath{\mathbf{?}}}
-
+\newcommand{\att}{\textnormal{att}}
+\newcommand{\dhid}{{d_{\textnormal{hid}}}}
+\newcommand{\dff}{{d_{\textnormal{ff}}}}
+\newcommand{\qproj}{W^{\textnormal{Q}}}
+\newcommand{\kproj}{W^{\textnormal{K}}}
+\newcommand{\vproj}{W^{\textnormal{V}}}
 
 % Math shortcuts
 \def\R{\mathbb{R}}
@@ -122,6 +111,9 @@
 \def\Mcal{\mathcal{M}}
 \def\Ncal{\mathcal{N}}
 \def\F{\mathbb{F}}
+\newcommand{\elt}[1]{_{#1}}
+\newcommand{\cif}[3]{\ensuremath{#1\;\mathbf{?}\; #2\; \textbf{:} \;#3}}
+\DeclareMathOperator*{\softmax}{softmax}
 
 % Groupings
 \DeclarePairedDelimiter\parens{(}{)}

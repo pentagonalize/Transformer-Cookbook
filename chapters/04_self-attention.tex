@@ -4,6 +4,77 @@
 %
 %-----------------------------------
 
+\section{Definitions}
+
+\emph{Scaled dot-product self-attention} with $d$ input/output dimensions and $\dhid$ key/value dimensions is a length-preserving function
+\begin{align}
+  \att \colon (\R^d)^* &\to (\R^d)^* \notag \\
+  \mathbf{X} &\mapsto \mathbf{Y} \\
+  s\elt{i,j} &= \frac{\qproj(\mathbf{X}\elt{i}) \cdot \kproj(\mathbf{X}\elt{j})}{\sqrt\dhid} \label{eq:att_logit} \\
+  \alpha\elt{i,:} &= \softmax(s\elt{i,:}) \label{eq:att_weight} \\
+  &= \frac{\exp s\elt{i,:}}{\displaystyle\sum_{j \in [d]} \exp s\elt{i,j}} \\
+  \mathbf{Y}\elt{i} &= \sum_{j\in[n]} \alpha\elt{i,j} \, \vproj (\mathbf{X}\elt{j}) \\
+  \intertext{with parameters}
+  \qproj,\kproj &\in \R^{\dhid \times d} \notag \\
+  \vproj &\in \R^{d \times d} \notag
+\end{align}
+We call the $s\elt{i,j}$ the \emph{attention scores}, and we call the $\alpha\elt{i,j}$ the \emph{attention weights}.
+
+Real transformers use \emph{multi-head} self-attention, but we don't use it because it can be emulated using single-head self-attention.
+
+\paragraph{Attention masking} In \emph{future-masked} (also known as \emph{causally}-masked) self attention, a term $m(i,j)$ is added to \cref{eq:att_logit} to force every position to attend only to preceding positions:
+\begin{equation}
+    m(i,j) =
+    \begin{cases}
+        0 & \text{if $j \le i$} \\
+        -\infty & \text{otherwise.}
+    \end{cases}
+\end{equation}
+(We define $\exp (-\infty) = 0$.)
+Some papers use \emph{strict} future-masking, that is, $m(i,j) = 0$ iff $j<i$,
+and occasionally \emph{past}-masking ($j \ge i$) and strict past-masking ($j>i$).
+
+\iffalse
+Our definition deviates from the original formulation \citep{vaswani-etal-2017 attention} and commonly-used implementations in a few ways:
+\begin{compactenum}
+    \item Originally, $\qproj$ and $\kproj$ had $d_\text{k}$ output dimensions and $\vproj$ had $d_\text{v}$ output dimensions, and $d_\text{k}=d_\text{v}$. Here, we set all three to $\dhid$, aligning with common practice in implementations.
+    \item Originally, $\outmap$ was defined as part of multi-head attention, but we have moved it into attention.
+    This does not change the model.
+    \item \Cref{eq:att_weight} is equivalent to the more usual matrix form $\softmax\mleft(\frac{\mat{Q}\mat{K}^\top}{\sqrt{\dhid}}\mright)\mat{V}$, where $\mat{Q} \in \R^{n\times\dhid}$ is a matrix whose $i$-th row corresponds to $\qproj(\mathbf{X})$, and similarly for $\mat{K}$ and $\mat{V}$.
+    \item Some implementations use affine instead of linear transformations for $\qproj$, $\kproj$, and $\vproj$, and some include a bias term in $s_{i,j}(\mathbf{X})$.
+\end{compactenum}
+Since our focus here is solely on scaled dot-product attention, we will refer to it simply as \emph{attention}.
+\fi
+
+\iffalse
+\insentpara{Multi-head attention} with $\dhid$ key/value dimensions per head is the sum of $\numheads$ attentions with $\dhid$ key/value dimensions: %, each with $\din$ input dimensions, $\dout$ output dimensions, and $\dhid$ key/value dimensions:
+\begin{equation*}
+\mha(\mathbf{x},\mathbf{X})= \sum_{h\in[\numheads]}\att_h(\mathbf{x},\mathbf{X}).
+\end{equation*} 
+Multi-head self attention is defined analogously.
+This is equivalent to the original formulation, which concatenated the outputs of the heads and passed the result through a shared, larger, $\outmap$.
+\fi
+
+\paragraph{Hard attention}
+Some theoretical analyses simplify attention by replacing the softmax with variants that focus attention only on the position(s) with the maximum value, breaking ties in various ways.
+
+For any vector $\mathbf{x} \in \R^d$, define $M(\mathbf{x}) = \{i \in [n] \mid \forall j \in [n], \mathbf{x}\elt{j} \le \mathbf{x}\elt{i}\}$ to be the set of indices of the maximal elements of $\mathbf{x}$.
+In \emph{leftmost}-hard attention, the leftmost maximal element is used, replacing \cref{eq:att_weight} with:
+\begin{align}
+    \alpha\elt{i,j} &= \mathbb{I}[j = \min M(s[i,:])] \\
+\intertext{whereas in \emph{average}-hard attention, the maximal elements share weight equally:}
+    \alpha\elt{i,j} &= \frac{\mathbb{I}[j \in M(s[i,:])]}{|M(s[i,:])|}.
+\end{align}
+
+Leftmost-hard attention was previously called 
+\emph{hard} attention by \citet{hahn-2020-theoretical} and
+\emph{unique-hard} attention by \citet{hao-etal-2022-circuits}.
+One may also consider rightmost-hard attention, in which the rightmost maximal element is used.
+Average-hard attention was also called 
+\emph{hard} attention by \citet{perez-etal-2021-turing} and
+\emph{saturated} attention by \citet{merrill-etal-2021-saturated-transformers}, and has been argued to be a realistic approximation to how trained transformers behave in practice \citep{merrill-etal-2021-effects}.
+Neither type of hard attention should be confused with the concept of hard attention used in computer vision \citep[e.g.,][]{xu+:2015}.
+
 \section{Trivial Cases}
 
 Identity function: zero values, use residual connection
