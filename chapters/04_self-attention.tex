@@ -84,6 +84,18 @@ Uniform attention: zero queries and/or keys
 \section{Counting}
 \label{sec:attn_counting}
 
+\section{Final Position}
+\label{sec:attn_final_position}
+
+As described in \citet{barcelo-etal-2024-logical}, one might like the integer value $n$ to be accessible at every position. To do this, all we need is the position embedding to contain $i$ and $1/(i+1)$, and then we can set the queries and keys as follows:
+
+\begin{align*}
+  q_i &= \begin{bmatrix} -\frac{1}{i+1} \end{bmatrix} \\
+  k_j &= \begin{bmatrix} \frac{1}{j+1} \end{bmatrix}
+\end{align*}
+
+For every $i$, the dot product $s_{i,j} = q_i \cdot k_j = -\frac{1}{(i+1)(j+1)}$ is maximized when $j=n$, so this allows a hard-attention layer to attend uniquely to the final position and retrive the value fo $n$ from the postion embedding
+
 \section{Table Lookup}
 
 Given that position $i$ stores some integer $a_i$, a table lookup is a self-attention layer in which each position $i$ attends to position $a_i$.
