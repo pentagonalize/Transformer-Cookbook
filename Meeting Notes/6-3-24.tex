@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
+\newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{June 3, 2024}
+\begin{document}
+\maketitle
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+   \item David: @Andy there are some mistakes in the boolean function section (3.6) that i missed when reviewing. i'm correcting them, but am also wondering if this should use 0/1 representation; i think it's the easiest to understand \response{Yes, I think the revised version is much clearer}
+   \item Anton: thank you, this is me enjoying the flan $\ldots$ mm chewy $\ldots$ oh no food coma \response{glad you were able to enjoy :) unfortunately pdflatex doesn't do emojis}
+\end{itemize}
+
+\section{Attendees}
+
+Lena, David, Emile, Yingshan, Andy
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Review the previous work
+    \item Decide on a definition of attention
+    \item Look at other constructions to add, potentially
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item Basically wrapped up the feed-foward section
+    \item Integers: 1/C from Will's CoT
+    \item Margin notes for extra info about construction? \url{https://ctan.org/pkg/tufte-latex?lang=en}
+\end{itemize}
+
+TO DO;
+\begin{itemize}
+    \item David will do table Lookup
+    \item Emile will look at more constructions (possibly start with Barcelo logical languages accepted by ...)
+    \item Andy will at least quadratic maximization and maybe what to do about the tie breaking section
+    \item Yingshan will look at the uniform attention section
+\end{itemize}
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+

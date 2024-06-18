@@ -39,4 +39,23 @@ Unfortunately, there doesn't seem to be any one representation that has all the 
 \section{Integer Representations}
 \label{sec:integers}
 
-\AY{fill in....}
+
+Integer values are another common ingredient, often used to represent counts or indices. The same issues arise as with Boolean values, but furthermore the sign and magnitude of the integers can be important, as we may need to add and compare them.
+
+A common choice is to represent an integer $C\in \Z$ as
+
+  \begin{align*}
+    \frac{C}{i} & & \text{where $i$ is the current position where this integer is stored}\\
+  \end{align*}
+
+In constructions, we often end up with a denominator of $i$ when using future-masked uniform-attention to compute integer values.
+Without masking, we may see $C/n$ where $n$ is the length of the input \cite{chiang+:icml2023}.
+This representation also has the zero-mean variant of $(-C/i, +C/i)$.
+
+Since each position has the same denominator, position-wise operations are fairly straightforward to implement using this representation. Position-wise addition and subtraction using this representation is straightforward, and described in \cref{sec:ffnn_addition}. Position-wise comparison of integers is more complicated, as it depends on the Boolean representation used as well as the presence of layernorm, but is described in \cref{sec:assembly_comparison}.
+
+Since different positions have different denominators,  binary operations over integers in different positions is tricky using this representation.
+\AY{define layernorm hash and selective layernorm}
+
+\cref{sec:ln_selective}
+
