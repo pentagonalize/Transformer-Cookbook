@@ -147,5 +147,5 @@ constructing the word vectors as in Equation~\ref{eq:maximising-attention} and a
 \begin{align}
     \label{eq:maximising-attention}
     \mathbf{v}_i &= \left(\cos\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\, \sin\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\,(-1)^i\cdot 10 \right)\\
-    \langle A\mathbf{v}_i, \mathbf{v}_j\rangle &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
+    A\mathbf{v}_i \cdot \mathbf{v}_j &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
 \end{align}
