@@ -1,0 +1,47 @@
+% I've been looking at the paper "Chain of Thought Empowers Transformers to Solve Inherently Serial Problems" that David posted to the FLaNN channel.  Their proof of Theorem 3.3 (simulating circuits) is enabled by their assumption of finite precision and their lemmas that exp(-L) rounds to 0, and exp(L) rounds to L, where L is the largest representable number.  
+
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments 
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
+\newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Idea List}
+\date{\today}
+\begin{document}
+\maketitle
+\section{Things to look into}
+
+\subsection{Activation functions}
+
+We have mostly tabled discussion of other activation functions for now. Maybe if we wanted to add more detail we could look into:
+
+\begin{itemize}
+    \item LLMs: SwiGLU introduced here \url{https://arxiv.org/abs/2002.05202v1} Popularized by PaLM, used in Mistral, Mixtral, Llama \url{https://arxiv.org/abs/2204.02311}, tanH, sigmoid
+    \item LLMs not using layernorm, use RMSNorm \url{https://arxiv.org/abs/1910.07467}. Changes mean. Learnable gain in practice. 
+    \item As long as data binarized, can separate pos and neg bits using hyperplane property. As long as layernorm preserves this, expressivity should be same (or none lost at least)
+    \item LayerNorm role in expressivity \url{https://arxiv.org/pdf/2305.02582}
+\end{itemize}
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+

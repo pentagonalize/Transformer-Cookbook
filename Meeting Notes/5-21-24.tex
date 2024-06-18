@@ -1,0 +1,73 @@
+% I've been looking at the paper "Chain of Thought Empowers Transformers to Solve Inherently Serial Problems" that David posted to the FLaNN channel.  Their proof of Theorem 3.3 (simulating circuits) is enabled by their assumption of finite precision and their lemmas that exp(-L) rounds to 0, and exp(L) rounds to L, where L is the largest representable number.  
+
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments 
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
+\newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{May 21, 2024}
+\begin{document}
+\maketitle
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+   \item David: My opinion is that changes (even by the chefs) should be made through pull requests \response{I agree}
+\end{itemize}
+
+\section{Attendees}
+
+Andy, Will, David, Emile
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Thanks Anton! Thanks David! Thanks Emile! Thanks Andy! Thanks Akos! 
+    \item Wrap up feed-forward section
+    \item Define attentions (unique hard, average hard, soft)
+    \item Reading items
+        \begin{itemize}
+            \item Layer-norm hash \cite[\S3.2]{merrill-sabharwal-2024-cot} 
+            \item Single Query \cite[\S3.2]{chiang-cholak-2022-parity} see construction of first attention layer in prop 1
+            \item Quadratic maximization \cite{barcelo-etal-2024-logical}. Also table lookup?
+        \end{itemize}
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item Today we tried out meeting in Discord. It went well. There are also games built in to the chat (Death by AI...) 
+    \item Code? We think code should be secondary, and in PyTorch if added. Maybe it can be for people to use as building blocks. In any case, it should live in the repository and not in the actual write up. There is also the question of which sections get code or not. We leave this for later 
+    \item There's the question of, how much detail and how many constructions do we want to put in. A good metric is, if it's cited in papers then it's probably a useful primitive to write up (Thanks Will). 
+    \item Add XOR/equality
+    \item Add integer comparison. This needs us to add discussion of integer representations
+    \item Reorder the ffn section to have Booleans and Numerical functions closer together
+    \item Add proofs of correctness if helpful/not found in the original source
+    \item make sure correct CoT paper (ArXiv version) is cited
+\end{itemize}
+
+\begin{itemize}
+    \item For next time we want to wrap up the FFN section, and begin reviewing table lookup methods to write up the attention section next. 
+    \item The to-do's have been made into issues on the Github. We are moving most of the organization onto Github.
+\end{itemize}
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+
