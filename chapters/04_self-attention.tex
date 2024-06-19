@@ -149,3 +149,7 @@ constructing the word vectors as in Equation~\ref{eq:maximising-attention} and a
     \mathbf{v}_i &= \left(\cos\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\, \sin\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\,(-1)^i\cdot 10 \right)\\
     A\mathbf{v}_i \cdot \mathbf{v}_j &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
 \end{align}
+
+\section{Tie Breaking}
+
+When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
