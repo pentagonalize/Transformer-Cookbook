@@ -139,6 +139,17 @@ This is true even if either $q_i$ or $k_j$ is scaled by some factor.
 \section{Dot-Product and Disjunctive Normal Form}
 \label{sec:att_dnf}
 
+\section{Maximising attention}
+
+For a fixed $i$, the attention at position $j = i + 1$ can be maximised, by
+constructing the word vectors as in Equation~\ref{eq:maximising-attention} and applying a linear transformation, $A \colon \mathbb{R}^3 \to \mathbb{R}^3$, that reverses the third coordinate \citep{barcelo-etal-2024-logical}.
+
+\begin{align}
+    \label{eq:maximising-attention}
+    \mathbf{v}_i &= \left(\cos\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\, \sin\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\,(-1)^i\cdot 10 \right)\\
+    A\mathbf{v}_i \cdot \mathbf{v}_j &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
+\end{align}
+
 \section{Tie Breaking}
 
 When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
