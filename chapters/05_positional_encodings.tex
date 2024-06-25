@@ -12,6 +12,11 @@ Many different kinds of ingredients here.
 
 One recurring theme is using four consecutive powers of $i$, for example, $1/i^2, 1/i, 1, i$. It's not always the same powers of $i$. No idea why four are needed.
 
+\section{Trees}
+
+It is possible to, using positional encoding, represent positions as nodes of directed trees with ordered lists of children.
+This is done using a left-appended sliding window of one-hot-encoding vectors of the transitions taken from the root node's positional encoding \citep{shiv2019}.
+
 \section{Length-Dependent}
 
 \subsection{$\frac{i}{n}$}
