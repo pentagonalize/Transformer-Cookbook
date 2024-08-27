@@ -253,12 +253,13 @@ b_1 = b_2 &= 0.
             \psi & \textrm{otherwise.}
         \end{cases}
     \end{equation*}
+    We assume that $\phi$ and $\psi$ have values in $[0,1]$.
 
-    We adapt a construction used by \citet[Theorem 1]{merrill-sabharwal-2024-cot} for two-layer ReLU feedforward nets.
+    We adapt a construction used by \citet[Lemma 11]{perez-etal-2021-turing} and \citet[Theorem 1]{merrill-sabharwal-2024-cot} for two-layer ReLU feedforward nets.
     Let $\vec 1$ be a vector of ones.
     In the first layer, we define two neurons:
     \begin{align*}
-        h_1 &= \ReLU(-p \vec 1 + \vec 1 + \phi) \\
+        h_1 &= \ReLU(-p \vec 1 + \phi) \\
         h_2 &= \ReLU(p \vec 1 - \vec 1 + \psi) .
     \end{align*}
     The second layer then computes $h_1 + h_2$, which by construction is $\cif{p}{\phi}{\psi}$.
