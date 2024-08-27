@@ -80,14 +80,12 @@ b_1 = b_2 &= 0.
 
 \section{Canceling Residual Connections}\label{sec:ffnn_cancel_residual}
 
-    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+    \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2cm}|X}
+        $\R^d\to\R^d$ &  \\
         \hline
-        \rowcolor{orange!20} % Set header color here
-        \textbf{Input} & \textbf{Output} \\
-        \hline
-        $\mathbb{R}^d$ & $\mathbb{R}^d$ \\
-        \hline
-    \end{tabular}
+    \end{tabularx}
+    \\
+
 
     We can cancel out residual connections in FFNs. If $f\colon\R^d\to \R^d$ is a FFN with parameters $W_1, b_1, W_2, b_2$, there is a FFN $f'$ with parameters
     \begin{align*}
@@ -108,15 +106,11 @@ b_1 = b_2 &= 0.
     so that $f'(\mathbf{x}) + \mathbf{x} = f(\mathbf{x})$, that is, it behaves like $f$ without a residual connection \citep{chiang+:icml2023}.
 
 \section{Min and Max}\label{sec:ffnn_minmax}
-    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+    \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2cm}|X}
+        $\R\times\R\to\R$ &  \\
         \hline
-        \rowcolor{orange!20} % Set header color here
-        \textbf{Input} & \textbf{Output} \\
-        \hline
-        $\R\times\R$ & $\R$ \\
-        \hline
-    \end{tabular}
-
+    \end{tabularx}
+    \\
 
     Recall that $\ReLU(x)=\max(0,x)$. Then  $\min(x,y) = x-\ReLU(x-y)$.
     % $= y-\ReLU(y-x)$. To see this, there are two cases:
@@ -149,14 +143,11 @@ b_1 = b_2 &= 0.
 
 \section{Addition and Subtraction}\label{sec:ffnn_addition}
 
-    \begin{tabular}{|p{1.5cm}|p{1.5cm}|}
+    \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2cm}|X}
+        $\R^d\to\R$ &  \\
         \hline
-        \rowcolor{orange!20} % Set header color here
-        \textbf{Input} & \textbf{Output} \\
-        \hline
-        $\R^d$ & $\R$ \\
-        \hline
-    \end{tabular}
+    \end{tabularx}
+    \\
 
     If you have a tensor of dimensions $\R^{d\times n}$, and you want to add
     $d_1$ and $d_2$ into $d_3$, then use FFN with $W_1:\R^d\to \R^4$ and $W_2:\R^4\to \R^d$
@@ -201,14 +192,11 @@ b_1 = b_2 &= 0.
 
 \section{Boolean Functions}\label{sec:ffnn_boolean}
 
-    \begin{tabular}{|c|c|}
+    \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{3cm}|X}
+        $\{0,1\}^d\to\{0,1\}$ &  \\
         \hline
-        \rowcolor{orange!20} % Set header color here
-        \textbf{Input} & \textbf{Output} \\
-        \hline
-        $\{0, 1\}$ & $\{0,1\}$ \\
-        \hline
-    \end{tabular}
+    \end{tabularx}
+    \\
 
     In this section, we show how to compute arbitrary Boolean functions using a single feed-forward network.
     We show the construction for $\text{true}=1, \text{false}=0$ (see \cref{sec:booleans}).
@@ -236,14 +224,11 @@ b_1 = b_2 &= 0.
     
 \section{Conditionals}\label{sec:ffnn_conditional}
 
-    \begin{tabular}{|c|p{1.5cm}|}
+    \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{3cm}|X}
+        $\{0,1\}\times\R\times\R\to\R$ &  \\
         \hline
-        \rowcolor{orange!20} % Set header color here
-        \textbf{Input} & \textbf{Output} \\
-        \hline
-        $\{0,1\}\times \R \times \R$ & $\R$ \\
-        \hline
-    \end{tabular}
+    \end{tabularx}
+    \\
 
     We assume the input representation to a feedforward net (after layer-norm) contains three values: a mask $p \in \{0, 1\}$, a first option $\phi$, and second option $\psi$. The goal is to compute the ``ternary'' expression:
     \begin{equation*}
@@ -265,6 +250,12 @@ b_1 = b_2 &= 0.
 
 \section{Multiplication}
 \label{sec:ffnn_multiplication}
+
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2.5cm}|X}
+    $\R\to\R$ &  \\
+    \hline
+\end{tabularx}
+\\
 
 GELU is implemented\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.GELU.html}} as in Equation~\eqref{eq:gelu}, hence:
 \begin{align*}
