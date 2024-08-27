@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments
+\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+\newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
+\newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
+
+\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+\newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
+\newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
+
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{July 16, 2024}
+\begin{document}
+\maketitle
+
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+   \item No comments to address
+\end{itemize}
+
+\section{Attendees}
+
+Will, Andy, Anton
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Welcome back!
+    \item Positional Encodings
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item I made a bunch of cosmetic changes
+    \item Divided up roughly what we wanted to cover
+    \item Note on ALIBI, has a decay based on positions so it will mess up uniform attention. Then again it's also used on only some heads.
+    \item Could be interesting to tie to length generalization (thanks Gail for the suggestion) \url{https://arxiv.org/pdf/2305.19466}
+    \item Generally not much is known about the theoretical constructions doable with the positional encodings used/learned in practice.
+    \item Anton will cook us minute rice when we visit him.
+\end{itemize}
+
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+
