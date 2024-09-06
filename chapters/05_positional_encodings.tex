@@ -18,7 +18,7 @@ Many different kinds of ingredients here.
 \AY{I can say some stuff about this}
 
 \subsection{$\frac{i}{n}$}
-\AY{Where is this used?}
+\AY{Where is this used?} \WM{Used in: A Formal Hierarchy of RNN Architectures; Parallelism Tradeoff paper, Section 7.}
 
 \section{Other Powers of $i$}
 
@@ -30,7 +30,11 @@ One recurring theme is using four consecutive powers of $i$, for example, $1/i^2
 
 \section{Learned Positional Embeddings}
 
-\WM{I will write}
+Another option for positional encodings is to assign learnable parameter vectors to each position up to the maximum context length $n$ \citep{vaswani-etal-2017-attention}, though this strategy is rarely used in newer LMs.
+
+From the perspective of formal language expressivity (where behavior over arbitrary-length strings matters), learned positional encodings are difficult to model because the vectors are not very uniform as a function of position, in contrast to $1/i, i/n$, or sinusoidal encodings.
+Technically, when learned embeddings are used in practice, the function guaranteeing uniformity of the embeddings is the computation that trains the model, though this is typically abstracted away in theoretical analyses.
+If, instead, the positional embeddings are allowed to be any function of the position, then the model is capable of expressing super-Turing computation similar to nonuniform $\mathsf{TC}^0$ circuits.
 
 \section{Other Practical Choices}
 
