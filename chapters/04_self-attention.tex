@@ -50,7 +50,7 @@ Since our focus here is solely on scaled dot-product attention, we will refer to
 \insentpara{Multi-head attention} with $\dhid$ key/value dimensions per head is the sum of $\numheads$ attentions with $\dhid$ key/value dimensions: %, each with $\din$ input dimensions, $\dout$ output dimensions, and $\dhid$ key/value dimensions:
 \begin{equation*}
 \mha(\mathbf{x},\mathbf{X})= \sum_{h\in[\numheads]}\att_h(\mathbf{x},\mathbf{X}).
-\end{equation*} 
+\end{equation*}
 Multi-head self attention is defined analogously.
 This is equivalent to the original formulation, which concatenated the outputs of the heads and passed the result through a shared, larger, $\outmap$.
 \fi
@@ -66,21 +66,61 @@ In \emph{leftmost}-hard attention, the leftmost maximal element is used, replaci
     \alpha\elt{i,j} &= \frac{\mathbb{I}[j \in M(s[i,:])]}{|M(s[i,:])|}.
 \end{align}
 
-Leftmost-hard attention was previously called 
+Leftmost-hard attention was previously called
 \emph{hard} attention by \citet{hahn-2020-theoretical} and
 \emph{unique-hard} attention by \citet{hao-etal-2022-circuits}.
 One may also consider rightmost-hard attention, in which the rightmost maximal element is used.
-Average-hard attention was also called 
+Average-hard attention was also called
 \emph{hard} attention by \citet{perez-etal-2021-turing} and
-\emph{saturated} attention by \citet{merrill-etal-2021-saturated-transformers}, and has been argued to be a realistic approximation to how trained transformers behave in practice \citep{merrill-etal-2021-effects}.
+\emph{saturated} attention by \citet{merrill-etal-2022-saturated-transformers}, and has been argued to be a realistic approximation to how trained transformers behave in practice \citep{merrill2020effects}.
 Neither type of hard attention should be confused with the concept of hard attention used in computer vision \citep[e.g.,][]{xu+:2015}.
+
+In the following, we use $\UHAT$ to denote unique-hard attention, $\AHAT$ to denote average-hard attention, and $\SMAT$ to denote softmax attention.
 
 \section{Trivial Cases}
 
-Identity function: zero values, use residual connection
+\subsection{Identity}
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{4cm}|X}
+  \UHAT, \AHAT, \SMAT &  \\
+  \hline
+\end{tabularx}
+\\
 
-Uniform attention: zero queries and/or keys
+Set the query, key, and value matrices to zero:
 
+\begin{align*}
+  W^{(Q)}=\textbf{0}
+  &&
+  W^{(K)}=\textbf{0}
+  &&
+  W^{(V)}=\textbf{0}\\
+\end{align*}
+
+Then, the residual connection will pass the input through unchanged.
+
+\subsection{Uniform Attention}
+
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2.5cm}|X}
+  \AHAT, \SMAT &  \\
+  \hline
+\end{tabularx}
+\\
+
+Set the query and key matrices to zero, and place ones in the value matrix along the diagonal in the dimensions you want to attend over.
+
+\begin{align*}
+  W^{(Q)}=\textbf{0}
+  &&
+  W^{(K)}=\textbf{0}
+  &&
+  W^{(V)}=\begin{bmatrix}
+    \ddots & & \\
+    & 1 & \\
+    & & \ddots
+  \end{bmatrix}\\
+\end{align*}
+
+This is equivalent to averaging the input across all positions in the specified dimensions.
 
 \section{Table Lookup}
 
@@ -103,6 +143,12 @@ If every position has the same query ($q^{(i)} = q$ for all $i$) and there is a 
 
 \subsection{Layernorm hash}
 
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2.5cm}|X}
+  \UHAT, \AHAT &  \\
+  \hline
+\end{tabularx}
+\\
+
 \Citet{merrill-sabharwal-2024-cot} store integer $a_i$ as
 \begin{align*}
   \textnormal{lh}(a_i) &= \textnormal{LayerNorm}\left(\begin{bmatrix} a_i \\ 1 \\ -a_i \\ -1 \end{bmatrix}\right) \\
@@ -122,6 +168,12 @@ The disadvantage of this representation is that it requires the ability to selec
 
 \subsection{Quadratic maximization}
 
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2.5cm}|X}
+  \UHAT, \AHAT &  \\
+  \hline
+\end{tabularx}
+\\
+
 \Citet{barcelo-etal-2024-logical} include $j$ and $j^2$ in the position embedding, allowing table lookup as follows:
 \begin{align*}
   q_i &= \begin{bmatrix} a_i \\ 1 \end{bmatrix} \\
@@ -139,6 +191,34 @@ This is true even if either $q_i$ or $k_j$ is scaled by some factor.
 \section{Dot-Product and Disjunctive Normal Form}
 \label{sec:att_dnf}
 
+\AY{ToDo}
+
+\section{Predecessor}
+
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{2.5cm}|X}
+  \UHAT, \AHAT &  \\
+  \hline
+\end{tabularx}
+\\
+
+
+For a fixed $i$, the attention at position $j = i + 1$ can be maximised, by
+constructing the word vectors as in Equation~\ref{eq:maximising-attention} and applying a linear transformation, $A \colon \mathbb{R}^3 \to \mathbb{R}^3$, that reverses the third coordinate \citep{barcelo-etal-2024-logical}.
+
+\begin{align}
+    \label{eq:maximising-attention}
+    \mathbf{v}_i &= \left(\cos\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\, \sin\left(\frac{\pi(1 - 2^{-i})}{10}\right), \,\,(-1)^i\cdot 10 \right)\\
+    A\mathbf{v}_i \cdot \mathbf{v}_j &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
+\end{align}
+
 \section{Tie Breaking}
 
-When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention.
+\begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{1cm}|X}
+  \AHAT &  \\
+  \hline
+\end{tabularx}
+\\
+
+When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention. It suffices to simulate an equivalent $\textbf{B-RASP}$ program \cite{angluin2023masked}. In this case, we can simply add a small tie-breaking factor to each activation value, in order to ensure that the maximum value is unique.
+
+\AY{Fill in details later}
