@@ -4,7 +4,24 @@
 %
 %-----------------------------------
 
-Many different kinds of ingredients here.
+Transformers most often incorporate positional encodings as a method for injecting information about the positions of tokens into attention operations, which do not have an inherently represention of token ordering. The original transformer model in \citet{vaswani-etal-2017-attention} used sinusoidal positional encodings, but since then, many works have proposed other encodings addressing length generalization \citep{kazemnejad2024impact}, relative distances between tokens \citep{shaw2018self}, as well as representing tree structure in sequences \citep{shiv2019}. In this section we focus on the theoretical aspects of positional encodings - how they may affect the expressiveness of the model.
+
+
+\section{NoPE}
+
+\subsection{$\frac{1}{i}$}
+
+Obtaining the value $\frac{1}{i}$ at position $i$ can be introduced via a positional encoding, or it can be computed using a future-masked uniform attention layer \cref{sec:uniform-attention} and the presence of a beginning-of-sequence token. This positional encoding plays a role in the constructions of \citet{barcelo-etal-2024-logical}, \citet{merrill-sabharwal-2024-cot}, and others. Additionally, as described in \cref{sec:tie-breaking}, this value may be used to simulate a $\UHAT$ using an $\AHAT$.
+
+
+
+\subsection{$\frac{i}{n}$}
+Similar to above, the value $\frac{i}{n}$ may also be obtained at position $i$ using using an unmasked uniform attention layer \cref{sec:uniform-attention} and the presence of a beginning-of-sequence token. This positional encoding can be found in the constructions of \cite{merrill2023parallelism,chiang-cholak-2022-parity,strobl2024transformers}.
+
+\section{Other Powers of $i$}
+
+One recurring theme is using four consecutive powers of $i$, for example, $1/i^2, 1/i, 1, i$. It's not always the same powers of $i$. No idea why four are needed.
+
 
 \section{Sinusoidal}
 
@@ -17,31 +34,6 @@ For embedding dimension \(1 \leq i \leq d\) and position \(p\), let:
 \end{align*}
 where \(M\) is a large number, such as \(M = 10000\) in~\citep{vaswani-etal-2017-attention}.
 
-\subsection{Rotary Positional Embeddings (RoPE)}
-\cite{su2024roformer}
-
-
-\AY{Can write an intro of some sort}
-
-% \section{Finite Image}
-% \AY{Why is this here?}
-
-\section{NoPE}
-
-\subsection{$\frac{1}{i}$}
-
-\AY{I can say some stuff about this}
-
-\subsection{$\frac{i}{n}$}
-\AY{Where is this used?} \WM{Used in: A Formal Hierarchy of RNN Architectures; Parallelism Tradeoff paper, Section 7.}
-
-\section{Other Powers of $i$}
-
-One recurring theme is using four consecutive powers of $i$, for example, $1/i^2, 1/i, 1, i$. It's not always the same powers of $i$. No idea why four are needed.
-
-\section{Sinusoidal}
-
-\AX{I can put a note on MODULO. eg construction for parity - see Overcoming a Theoretical Limitation of Self Attention Chiang and Cholak}
 
 \section{Learned Positional Embeddings}
 
@@ -53,6 +45,12 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \section{Other Practical Choices}
 
+\EF{Check what relative key, relative key query positional embeddings}
+
 \subsection{RoPE}
 
+\AX{I will learn RoPE is and write}
+
 \subsection{ALIBI}
+
+\WM{will write, note: uniform attention can be computed}
