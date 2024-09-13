@@ -51,6 +51,15 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \AX{I will learn RoPE is and write}
 
-\subsection{ALIBI}
+\subsection{ALiBi}
 
-\WM{will write, note: uniform attention can be computed}
+\citet{press2022train} introduce ALiBi: a relative position encoding strategy that biases attention heads towards more recent positions.
+This is implemented by adding a head-specific bias to the attention scores:
+
+\begin{equation*}
+    \mathrm{softmax}\left( \mathbf q_i \mathbf K^\top + m \cdot \langle -(i-1), \ldots, -1, 0 \rangle \right)V
+\end{equation*}
+
+It is unclear how this affects the expressivity of the transformer compared to standard attention.
+One expressivity issue with ALiBI is that uniform attention is not possible.
+However, if the bias is learned or some heads have no bias, then this issue circumvented.\footnote{\url{https://x.com/CFGeek/status/1754198897629753421}}.
