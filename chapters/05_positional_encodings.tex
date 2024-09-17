@@ -25,14 +25,14 @@ One recurring theme is using four consecutive powers of $i$, for example, $1/i^2
 
 \section{Sinusoidal Positional Encoding}
 
-We present the sinusoidal position encodings as was introduced in~\citep{vaswani-etal-2017-attention}.
+We present the sinusoidal position encodings as was introduced in~\citet{vaswani-etal-2017-attention}.
 For embedding dimension \(1 \leq i \leq d\) and position \(p\), let:
 \begin{align*}
     \msf{PE}(p, 2i) = \sin\left(\frac{p}{M^{2i/d}}\right),
     \quad
     \msf{PE}(p, 2i+1) = \cos\left(\frac{p}{M^{2i/d}}\right)
 \end{align*}
-where \(M\) is a large number, such as \(M = 10000\) in~\citep{vaswani-etal-2017-attention}.
+where \(M\) is a large number, such as \(M = 10000\) in~\citet{vaswani-etal-2017-attention}.
 
 
 \section{Learned Positional Encoding}
