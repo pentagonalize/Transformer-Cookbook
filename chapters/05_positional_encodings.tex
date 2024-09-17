@@ -4,10 +4,10 @@
 %
 %-----------------------------------
 
-Transformers most often incorporate positional encodings as a method for injecting information about the positions of tokens into attention operations, which do not have an inherently represention of token ordering. The original transformer model in \citet{vaswani-etal-2017-attention} used sinusoidal positional encodings, but since then, many works have proposed other encodings addressing length generalization \citep{kazemnejad2024impact}, relative distances between tokens \citep{shaw2018self}, as well as representing tree structure in sequences \citep{shiv2019}. In this section we focus on the theoretical aspects of positional encodings - how they may affect the expressiveness of the model.
+Transformers most often incorporate positional encodings as a method for injecting information about the positions of tokens into attention operations, which do not have an inherently represention of token ordering. The original transformer model in \citet{vaswani-etal-2017-attention} used sinusoidal positional encodings, but since then, many works have proposed other encodings addressing length generalization \citep{kazemnejad2024impact}, relative distances between tokens \citep{shaw2018self}, as well as representing tree structure in sequences \citep{shiv2019}. In this section we focus on the theoretical aspects of positional encodings---how they may affect the expressiveness of the model.
 
 
-\section{NoPE}
+\section{No Positional Encoding}
 
 \subsection{$\frac{1}{i}$}
 
@@ -47,7 +47,7 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \EF{Check what relative key, relative key query positional embeddings}
 
-\subsection{RoPE}
+\subsection{Rotary Positional Encoding}
 
 \AX{I will learn RoPE is and write}
 
