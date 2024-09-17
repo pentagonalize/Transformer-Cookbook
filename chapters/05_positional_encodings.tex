@@ -45,7 +45,7 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \section{Other Practical Choices}
 
-\subsection{Relative}
+\subsection{Relative Positional Encoding}
 
 Relative positional encodings contain pairwise information about the positions of tokens, as opposed to their absolute position in the sequence, and has shown to improve generalisation.
 It was formulated by \citet{shaw2018self}, modifying the keys and values as follows, where the vectors $a^V_{ij}, a^K_{ij} \in \R^{d_z}$ represent the edge between input elements $x_i$ and $x_j$.
