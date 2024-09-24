@@ -4,10 +4,10 @@
 %
 %-----------------------------------
 
-Transformers most often incorporate positional encodings as a method for injecting information about the positions of tokens into attention operations, which do not have an inherently represention of token ordering. The original transformer model in \citet{vaswani-etal-2017-attention} used sinusoidal positional encodings, but since then, many works have proposed other encodings addressing length generalization \citep{kazemnejad2024impact}, relative distances between tokens \citep{shaw2018self}, as well as representing tree structure in sequences \citep{shiv2019}. In this section we focus on the theoretical aspects of positional encodings - how they may affect the expressiveness of the model.
+Transformers most often incorporate positional encodings as a method for injecting information about the positions of tokens into attention operations, which do not have an inherently represention of token ordering. The original transformer model in \citet{vaswani-etal-2017-attention} used sinusoidal positional encodings, but since then, many works have proposed other encodings addressing length generalization \citep{kazemnejad2024impact}, relative distances between tokens \citep{shaw2018self}, as well as representing tree structure in sequences \citep{shiv2019}. In this section we focus on the theoretical aspects of positional encodings---how they may affect the expressiveness of the model.
 
 
-\section{NoPE}
+\section{No Positional Encoding}
 
 \subsection{$\frac{1}{i}$}
 
@@ -23,19 +23,19 @@ Similar to above, the value $\frac{i}{n}$ may also be obtained at position $i$ u
 One recurring theme is using four consecutive powers of $i$, for example, $1/i^2, 1/i, 1, i$. It's not always the same powers of $i$. No idea why four are needed.
 
 
-\section{Sinusoidal}
+\section{Sinusoidal Positional Encoding}
 
-We present the sinusoidal position encodings as was introduced in~\citep{vaswani-etal-2017-attention}.
+We present the sinusoidal position encodings as was introduced in~\citet{vaswani-etal-2017-attention}.
 For embedding dimension \(1 \leq i \leq d\) and position \(p\), let:
 \begin{align*}
     \msf{PE}(p, 2i) = \sin\left(\frac{p}{M^{2i/d}}\right),
     \quad
     \msf{PE}(p, 2i+1) = \cos\left(\frac{p}{M^{2i/d}}\right)
 \end{align*}
-where \(M\) is a large number, such as \(M = 10000\) in~\citep{vaswani-etal-2017-attention}.
+where \(M\) is a large number, such as \(M = 10000\) in~\citet{vaswani-etal-2017-attention}.
 
 
-\section{Learned Positional Embeddings}
+\section{Learned Positional Encoding}
 
 Another option for positional encodings is to assign learnable parameter vectors to each position up to the maximum context length $n$ \citep{vaswani-etal-2017-attention}, though this strategy is rarely used in newer LMs.
 
@@ -47,11 +47,11 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \EF{Check what relative key, relative key query positional embeddings}
 
-\subsection{RoPE}
+\subsection{Rotary Positional Encoding}
 
 \AX{I will learn RoPE is and write}
 
-\subsection{ALiBi}
+\subsection{ALiBi Positional Encoding}
 
 \citet{press2022train} introduce ALiBi: a relative position encoding strategy that biases attention heads towards more recent positions.
 This is implemented by adding a head-specific bias to the attention scores:
