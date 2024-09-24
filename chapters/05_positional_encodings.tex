@@ -45,7 +45,27 @@ If, instead, the positional embeddings are allowed to be any function of the pos
 
 \section{Other Practical Choices}
 
-\EF{Check what relative key, relative key query positional embeddings}
+\subsection{Relative Positional Encoding}
+
+Relative positional encodings contain pairwise information about the positions of tokens, as opposed to their absolute position in the sequence, and has shown to improve generalisation.
+It was formulated by \citet{shaw2018self}, modifying the keys and values as in Equation~\ref{eq:relative-key-keys} and Equation~\ref{eq:relative-key-values}, where the vectors $a^V_{ij}, a^K_{ij} \in \R^{d_z}$ represent the edge between input elements $x_i$ and $x_j$.
+
+\begin{equation}
+    \label{eq:relative-key-keys}
+    e_{ij} = \frac{x_i W^Q (x_j W^K + a_{ij}^K)^\top}{\sqrt{d_z}}
+\end{equation}
+
+\begin{equation}
+    \label{eq:relative-key-values}
+    z_i = \sum_{j = 1}^n \alpha_{ij} (x_j W^V + a_{ij}^V)
+\end{equation}
+
+\citet{huang2020improvetransformermodelsbetter} extend this approach in Equation~\ref{eq:relative-key-query}, with their fourth method, to foster interaction between query, key and relative positional embeddings.
+
+\begin{equation}
+    \label{eq:relative-key-query}
+    e_{ij} = \frac{(x_i W^Q + a_{ij}^K)(x_j W^K + a_{ij}^K)^T - \langle a_{ij}^K, a_{ij}^K\rangle}{\sqrt{d_z}}
+\end{equation}
 
 \subsection{Rotary Positional Encoding}
 
