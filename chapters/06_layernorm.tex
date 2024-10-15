@@ -1,7 +1,9 @@
 \chapter{Layer Normalization}
 \label{sec:layernorm}
 
-\AY{define standard and also: RMS norm, Non parametric layernorm}
+\AY{will write}
+\AX{define RMS and Non parametric layernom}
+
 
 \section{Circumventing Layer Normalization}
 
@@ -9,14 +11,22 @@
 
 Duplicate all dimensions, negate them, so that mean in each position is $0$, then LayerNorm only applies scaling factor
 
+\LS{will look}
+
 \section{Using Layer Normalization}
 
 \subsection{$\varepsilon$ and Lipschitz-continuity}
+
+\AY{will write}
 
 \subsection{Normalize to $\pm1$}
 
 Use FFNN to clip all values to same magnitude, then every value will get scaled to $\pm 1$
 
+\AY{will write}
+
 \section{Selective Layernorm}
 \label{sec:ln_selective}
+
+\WM{Will write}
 
