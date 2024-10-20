@@ -2,7 +2,18 @@
 \label{sec:layernorm}
 
 \AY{will write}
-\AX{define RMS and Non parametric layernom}
+
+\section{Root Mean Square (RMS) Layer Norm}
+RMS layer normalization~\citep{zhang2019root} is a normalization technique based on only re-scaling invariance, while ignoring re-centering invariance.
+For a layer input \(x \in \mathbb{R}^{d}\), this is defined as follows:
+\begin{equation}
+    \mathrm{RMSNorm}(x) = \frac{x}{\mathrm{RMS}(x) + \epsilon},
+    \quad \mathrm{RMS}(x) = \sqrt{\frac{1}{d} \sum_{i = 1}^{d} x_i ^2}
+\end{equation}
+where \(\epsilon > 0\) is a small number for numerical stability.
+Note that when \(\mathbb{E}[x] = (x_1 + \cdots + x_d)/d = 0\), RMSNorm is equivalent to LayerNorm because \(\mathrm{RMS}(x) = \sqrt{\mathrm{Var}(x)}\).
+While RMSNorm is performance-competitive with LayerNorm, its main advantage is computational efficiency, as one does not need to additionally compute \(\mathbb{E}[x]\).
+RMSNorm is used in LLMs such as Llama~\citep{touvron2023llama}.
 
 
 \section{Circumventing Layer Normalization}

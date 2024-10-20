@@ -69,9 +69,37 @@ It was formulated by \citet{shaw2018self}, modifying the keys and values as in E
 
 \AY{maybe allows hard attention to constant offset eg i-1}
 
+
 \subsection{Rotary Positional Encoding}
 
-\AX{I will learn RoPE is and write}
+The Rotary Positional Encoding (RoPE)~\citep{su2024roformer} is a form of relative positional encoding that has been used in LLMs such as Llama~\citep{touvron2023llama}.
+The idea is to apply a position-dependent rotation to each embedded token \(x \in \mathbb{R}^d\) at each position \(p\).
+Specifically, RoPE applies a 2-dimensional rotation matrix \(R_{p,i} \in \mathbb{R}^{2 \times 2}\) at consecutive coordinate pairs \(x_{2i-1, 2i}\), for \(i = 1, \ldots, d/2\), where we assume that \(d\) is even.
+More explicitly, the RoPE encoding of \(x \in \mathbb{R}^{d}\) at position \(p\) is expressed as follows:
+\begin{equation}
+\mathsf{RoPE}(x, p)
+    = \left[\begin{array}{c|c|c}
+            R_{p,1} & & \\
+            \hline
+            & \ddots & \\
+            \hline
+            & & R_{p, d/2}
+        \end{array}\right]
+        \begin{bmatrix}
+            x_1 \\ x_2 \\
+            \hline \vdots \\
+            \hline
+            x_{d-1} \\ x_{d}
+        \end{bmatrix},
+        \quad R_{p,k} = \begin{bmatrix}
+            \cos (p \theta_k) & -\sin (p \theta_k) \\
+            \sin (p \theta_k) & \cos (p \theta_k)
+        \end{bmatrix},
+\end{equation}
+where the rotation angle is \(\theta_k = M^{-2(k-1)/d}\), with constant \(M = 10000\) as originally used in~\citep{su2024roformer}.
+The definition of RoPE above means that the relative position of tokens uniquely determines the relative angle of their embedding rotations.
+
+
 
 \subsection{ALiBi Positional Encoding}
 
