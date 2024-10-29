@@ -7,6 +7,10 @@ However, it has since been shown to have an impact on the expressiveness of the 
 In theoretical work, LayerNorm in some cases may complicate the proof, and in other cases may be an essential compoment of the proof.
 In this section, we discuss the theoretical aspects of layer normalization, and how the literature on expressivity proofs has treated it.
 
+\begin{definition}
+    \NS{Will write}
+\end{definition}
+
 \section{Root Mean Square (RMS) Layer Norm}
 RMS layer normalization~\citep{zhang2019root} is a normalization technique based on only re-scaling invariance, while ignoring re-centering invariance.
 For a layer input \(x \in \mathbb{R}^{d}\), this is defined as follows:
@@ -20,6 +24,8 @@ While RMSNorm is performance-competitive with LayerNorm, its main advantage is c
 RMSNorm is used in LLMs such as Llama~\citep{touvron2023llama}.
 
 \section{Post-Norm vs Pre-Norm}
+
+\AY{hahn+rofin sensitivity uses post-norm}
 
 \section{Circumventing Layer Normalization}
 
