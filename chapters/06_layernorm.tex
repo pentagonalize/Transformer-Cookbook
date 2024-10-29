@@ -1,7 +1,11 @@
 \chapter{Layer Normalization}
 \label{sec:layernorm}
 
-\AY{will write}
+The original transformer model~\citep{vaswani-etal-2017-attention} used LayerNorm as an ``add \& norm'' operation after each sublayer, in order to normalize the activations after the residual connection following each sublayer.
+Layer normalization~\citep{ba2016layer} is a normalization technique originally proposed for the purpose of reducing training time.
+However, it has since been shown to have an impact on the expressiveness of the model, for example by affecting the Lipschitz continuity of the model~\citep{hahn-2020-theoretical} and the ability to express certain attention patterns~\citep{brody2023expressivity}.
+In theoretical work, LayerNorm in some cases may complicate the proof, and in other cases may be an essential compoment of the proof.
+In this section, we discuss the theoretical aspects of layer normalization, and how the literature on expressivity proofs has treated it.
 
 \section{Root Mean Square (RMS) Layer Norm}
 RMS layer normalization~\citep{zhang2019root} is a normalization technique based on only re-scaling invariance, while ignoring re-centering invariance.
@@ -15,6 +19,7 @@ Note that when \(\mathbb{E}[x] = (x_1 + \cdots + x_d)/d = 0\), RMSNorm is equiva
 While RMSNorm is performance-competitive with LayerNorm, its main advantage is computational efficiency, as one does not need to additionally compute \(\mathbb{E}[x]\).
 RMSNorm is used in LLMs such as Llama~\citep{touvron2023llama}.
 
+\section{Post-Norm vs Pre-Norm}
 
 \section{Circumventing Layer Normalization}
 
@@ -28,13 +33,11 @@ Duplicate all dimensions, negate them, so that mean in each position is $0$, the
 
 \subsection{$\varepsilon$ and Lipschitz-continuity}
 
-\AY{will write}
+Without LayerNorm or additional positional encodings, the model is Lipschitz continuous, as shown in \citet{hahn-2020-theoretical}, which subjects the model to limitations in expressivity. Adding LayerNorm with a small $\varepsilon$ can break this Lipschitz continuity, allowing the model to express more complex functions. This is used, for example, in \citet{yang2024counting} to ``blow up'' small values in the model - i.e.comparing count values $\frac{C}{i+1}$ which approach $0$ as $i$ increases.
 
 \subsection{Normalize to $\pm1$}
 
-Use FFNN to clip all values to same magnitude, then every value will get scaled to $\pm 1$
-
-\AY{will write}
+It is possible to use LayerNorm to normalize every single activation to $\pm1$. This depends on all activations to have an absolute value of at least $|\varepsilon|$. Then, using \ref{sec:ffn_cpwl} we can construct a FFN that clips all activations to $\pm\varepsilon$. Applying LayerNorm after this FFN will normalize all activations to $\pm1$.
 
 \section{Selective Layernorm}
 \label{sec:ln_selective}
