@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor} %more colors for frame boxes
+
+% colorful comments
+\newcommand{\response}[1]{{\textcolor{red}{\textbf{#1}}}}
+
+\title{Cooking Session}
+\date{October 29, 2024}
+\begin{document}
+\maketitle
+
+\section{Addressing Previous Chat Comments}
+\begin{itemize}
+   \item No comments to address
+\end{itemize}
+
+\section{Attendees}
+
+Will, Andy, Anton, John, Chris, Nithila
+
+\section{Today's Agenda}
+\begin{itemize}
+    \item Plan out what to do
+\end{itemize}
+
+\section{Notes}
+\begin{itemize}
+    \item I put comments on who will do what
+    \item Layernorm
+        \begin{itemize}
+            \item Nithila will put in definition of LayerNorm \url{https://arxiv.org/abs/1607.06450}. Primarily just need the equation for the function $\R^d\to\R^d$ but other background info can be helpful. There may be other more approachable sources but this is the original.
+            \item Andy can discuss the Post-Norm vs Pre-Norm distinctions
+            \item Will will write about selective layernorm
+        \end{itemize}
+    \item Tokenization. The gist is to put everything regarding tokens and word embedding into here. Maybe should rename section.
+        \begin{itemize}
+            \item Andy can discuss BOS and EOS
+            \item Anton can discuss BPE
+            \item Anej can discuss the Turing Machine Proof
+        \end{itemize}
+    \item Assembly. Rounding it out with some final constructions
+        \begin{itemize}
+            \item Lena will do induction heads
+            \item Anej will do n-grams
+            \item Will will do MOD
+            \item Anton and Chris will do Dyck Language
+            \item We will try to get Dan Friedman to do ELIZA\ldots
+            \item Andy will fix comparison
+        \end{itemize}
+    \item Andy will generally clean things up.
+    \item When we finish, Nithila, Chris, and Yuval have offered to give it a read through
+\end{itemize}
+
+\bibliography{main}
+\bibliographystyle{plain}
+\end{document}
+
+
