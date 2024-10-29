@@ -47,7 +47,8 @@ Much of the expressive power of feed-forward layers comes from their non-linear 
     \[L_2(\mathbf{x}) = W_2 \mathbf{x} + b_2.\]
 \end{definition}
 
-\section{Continuous Piecewise Linear Functions}
+\section{Continuous Piecewise Linear Functions}\label{sec:ffnn_cpwl}
+
 
 \begin{definition}{continuous piecewise linear}{}
   Let $X \subseteq \R^d$. A function $f \colon X \to \R$ is called \emph{continuous piecewise linear (CPWL)} if there are closed polyhedral subsets $X_1, \ldots, X_n \subseteq X$ such that $\bigcup_{i\in [n]}  X_i = X$, and for all $i \in [n]$, $\left.f\right|_{X_i}$ is affine.
