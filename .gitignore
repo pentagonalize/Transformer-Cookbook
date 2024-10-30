@@ -12,3 +12,4 @@
 *.synctex.gz
 .DS_Store
 main.synctex(busy)
+.history
