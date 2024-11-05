@@ -25,7 +25,18 @@ RMSNorm is used in LLMs such as Llama~\citep{touvron2023llama}.
 
 \section{Post-Norm vs Pre-Norm}
 
-\AY{hahn+rofin sensitivity uses post-norm}
+The original definition of the transformer used what is now known as a ``post-norm'' architecture, where layer normalization is applied after each residual connection. For instance:
+
+\[LayerNorm(X+attention(X))\]
+
+This is in contrast to the ``pre-norm'' architecture, where layer normalization is applied before each residual connection.
+
+\[X+(attention(LayerNorm(X)))\]
+
+The pre-norm architecture is currently adopted as the standard. This is because the post-norm architecture has problems with exploding gradients making training unstable, which the pre-norm architecture does not~\citep{xiong2020layer}. In terms of theoretical expressivity constructions, most proof try to circumvent layernorm. We note that \citet{hahn-rofin-2024-sensitive} and \citet{yang2024counting} both use post-norm.
+
+
+% \AY{hahn+rofin sensitivity uses post-norm}
 
 \section{Circumventing Layer Normalization}
 
