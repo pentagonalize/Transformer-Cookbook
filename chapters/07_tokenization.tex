@@ -6,7 +6,47 @@
 
 \section{Intro}
 
-\AY{Will write}
+
+Tokenization is a step in natural language processing (NLP) that splits text into smaller pieces called \textit{tokens}.
+These tokens are the basic units of data processed by language models, and different tokenization strategies have been explored in literature.
+For instance, consider the phrase \texttt{"I love NLP"}, which may be split by different tokenization schemes as follows:
+\begin{itemize}
+    \item \textbf{Word-level:}: \texttt{["I", "love", "NLP"]}
+
+    \item \textbf{Character-level:} \texttt{["I", " ", "l", "o", "v", "e", " ", "N", "L", "P"]}
+
+    \item \textbf{Subword-level:} \texttt{["I", "lo", "ve", "NL", "P"]} or \texttt{["I", "love", "N", "LP"]}
+
+\end{itemize}
+In standard NLP pipelines, an embedding function then maps each token into a vector in \(\mathbb{R}^{d}\), where \(d\) is called the \textit{embedding dimension}, \textit{hidden dimension}, or \textit{latent dimension}.
+In GPT-2, for instance, one might have \(d = 768\)~\citep{radford2019language}, and in Llama-based models, we may have \(d = 4096\)~\citep{touvron2023llama}.
+A simplified but representative text-to-vector pipeline is as follows:
+\begin{equation*}
+    \underbrace{\texttt{"I love NLP"}}_{\text{input text}}
+    \xrightarrow{\text{Tokenizer}}
+    \underbrace{\texttt{["I", "love", "NLP"]}}_{\text{tokens}}
+    \xrightarrow{\text{Embed}}
+    \underbrace{
+    \begin{bmatrix}
+        0.94 & \cdots & - 1.60 \\
+        - 0.57 & \cdots & 2.58 \\
+        0.34 & \cdots & 0.05
+    \end{bmatrix}
+}_{\text{embedded inputs in \(\mathbb{R}^{3 \times d}\)}}
+\end{equation*}
+
+In the above, we have mapped each token to a vector in \(\mathbb{R}^{d}\) and laid them out horizontally in a single matrix following convention, where the numbers were arbitrarily chosen for illustrative purposes.
+We emphasize that the above is a simplified presentation of a complex process, and we refer to~\citep{mielke2021between} for a comprehensive survey and history of various tokenization methods in NLP.
+
+
+
+For theoretical analyses of transformers, one usually assumes that a vectorized embedding of the text is given, i.e., the input text is already processed by some tokenization method and embedding function.
+This is because tokenization and embedding strategies are often model and task-specific, and so are commonly abstracted as a pre-processing step.
+Although this simplification is convenient for theoretical analysis, the details of tokenizations and embeddings should be considered in practical implementations.
+
+
+
+
 
 \section{Tokenization Methods}
 
