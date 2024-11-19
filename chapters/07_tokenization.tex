@@ -16,7 +16,9 @@
 
 \section{Extra Symbols}
 
-\subsection{BOS and EOS}
+\subsection{BOS}\label{sec:BOS}
+
+The use of a special symbol such as BOS (beginning of sequence), EOS (end of sequence), and CLS (classification) These are special symbols outside of the usual alphabet of symbols. These special symbols are often used as distinguished positions to carry information about the input - for instance, one might take the output at the CLS position as an embedding of the entire input sentence. Having one of these tokens in the sequence also serves the functional purpose of allowing a transformer to create the value $\frac{1}{n}$ (or $\frac{1}{i+1}$ if future-masked) by using uniform attention \cref{sec:uniform-attention}. For instance, constructing $\frac{1}{i+1}$ was used in \citet{merrill-sabharwal-2024-cot} to do retrieval using the layer-norm hash.
 
 \subsection{Turing Machine Proof?}
 
