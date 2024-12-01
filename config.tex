@@ -37,6 +37,11 @@
 % David's NN package
 \usepackage{nn}
 
+\usepackage{scalerel}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{xspace}
+
 % % Andy slightly prefers dashes instead of dots, if nobody else cares
 % \renewcommand{\labelitemi}{--}
 
@@ -46,6 +51,7 @@
 
 \newcommand{\blank}{\text{\textvisiblespace}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\NTo}[1]{\mymacro{\left[ #1 \right]}}
 \newcommand*{\bqed}{\hfill\ensuremath{\blacksquare}}
 
 \tcbset{theorembox/.style={%
@@ -72,6 +78,7 @@
 }}
 
 \colorlet{Light-CadetBlue}{CadetBlue!50!white}
+\definecolor{AnejBlue}{RGB}{0,120,148}	% green/blue 
 
 \newtcbtheorem[crefname={definition}{Definition},Crefname={Definition}{Definition}]{definition}{Definition}{theorembox,colframe=RoyalBlue,colback=RoyalBlue!3,colbacktitle=RoyalBlue!3}{definition}
 
@@ -85,9 +92,12 @@
 
 \newtcbtheorem[crefname={example}{Example},Crefname={Example}{Example}]{exmp}{Example}{theorembox,colframe=ForestGreen,colback=ForestGreen!3,colbacktitle=ForestGreen!3}{exmp}
 
+\newtcbtheorem[crefname={assumption}{Assumption},Crefname={Assumption}{Assumption}]{assumption}{Assumption}{theorembox,colframe=LightOrange,colback=LightOrange!10,colbacktitle=LightOrange!10}{exmp}
+
 \newtcbtheorem[]{rem}{Remark}{theorembox,colframe=Peach,colback=Peach!3,colbacktitle=Peach!3}{rem}
 
 % Transformer component shortcuts
+\newcommand{\tf}{\mymacro{\mathcal{T}}}
 \newcommand{\ReLU}{\text{ReLU}}
 \newcommand{\GELU}{\text{GELU}}
 \newcommand{\erf}{\text{erf}}
@@ -97,6 +107,7 @@
 \newcommand{\qproj}{W^{\textnormal{Q}}}
 \newcommand{\kproj}{W^{\textnormal{K}}}
 \newcommand{\vproj}{W^{\textnormal{V}}}
+\newcommand{\nHead}{\mymacro{H}}
 
 % Transformer class shortcuts
 \newcommand{\UHAT}{\textsf{UHAT}}
@@ -105,6 +116,7 @@
 
 % Math shortcuts
 \def\R{\mathbb{R}}
+\def\Rex{\overline{\R}}
 \def\N{\mathbb{N}}
 \def\Z{\mathbb{Z}}
 \def\C{\mathbb{C}}
@@ -137,6 +149,7 @@
 \newcommand\mrm[1]{\mathrm{#1}}
 \newcommand\msf[1]{\mathsf{#1}}
 
+
 % colorful comments
 \newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
 \newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
@@ -149,7 +162,7 @@
 \newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
 \newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
 \newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
-\newcommand{\AS}[1]{({\textcolor{gray}{\textbf{AS: #1}}})}
+\newcommand{\AS}[1]{({\textcolor{AnejBlue}{\textbf{AS: #1}}})}
 \newcommand{\CW}[1]{({\textcolor{gray}{\textbf{CW: #1}}})}
 \newcommand{\NS}[1]{({\textcolor{CarnationPink}{\textbf{NS: #1}}})}
 \newcommand{\DF}[1]{({\textcolor{orange}{\textbf{DF: #1}}})}
