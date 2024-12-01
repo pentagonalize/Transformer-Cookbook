@@ -25,7 +25,18 @@ RMSNorm is used in LLMs such as Llama~\citep{touvron2023llama}.
 
 \section{Post-Norm vs Pre-Norm}
 
-\AY{hahn+rofin sensitivity uses post-norm}
+The original definition of the transformer used what is now known as a ``post-norm'' architecture, where layer normalization is applied after each residual connection. For instance:
+
+\[LayerNorm(X+attention(X))\]
+
+This is in contrast to the ``pre-norm'' architecture, where layer normalization is applied before each residual connection.
+
+\[X+(attention(LayerNorm(X)))\]
+
+The pre-norm architecture is currently adopted as the standard. This is because the post-norm architecture has problems with exploding gradients making training unstable, which the pre-norm architecture does not~\citep{xiong2020layer}. In terms of theoretical expressivity constructions, most proof try to circumvent layernorm. We note that \citet{hahn-rofin-2024-sensitive} and \citet{yang2024counting} both use post-norm.
+
+
+% \AY{hahn+rofin sensitivity uses post-norm}
 
 \section{Circumventing Layer Normalization}
 
@@ -41,12 +52,44 @@ Duplicate all dimensions, negate them, so that mean in each position is $0$, the
 
 Without LayerNorm or additional positional encodings, the model is Lipschitz continuous, as shown in \citet{hahn-2020-theoretical}, which subjects the model to limitations in expressivity. Adding LayerNorm with a small $\varepsilon$ can break this Lipschitz continuity, allowing the model to express more complex functions. This is used, for example, in \citet{yang2024counting} to ``blow up'' small values in the model - i.e.comparing count values $\frac{C}{i+1}$ which approach $0$ as $i$ increases.
 
-\subsection{Normalize to $\pm1$}
+\subsection{Normalize to \texorpdfstring{${\pm}1$}{plus/minus 1}}
 
 It is possible to use LayerNorm to normalize every single activation to $\pm1$. This depends on all activations to have an absolute value of at least $|\varepsilon|$. Then, using \ref{sec:ffn_cpwl} we can construct a FFN that clips all activations to $\pm\varepsilon$. Applying LayerNorm after this FFN will normalize all activations to $\pm1$.
 
-\section{Selective Layernorm}
-\label{sec:ln_selective}
+\subsection{Layer-Norm Hash} \label{sec:ln_hash}
 
-\WM{Will write}
+Another way that LayerNorm can be used in theoretical constructions is to implement integer-key retrieval \citep{yao-2021-self-attention,merrill-sabharwal-2024-cot,merrill2024little}.
+This idea is captured in a general mechanism by the \emph{layer-norm hash} mechanism proposed by \citet{merrill-sabharwal-2024-cot}.
 
+\paragraph{Integer-Key Retrieval.}
+Imagine we want to retrieve some value from previous tokens based on a key, where the key is an integer.
+To do this with attention, we want a representation $\phi(i)$ for any integer $i$ such that
+\begin{equation} \label{eq:integer-key-retrieval}
+    \phi(i) \cdot \phi(j) = 1 \iff i = j .
+\end{equation}
+Then, for any integers $q_i, k_j \in \mathbb N$, saturated attention with query $\phi(q_i)$, key $\phi(k_j)$ and value $v_j$ will return an average of the $v_j$'s where $q_i = k_j$, allowing us to implement retrieval based on an integer key.
+
+\paragraph{Layer-Norm Hash Implementation.}
+As shown by \citet{merrill-sabharwal-2024-cot}, we can implement $\phi$ with layer-norm as follows. First, define
+\begin{equation*}
+    \phi(x, y) = LayerNorm(\langle x, y, -x, -y \rangle) .
+\end{equation*}
+Then, we can define the layer-norm hash of a single argument $x$ as
+\begin{equation*}
+    \phi(x) = \phi(x, 1)
+\end{equation*}
+This satisfies the desired property in \eqref{eq:integer-key-retrieval} and also satisfies the useful property that $\phi(x, y) = \phi(x/y) = \arctan(x/y)$.
+\citet{merrill-sabharwal-2024-cot} use $\phi$ to simulate a Turing machine tape with chain-of-thought transformers: specifically, to retrieve the last value written to a previous index on the tape.
+\citet{merrill2024little} use it to implement a binary tree construction with log-depth transformers.
+More generally, it is useful in any construction that requires retrieval based on integer key matching.
+
+\paragraph{Selective Pre-Norm.}
+To make maximum use of the layer-norm hash, some papers assume a slight generalization of standard layernorm called \emph{masked} or \emph{selective} pre-norm \citep{merrill-sabharwal-2024-cot,merrill2024little}.
+The problem without this extension is that the residual stream may store more than just a single integer, but standard pre-norm is applied to all values in the residual stream. Thus, rather than computing $\phi(x, 1)$, we will get $LayerNorm(\langle x, 1, \vec z \rangle)$, where $\vec z$ is some other information in the residual stream.
+To circumvent this problem, masked pre-norm simply adds a linear transformation $W$ that gets multiplied by the residual stream before the layer-norm:
+
+\[X + attention(LayerNorm(W X))\]
+
+The linear transformation $W$ can mask out information encoded in the residual stream that is not relevant at this layer, allowing the network to compute the layer-norm hash of a specific value.
+The model can also access more than one layer-norm hashed value in the same layer by using previous layers to normalize and store those values, and then using $W$ to select the indices where those values have been stored \citep{merrill-sabharwal-2024-cot}.
+Finally, it is sufficient to let $W$ be diagonal, or equivalently, a vector that gets multiplied elementwise by $X$, to achieve these constructions.
