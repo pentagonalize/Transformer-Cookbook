@@ -18,16 +18,16 @@
 \AS{Will write}
 
 While the effect of tokenization schemes on the representational capacity of language models is not well-understood, the \emph{alphabet} that a transformer works over is known to have a significant impact on the model's ability to represent certain models of computation.
-A classic example of this is the use of extra symbols that represent the internal configuration of a Turing machine, which allows a transformer to simulate a Turing machine \citep{perez-etal-2021-turing}.
+A classic example of this is how transformers can simulate Turing machines by using extra symbols to represent their internal configuration \citep{perez-etal-2021-turing}.
 Intuitively, in a sequence-to-sequence or a language modeling task, the transformer uses the richer alphabet of internal representations to output the (changes to the) current internal state of the computational model and access those changes as the output string is fed ot the model as input in the future.
 
 Concretely, rather than working over the alphabet of input symbols $\alphabet$, the transformer (deterministically) outputs symbols from an \emph{augmented} alphabet $\augalphabet = \alphabet \times \intalphabet$, where $\intalphabet$ can be thought of as the alphabet whose symbols represent the (changes to the) internal state of the computational model.
 Elements of $\augalphabet$ then represent pairs of string symbols and internal states, and the transformer can use the internal state to keep track of the current state of the computational model while still processing the input string.
 As a concrete example, \citet{perez-etal-2021-turing} use an internal alphabet $\intalphabet$ that, among other things, contains the current state of the Turing machine, the content written on the tape, and the position of the tape head.
 The same principle can also be used to simulate simpler sequential models of computation, such as finite automata. 
-In this case, the internal alphabet $\intalphabet$ would simply contain the current state of the automaton, meaning that the elements $\left(\sym, \fsaState\right) \in \augalphabet$ would represent the symbol $\sym$ on the transition taken by the automaton and the state $\fsaState$ transitioned into the automaton.
+In this case, the internal alphabet $\intalphabet$ simply contains the current state of the automaton, meaning that the elements $\left(\sym, \fsaState\right) \in \augalphabet$ represent the symbol $\sym$ on the transition taken by the automaton and the state $\fsaState$ transitioned into the automaton.
 Simulating the automaton is then particularly simple: The transformer can simply attend to the previously output internal state to determine the current state of the simulated automaton and then process the strings accordingly.
-While not discussed by \citet{perez-etal-2021-turing} initially, outputting the internal states from $\intalphabet$ can be thought of as a form of performing \defn{chain-of-thought} reasoning \citep{wei2023chain}, where the transformer can keep track of the internal state of the computational model as it processes the input string \citep{feng2023revealing,merrill2024the}.
+While not discussed by \citet{perez-etal-2021-turing} initially, outputting the internal states from $\intalphabet$ can be thought of as a form of performing \defn{chain-of-thought} reasoning \citep{wei2023chain}, where the transformer can keep track of the internal state of the computational model as it processes the input string \citep{feng2023revealing,merrill2024the,nowak-etal-2024-representational}.
 
 
 \subsection{BOS and EOS}

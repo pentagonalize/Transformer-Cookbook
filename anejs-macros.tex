@@ -1,0 +1,601 @@
+
+% ETH colors
+\definecolor{ETHBlue}{RGB}{33,92,175}	% blue 
+\definecolor{ETHGreen}{RGB}{98,115,19}		% green
+\definecolor{ETHPurpleDark}{RGB}{140,10,89}	% purple
+\definecolor{ETHPurple}{RGB}{163,7,116}	% purple
+\definecolor{ETHGray}{RGB}{111,111,111}	% gray
+\definecolor{ETHRed}{RGB}{183,53,45}	% red
+\definecolor{ETHPetrol}{RGB}{0,120,148}	% green/blue 
+\definecolor{ETHBronze}{RGB}{142,103,19}	% bronze
+
+% Define the colors
+\definecolor{TextBlack}{RGB}{51,51,51}
+\definecolor{BackgroundWhite}{RGB}{255,255,255}
+
+% Blues
+\definecolor{AccentBlue}{RGB}{0,122,204}
+\definecolor{LightBlue}{RGB}{173,216,230}
+\definecolor{DarkBlue}{RGB}{0,51,102}
+
+% Greens
+\definecolor{AccentGreen}{RGB}{70,160,73}
+\definecolor{LightGreen}{RGB}{144,238,144}
+\definecolor{DarkGreen}{RGB}{0,100,0}
+
+% Reds
+\definecolor{AccentRed}{RGB}{255,0,0}
+\definecolor{LightRed}{RGB}{255,99,71}
+\definecolor{DarkRed}{RGB}{139,0,0}
+
+% Oranges
+\definecolor{AccentOrange}{RGB}{255,165,0}
+\definecolor{LightOrange}{RGB}{255,204,153}
+\definecolor{DarkOrange}{RGB}{255,140,0}
+
+% Neutral Colors
+\definecolor{NeutralLightGray}{RGB}{204,204,204}
+\definecolor{NeutralMediumGray}{RGB}{102,102,102}
+
+% Yellow for notes/highlights
+\definecolor{NoteYellow}{RGB}{255,255,0}
+
+% Diverse Colors
+\definecolor{DiversePurple}{RGB}{128,0,128}
+\definecolor{DiverseTeal}{RGB}{0,128,128}
+\definecolor{DiverseOlive}{RGB}{128,128,0}
+\definecolor{DiverseCyan}{RGB}{0,128,192}
+\definecolor{DiverseMagenta}{RGB}{192,0,128}
+
+% \colorlet{MacroColor}{black}
+\colorlet{MacroColor}{AccentBlue}
+\colorlet{MACROCOLOR}{MacroColor}
+
+\newcommand{\mymacro}[1]{{\color{MacroColor} #1}}
+% \newcommand{\mymacro}[1]{{#1}}
+
+\newcommand{\defn}[1]{\mymacro{\textbf{#1}}}
+\newcommand{\set}[1]{\mymacro{\left\{#1\right\}}}
+\newcommand{\defeq}{\mathrel{\stackrel{\textnormal{\tiny def}}{=}}}
+
+% General stuff
+\newcommand{\hiddDim}{{\mymacro{D}}}
+\newcommand{\kleene}[1]{{\mymacro{#1^*}}}
+\newcommand{\tstep}{{\mymacro{t}}}
+\newcommand{\ngram}{{\mymacro{$n$-gram}}\xspace}
+\newcommand{\enc}{{\mymacro{\boldsymbol{h}}}}
+\newcommand{\tfenc}{{\mymacro{\enc_{\tf}}}}
+\newcommand{\onehot}[1]{{\mymacro{ \llbracket#1\rrbracket}}}
+\newcommand{\innerProd}[2]{{\mymacro{\langle #1, #2 \rangle}}}
+
+% Alphabets, symbols
+\newcommand{\alphabet}{{\mymacro{\Sigma}}}
+\newcommand{\eosalphabet}{{\mymacro{\overline{\alphabet}}}}
+\newcommand{\augalphabet}{{\mymacro{\Delta}}}
+\newcommand{\intalphabet}{{\mymacro{\Xi}}}
+\newcommand{\eos}{{\mymacro{\textnormal{EOS}}}}
+\newcommand{\sym}{{\mymacro{y}}}
+\newcommand{\symt}{{\mymacro{\sym_\tstep}}}
+\newcommand{\str}{{\mymacro{\boldsymbol{y}}}}
+\newcommand{\strlt}{{\mymacro{\str_{<\tstep}}}}
+
+% LM stuff
+\newcommand{\plm}{{\mymacro{p}}}
+% \newcommand{\tfplm}{{\mymacro{\plm_{\scaleto{\textnormal{TF}}{4pt}}}}}
+\newcommand{\tfplm}{{\mymacro{\plm_{\tf}}}}
+
+% FSA stuff
+\newcommand{\fsaState}{{\mymacro{\Xi}}}
+
+\newcommand{\outMtx}{\mymacro{\mE}}
+\newcommand{\eOutMtx}{\mymacro{\emE}}
+\newcommand{\bias}{\mymacro{\vb}}
+\newcommand{\headCombineFunc}{\mymacro{\mathcal{H}}}
+\newcommand{\nLayer}{\mymacro{L}}
+
+\newcommand{\tfScore}{\mymacro{\textnormal{score}}}
+\newcommand{\tfScoreFun}[1]{\mymacro{\tfScore}\left(#1\right)}
+\newcommand{\tfO}{\mymacro{O}}
+\newcommand{\tfF}{\mymacro{F}}
+\newcommand{\tfQ}{\mymacro{Q}}
+\newcommand{\tfK}{\mymacro{K}}
+\newcommand{\tfV}{\mymacro{V}}
+\newcommand{\inEmb}{\mymacro{\boldsymbol{r}}}
+\newcommand{\inEmbFun}[1]{\mymacro{\inEmb}\left(#1\right)}
+\newcommand{\posInEmb}{\mymacro{\boldsymbol{r}}}
+\newcommand{\posInEmbFun}[1]{\mymacro{\posInEmb}\left(#1\right)}
+
+
+\newcommand{\bigO}[1]{{\mymacro{ \mathcal{O}\left(#1\right)}}}
+\newcommand{\bigOmega}[1]{{\mymacro{ \Omega\left(#1\right)}}}
+\newcommand{\mergesgreedy}{{\mymacro{ \merges^{\dagger}}}}
+
+% name of jacobian matrix
+\newcommand{\Jacobianhzero}{{\mymacro{ \frac{\partial \vhT}{\partial \vhzero}}}}
+\newcommand{\Jacobianhtminus}{{\mymacro{ \frac{\partial \vht}{\partial \vhtminus}}}}
+\newcommand{\activprimet}{{\mymacro{ \sigmoid'_{\tstep}}}}
+
+
+%%%% ICML template
+\def\1{\mathbf{1}}
+\newcommand{\dataset}{{\mymacro{\mathcal{D}}}}
+\newcommand{\train}{{\mymacro{\mathcal{D_{\mathrm{valid}}}}}}
+\newcommand{\valid}{{\mymacro{\mathcal{D_{\mathrm{valid}}}}}}
+\newcommand{\test}{{\mymacro{\mathcal{D_{\mathrm{test}}}}}}
+
+\def\eps{{\mymacro{ \varepsilon}}}
+
+
+% Random variables
+\def\reta{{{\mymacro{ \textnormal{\eta}}}}}
+\def\ra{{{\mymacro{ \textnormal{a}}}}}
+\def\rb{{{\mymacro{ \textnormal{b}}}}}
+\def\rc{{{\mymacro{ \textnormal{c}}}}}
+\def\rd{{{\mymacro{ \textnormal{d}}}}}
+\def\re{{{\mymacro{ \textnormal{e}}}}}
+\def\rf{{{\mymacro{ \textnormal{f}}}}}
+\def\rg{{{\mymacro{ \textnormal{g}}}}}
+\def\rh{{{\mymacro{ \textnormal{h}}}}}
+\def\ri{{{\mymacro{ \textnormal{i}}}}}
+\def\rj{{{\mymacro{ \textnormal{j}}}}}
+\def\rk{{{\mymacro{ \textnormal{k}}}}}
+\def\rl{{{\mymacro{ \textnormal{l}}}}}
+% rm is already a command, just don't name any random variables m
+\def\rn{{{\mymacro{ \textnormal{n}}}}}
+\def\ro{{{\mymacro{ \textnormal{o}}}}}
+\def\rp{{{\mymacro{ \textnormal{p}}}}}
+\def\rq{{{\mymacro{ \textnormal{q}}}}}
+\def\rr{{{\mymacro{ \textnormal{r}}}}}
+\def\rs{{{\mymacro{ \textnormal{s}}}}}
+\def\rt{{{\mymacro{ \textnormal{t}}}}}
+\def\ru{{{\mymacro{ \textnormal{u}}}}}
+\def\rv{{{\mymacro{ \textnormal{v}}}}}
+\def\rw{{{\mymacro{ \textnormal{w}}}}}
+\def\rx{{{\mymacro{ \textnormal{x}}}}}
+\def\ry{{{\mymacro{ \textnormal{y}}}}}
+\def\rz{{{\mymacro{ \textnormal{z}}}}}
+\def\reps{{{\mymacro{ \eps}}}}
+
+% Random vectors
+\def\rvepsilon{{{\mymacro{ \boldsymbol{\epsilon}}}}}
+\def\rvtheta{{{\mymacro{ \boldsymbol{\theta}}}}}
+\def\rva{{{\mymacro{ \mathbf{a}}}}}
+\def\rvb{{{\mymacro{ \mathbf{b}}}}}
+\def\rvc{{{\mymacro{ \mathbf{c}}}}}
+\def\rvd{{{\mymacro{ \mathbf{d}}}}}
+\def\rve{{{\mymacro{ \mathbf{e}}}}}
+\def\rvf{{{\mymacro{ \mathbf{f}}}}}
+\def\rvg{{{\mymacro{ \mathbf{g}}}}}
+\def\rvh{{{\mymacro{ \mathbf{h}}}}}
+\def\rvu{{{\mymacro{ \mathbf{i}}}}}
+\def\rvj{{{\mymacro{ \mathbf{j}}}}}
+\def\rvk{{{\mymacro{ \mathbf{k}}}}}
+\def\rvl{{{\mymacro{ \mathbf{l}}}}}
+\def\rvm{{{\mymacro{ \mathbf{m}}}}}
+\def\rvn{{{\mymacro{ \mathbf{n}}}}}
+\def\rvo{{{\mymacro{ \mathbf{o}}}}}
+\def\rvp{{{\mymacro{ \mathbf{p}}}}}
+\def\rvq{{{\mymacro{ \mathbf{q}}}}}
+\def\rvr{{{\mymacro{ \mathbf{r}}}}}
+\def\rvs{{{\mymacro{ \mathbf{s}}}}}
+\def\rvt{{{\mymacro{ \mathbf{t}}}}}
+\def\rvu{{{\mymacro{ \mathbf{u}}}}}
+\def\rvv{{{\mymacro{ \mathbf{v}}}}}
+\def\rvw{{{\mymacro{ \mathbf{w}}}}}
+\def\rvx{{{\mymacro{ \mathbf{x}}}}}
+\def\rvy{{{\mymacro{ \mathbf{y}}}}}
+\def\rvz{{{\mymacro{ \mathbf{z}}}}}
+\def\rveps{{{\mymacro{ \boldsymbol{\reps}}}}}
+
+% Elements of random vectors
+\def\erva{{{\mymacro{ \textnormal{a}}}}}
+\def\ervb{{{\mymacro{ \textnormal{b}}}}}
+\def\ervc{{{\mymacro{ \textnormal{c}}}}}
+\def\ervd{{{\mymacro{ \textnormal{d}}}}}
+\def\erve{{{\mymacro{ \textnormal{e}}}}}
+\def\ervf{{{\mymacro{ \textnormal{f}}}}}
+\def\ervg{{{\mymacro{ \textnormal{g}}}}}
+\def\ervh{{{\mymacro{ \textnormal{h}}}}}
+\def\ervi{{{\mymacro{ \textnormal{i}}}}}
+\def\ervj{{{\mymacro{ \textnormal{j}}}}}
+\def\ervk{{{\mymacro{ \textnormal{k}}}}}
+\def\ervl{{{\mymacro{ \textnormal{l}}}}}
+\def\ervm{{{\mymacro{ \textnormal{m}}}}}
+\def\ervn{{{\mymacro{ \textnormal{n}}}}}
+\def\ervo{{{\mymacro{ \textnormal{o}}}}}
+\def\ervp{{{\mymacro{ \textnormal{p}}}}}
+\def\ervq{{{\mymacro{ \textnormal{q}}}}}
+\def\ervr{{{\mymacro{ \textnormal{r}}}}}
+\def\ervs{{{\mymacro{ \textnormal{s}}}}}
+\def\ervt{{{\mymacro{ \textnormal{t}}}}}
+\def\ervu{{{\mymacro{ \textnormal{u}}}}}
+\def\ervv{{{\mymacro{ \textnormal{v}}}}}
+\def\ervw{{{\mymacro{ \textnormal{w}}}}}
+\def\ervx{{{\mymacro{ \textnormal{x}}}}}
+\def\ervy{{{\mymacro{ \textnormal{y}}}}}
+\def\ervz{{{\mymacro{ \textnormal{z}}}}}
+
+% Random matrices
+\def\rmA{{{\mymacro{ \mathbf{A}}}}}
+\def\rmB{{{\mymacro{ \mathbf{B}}}}}
+\def\rmC{{{\mymacro{ \mathbf{C}}}}}
+\def\rmD{{{\mymacro{ \mathbf{D}}}}}
+\def\rmE{{{\mymacro{ \mathbf{E}}}}}
+\def\rmF{{{\mymacro{ \mathbf{F}}}}}
+\def\rmG{{{\mymacro{ \mathbf{G}}}}}
+\def\rmH{{{\mymacro{ \mathbf{H}}}}}
+\def\rmI{{{\mymacro{ \mathbf{I}}}}}
+\def\rmJ{{{\mymacro{ \mathbf{J}}}}}
+\def\rmK{{{\mymacro{ \mathbf{K}}}}}
+\def\rmL{{{\mymacro{ \mathbf{L}}}}}
+\def\rmM{{{\mymacro{ \mathbf{M}}}}}
+\def\rmN{{{\mymacro{ \mathbf{N}}}}}
+\def\rmO{{{\mymacro{ \mathbf{O}}}}}
+\def\rmP{{{\mymacro{ \mathbf{P}}}}}
+\def\rmQ{{{\mymacro{ \mathbf{Q}}}}}
+\def\rmR{{{\mymacro{ \mathbf{R}}}}}
+\def\rmS{{{\mymacro{ \mathbf{S}}}}}
+\def\rmT{{{\mymacro{ \mathbf{T}}}}}
+\def\rmU{{{\mymacro{ \mathbf{U}}}}}
+\def\rmV{{{\mymacro{ \mathbf{V}}}}}
+\def\rmW{{{\mymacro{ \mathbf{W}}}}}
+\def\rmX{{{\mymacro{ \mathbf{X}}}}}
+\def\rmY{{{\mymacro{ \mathbf{Y}}}}}
+\def\rmZ{{{\mymacro{ \mathbf{Z}}}}}
+
+% Elements of random matrices
+\def\ermA{{{\mymacro{ \textnormal{A}}}}}
+\def\ermB{{{\mymacro{ \textnormal{B}}}}}
+\def\ermC{{{\mymacro{ \textnormal{C}}}}}
+\def\ermD{{{\mymacro{ \textnormal{D}}}}}
+\def\ermE{{{\mymacro{ \textnormal{E}}}}}
+\def\ermF{{{\mymacro{ \textnormal{F}}}}}
+\def\ermG{{{\mymacro{ \textnormal{G}}}}}
+\def\ermH{{{\mymacro{ \textnormal{H}}}}}
+\def\ermI{{{\mymacro{ \textnormal{I}}}}}
+\def\ermJ{{{\mymacro{ \textnormal{J}}}}}
+\def\ermK{{{\mymacro{ \textnormal{K}}}}}
+\def\ermL{{{\mymacro{ \textnormal{L}}}}}
+\def\ermM{{{\mymacro{ \textnormal{M}}}}}
+\def\ermN{{{\mymacro{ \textnormal{N}}}}}
+\def\ermO{{{\mymacro{ \textnormal{O}}}}}
+\def\ermP{{{\mymacro{ \textnormal{P}}}}}
+\def\ermQ{{{\mymacro{ \textnormal{Q}}}}}
+\def\ermR{{{\mymacro{ \textnormal{R}}}}}
+\def\ermS{{{\mymacro{ \textnormal{S}}}}}
+\def\ermT{{{\mymacro{ \textnormal{T}}}}}
+\def\ermU{{{\mymacro{ \textnormal{U}}}}}
+\def\ermV{{{\mymacro{ \textnormal{V}}}}}
+\def\ermW{{{\mymacro{ \textnormal{W}}}}}
+\def\ermX{{{\mymacro{ \textnormal{X}}}}}
+\def\ermY{{{\mymacro{ \textnormal{Y}}}}}
+\def\ermZ{{{\mymacro{ \textnormal{Z}}}}}
+
+% Vectors
+\def\vzero{{{\mymacro{ \mathbf{0}}}}}
+\def\vone{{{\mymacro{ \mathbf{1}}}}}
+\def\vmu{{{\mymacro{ \boldsymbol{\mu}}}}}
+\def\vtheta{{{\mymacro{ \boldsymbol{\theta}}}}}
+\def\vphi{{{\mymacro{ \boldsymbol{\phi}}}}}
+\def\vvarphi{{{\mymacro{ \boldsymbol{\varphi}}}}}
+\def\va{{{\mymacro{ \mathbf{a}}}}}
+\def\vb{{{\mymacro{ \mathbf{b}}}}}
+\def\vc{{{\mymacro{ \mathbf{c}}}}}
+\def\vd{{{\mymacro{ \mathbf{d}}}}}
+\def\ve{{{\mymacro{ \mathbf{e}}}}}
+\def\vf{{{\mymacro{ \mathbf{f}}}}}
+\def\vg{{{\mymacro{ \mathbf{g}}}}}
+\def\vh{{{\mymacro{ \mathbf{h}}}}}
+\def\vi{{{\mymacro{ \mathbf{i}}}}}
+\def\vj{{{\mymacro{ \mathbf{j}}}}}
+\def\vk{{{\mymacro{ \mathbf{k}}}}}
+\def\vl{{{\mymacro{ \mathbf{l}}}}}
+\def\vm{{{\mymacro{ \mathbf{m}}}}}
+\def\vn{{{\mymacro{ \mathbf{n}}}}}
+\def\vo{{{\mymacro{ \mathbf{o}}}}}
+\def\vp{{{\mymacro{ \mathbf{p}}}}}
+\def\vq{{{\mymacro{ \mathbf{q}}}}}
+\def\vr{{{\mymacro{ \mathbf{r}}}}}
+\def\vs{{{\mymacro{ \mathbf{s}}}}}
+\def\vt{{{\mymacro{ \mathbf{t}}}}}
+\def\vu{{{\mymacro{ \mathbf{u}}}}}
+\def\vv{{{\mymacro{ \mathbf{v}}}}}
+\def\vw{{{\mymacro{ \mathbf{w}}}}}
+\def\vx{{{\mymacro{ \mathbf{x}}}}}
+\def\vy{{{\mymacro{ \mathbf{y}}}}}
+\def\vz{{{\mymacro{ \mathbf{z}}}}}
+
+% Elements of vectors
+\def\evalpha{{{\mymacro{ \alpha}}}}
+\def\eveta{{{\mymacro{ \eta}}}}
+\def\evlambda{{{\mymacro{ \lambda}}}}
+\def\evbeta{{{\mymacro{ \beta}}}}
+\def\evepsilon{{{\mymacro{ \epsilon}}}}
+\def\evlambda{{{\mymacro{ \lambda}}}}
+\def\evomega{{{\mymacro{ \omega}}}}
+\def\evmu{{{\mymacro{ \mu}}}}
+\def\evvarphi{{{\mymacro{ \varphi}}}}
+\def\evpsi{{{\mymacro{ \psi}}}}
+\def\evsigma{{{\mymacro{ \sigma}}}}
+\def\evtheta{{{\mymacro{ \theta}}}}
+\def\eva{{{\mymacro{ a}}}}
+\def\evb{{{\mymacro{ b}}}}
+\def\evc{{{\mymacro{ c}}}}
+\def\evd{{{\mymacro{ d}}}}
+\def\eve{{{\mymacro{ e}}}}
+\def\evf{{{\mymacro{ f}}}}
+\def\evg{{{\mymacro{ g}}}}
+\def\evh{{{\mymacro{ h}}}}
+\def\evi{{{\mymacro{ i}}}}
+\def\evj{{{\mymacro{ j}}}}
+\def\evk{{{\mymacro{ k}}}}
+\def\evl{{{\mymacro{ l}}}}
+\def\evm{{{\mymacro{ m}}}}
+\def\evn{{{\mymacro{ n}}}}
+\def\evo{{{\mymacro{ o}}}}
+\def\evp{{{\mymacro{ p}}}}
+\def\evq{{{\mymacro{ q}}}}
+\def\evr{{{\mymacro{ r}}}}
+\def\evs{{{\mymacro{ s}}}}
+\def\evt{{{\mymacro{ t}}}}
+\def\evu{{{\mymacro{ u}}}}
+\def\evv{{{\mymacro{ v}}}}
+\def\evw{{{\mymacro{ w}}}}
+\def\evx{{{\mymacro{ x}}}}
+\def\evy{{{\mymacro{ y}}}}
+\def\evz{{{\mymacro{ z}}}}
+
+% Matrix
+\def\mA{{{\mymacro{ \mathbf{A}}}}}
+\def\mB{{{\mymacro{ \mathbf{B}}}}}
+\def\mC{{{\mymacro{ \mathbf{C}}}}}
+\def\mD{{{\mymacro{ \mathbf{D}}}}}
+\def\mE{{{\mymacro{ \mathbf{E}}}}}
+\def\mF{{{\mymacro{ \mathbf{F}}}}}
+\def\mG{{{\mymacro{ \mathbf{G}}}}}
+\def\mH{{{\mymacro{ \mathbf{H}}}}}
+\def\mI{{{\mymacro{ \mathbf{I}}}}}
+\def\mJ{{{\mymacro{ \mathbf{J}}}}}
+\def\mK{{{\mymacro{ \mathbf{K}}}}}
+\def\mL{{{\mymacro{ \mathbf{L}}}}}
+\def\mM{{{\mymacro{ \mathbf{M}}}}}
+\def\mN{{{\mymacro{ \mathbf{N}}}}}
+\def\mO{{{\mymacro{ \mathbf{O}}}}}
+\def\mP{{{\mymacro{ \mathbf{P}}}}}
+\def\mQ{{{\mymacro{ \mathbf{Q}}}}}
+\def\mR{{{\mymacro{ \mathbf{R}}}}}
+\def\mS{{{\mymacro{ \mathbf{S}}}}}
+\def\mT{{{\mymacro{ \mathbf{T}}}}}
+\def\mU{{{\mymacro{ \mathbf{U}}}}}
+\def\mV{{{\mymacro{ \mathbf{V}}}}}
+\def\mW{{{\mymacro{ \mathbf{W}}}}}
+\def\mX{{{\mymacro{ \mathbf{X}}}}}
+\def\mY{{{\mymacro{ \mathbf{Y}}}}}
+\def\mZ{{{\mymacro{ \mathbf{Z}}}}}
+\def\mBeta{{{\mymacro{ \boldsymbol{\beta}}}}}
+\def\mPhi{{{\mymacro{ \boldsymbol{\Phi}}}}}
+\def\mLambda{{{\mymacro{ \boldsymbol{\Lambda}}}}}
+\def\mSigma{{{\mymacro{ \boldsymbol{\Sigma}}}}}
+
+% % Tensor
+% \DeclareMathAlphabet{\mathsfit}{\encodingdefault}{\sfdefault}{m}{sl}
+% \SetMathAlphabet{\mathsfit}{bold}{\encodingdefault}{\sfdefault}{bx}{n}
+% \newcommand{\tens}[1]{\mathbf{\mathsfit{#1}}}
+% \def\tA{{\tens{A}}}
+% \def\tB{{\tens{B}}}
+% \def\tC{{\tens{C}}}
+% \def\tD{{\tens{D}}}
+% \def\tE{{\tens{E}}}
+% \def\tF{{\tens{F}}}
+% \def\tG{{\tens{G}}}
+% \def\tH{{\tens{H}}}
+% \def\tI{{\tens{I}}}
+% \def\tJ{{\tens{J}}}
+% \def\tK{{\tens{K}}}
+% \def\tL{{\tens{L}}}
+% \def\tM{{\tens{M}}}
+% \def\tN{{\tens{N}}}
+% \def\tO{{\tens{O}}}
+% \def\tP{{\tens{P}}}
+% \def\tQ{{\tens{Q}}}
+% \def\tR{{\tens{R}}}
+% \def\tS{{\tens{S}}}
+% \def\tT{{\tens{T}}}
+% \def\tU{{\tens{U}}}
+% \def\tV{{\tens{V}}}
+% \def\tW{{\tens{W}}}
+% \def\tX{{\tens{X}}}
+% \def\tY{{\tens{Y}}}
+% \def\tZ{{\tens{Z}}}
+
+
+% Graph
+\def\gA{{{\mymacro{ \mathcal{A}}}}}
+\def\gB{{{\mymacro{ \mathcal{B}}}}}
+\def\gC{{{\mymacro{ \mathcal{C}}}}}
+\def\gD{{{\mymacro{ \mathcal{D}}}}}
+\def\gE{{{\mymacro{ \mathcal{E}}}}}
+\def\gF{{{\mymacro{ \mathcal{F}}}}}
+\def\gG{{{\mymacro{ \mathcal{G}}}}}
+\def\gH{{{\mymacro{ \mathcal{H}}}}}
+\def\gI{{{\mymacro{ \mathcal{I}}}}}
+\def\gJ{{{\mymacro{ \mathcal{J}}}}}
+\def\gK{{{\mymacro{ \mathcal{K}}}}}
+\def\gL{{{\mymacro{ \mathcal{L}}}}}
+\def\gM{{{\mymacro{ \mathcal{M}}}}}
+\def\gN{{{\mymacro{ \mathcal{N}}}}}
+\def\gO{{{\mymacro{ \mathcal{O}}}}}
+\def\gP{{{\mymacro{ \mathcal{P}}}}}
+\def\gQ{{{\mymacro{ \mathcal{Q}}}}}
+\def\gR{{{\mymacro{ \mathcal{R}}}}}
+\def\gS{{{\mymacro{ \mathcal{S}}}}}
+\def\gT{{{\mymacro{ \mathcal{T}}}}}
+\def\gU{{{\mymacro{ \mathcal{U}}}}}
+\def\gV{{{\mymacro{ \mathcal{V}}}}}
+\def\gW{{{\mymacro{ \mathcal{W}}}}}
+\def\gX{{{\mymacro{ \mathcal{X}}}}}
+\def\gY{{{\mymacro{ \mathcal{Y}}}}}
+\def\gZ{{{\mymacro{ \mathcal{Z}}}}}
+
+% Sets
+\def\sA{{{\mymacro{ \mathcal{A}}}}}
+\def\sB{{{\mymacro{ \mathcal{B}}}}}
+\def\sC{{{\mymacro{ \mathcal{C}}}}}
+\def\sD{{{\mymacro{ \mathcal{D}}}}}
+\def\sE{{{\mymacro{ \mathcal{E}}}}}
+% Don't use a set called E, because this would be the same as our symbol
+% for expectation.
+\def\sF{{{\mymacro{ \mathcal{F}}}}}
+\def\sG{{{\mymacro{ \mathcal{G}}}}}
+\def\sH{{{\mymacro{ \mathcal{H}}}}}
+\def\sI{{{\mymacro{ \mathcal{I}}}}}
+\def\sJ{{{\mymacro{ \mathcal{J}}}}}
+\def\sK{{{\mymacro{ \mathcal{K}}}}}
+\def\sL{{{\mymacro{ \mathcal{L}}}}}
+\def\sM{{{\mymacro{ \mathcal{M}}}}}
+\def\sN{{{\mymacro{ \mathcal{N}}}}}
+\def\sO{{{\mymacro{ \mathcal{O}}}}}
+\def\sP{{{\mymacro{ \mathcal{P}}}}}
+\def\sQ{{{\mymacro{ \mathcal{Q}}}}}
+\def\sR{{{\mymacro{ \mathcal{R}}}}}
+\def\sS{{{\mymacro{ \mathcal{S}}}}}
+\def\sT{{{\mymacro{ \mathcal{T}}}}}
+\def\sU{{{\mymacro{ \mathcal{U}}}}}
+\def\sV{{{\mymacro{ \mathcal{V}}}}}
+\def\sW{{{\mymacro{ \mathcal{W}}}}}
+\def\sX{{{\mymacro{ \mathcal{X}}}}}
+\def\sY{{{\mymacro{ \mathcal{Y}}}}}
+\def\sZ{{{\mymacro{ \mathcal{Z}}}}}
+
+% Entries of a matrix
+\def\emLambda{{\Lambda}}
+\def\emA{{\mymacro{ A}}}
+\def\emB{{\mymacro{ B}}}
+\def\emC{{\mymacro{ C}}}
+\def\emD{{\mymacro{ D}}}
+\def\emE{{\mymacro{ E}}}
+\def\emF{{\mymacro{ F}}}
+\def\emG{{\mymacro{ G}}}
+\def\emH{{\mymacro{ H}}}
+\def\emI{{\mymacro{ I}}}
+\def\emJ{{\mymacro{ J}}}
+\def\emK{{\mymacro{ K}}}
+\def\emL{{\mymacro{ L}}}
+\def\emM{{\mymacro{ M}}}
+\def\emN{{\mymacro{ N}}}
+\def\emO{{\mymacro{ O}}}
+\def\emP{{\mymacro{ P}}}
+\def\emQ{{\mymacro{ Q}}}
+\def\emR{{\mymacro{ R}}}
+\def\emS{{\mymacro{ S}}}
+\def\emT{{\mymacro{ T}}}
+\def\emU{{\mymacro{ U}}}
+\def\emV{{\mymacro{ V}}}
+\def\emW{{\mymacro{ W}}}
+\def\emX{{\mymacro{ X}}}
+\def\emY{{\mymacro{ Y}}}
+\def\emZ{{\mymacro{ Z}}}
+\def\emSigma{{\mymacro{ \Sigma}}}
+
+% entries of a tensor
+% Same font as tensor, without \mathbf wrapper
+\newcommand{\etens}[1]{\mathsfit{#1}}
+\def\etLambda{{\etens{\Lambda}}}
+\def\etA{{\etens{A}}}
+\def\etB{{\etens{B}}}
+\def\etC{{\etens{C}}}
+\def\etD{{\etens{D}}}
+\def\etE{{\etens{E}}}
+\def\etF{{\etens{F}}}
+\def\etG{{\etens{G}}}
+\def\etH{{\etens{H}}}
+\def\etI{{\etens{I}}}
+\def\etJ{{\etens{J}}}
+\def\etK{{\etens{K}}}
+\def\etL{{\etens{L}}}
+\def\etM{{\etens{M}}}
+\def\etN{{\etens{N}}}
+\def\etO{{\etens{O}}}
+\def\etP{{\etens{P}}}
+\def\etQ{{\etens{Q}}}
+\def\etR{{\etens{R}}}
+\def\etS{{\etens{S}}}
+\def\etT{{\etens{T}}}
+\def\etU{{\etens{U}}}
+\def\etV{{\etens{V}}}
+\def\etW{{\etens{W}}}
+\def\etX{{\etens{X}}}
+\def\etY{{\etens{Y}}}
+\def\etZ{{\etens{Z}}}
+
+% The true underlying data generating distribution
+\newcommand{\pdata}{{\mymacro{ p_{\mathrm{data}}}}}
+% The empirical distribution defined by the training set
+\newcommand{\ptrain}{{\mymacro{ \hat{p}_{\mathrm{data}}}}}
+\newcommand{\Ptrain}{{\mymacro{ \hat{P}_{\mathrm{data}}}}}
+% The model distribution
+\newcommand{\pmodel}{{\mymacro{ p_{\rm{model}}}}}
+\newcommand{\Pmodel}{{\mymacro{ P_{\rm{model}}}}}
+\newcommand{\ptildemodel}{{\mymacro{ \tilde{p}_{\rm{model}}}}}
+% Stochastic autoencoder distributions
+\newcommand{\encoder}{{\mymacro{ \text{Enc}}}}
+\newcommand{\decoder}{{\mymacro{ \text{Dec}}}}
+\newcommand{\pencode}{{\mymacro{ p_{\rm{encoder}}}}}
+\newcommand{\pdecode}{{\mymacro{ p_{\rm{decoder}}}}}
+\newcommand{\precons}{{\mymacro{ p_{\rm{reconstruct}}}}}
+
+\newcommand{\laplace}{\mathrm{Laplace}} % Laplace distribution
+
+\newcommand{\Ls}{{\mymacro{ \mathcal{L}}}}
+\newcommand{\Nzero}{{\mymacro{ \mathbb{N}_{\geq 0}}}}
+\newcommand{\emp}{{\mymacro{ \tilde{p}}}}
+\newcommand{\lr}{{\mymacro{ \alpha}}}
+\newcommand{\reg}{{\mymacro{ \lambda}}}
+\newcommand{\tempParam}{{\mymacro{ \tau}}}
+\newcommand{\KL}{{\mymacro{ D_{\mathrm{KL}}}}}
+\newcommand{\Var}{{\mymacro{ \mathrm{Var}}}}
+\newcommand{\standarderror}{{\mymacro{ \mathrm{SE}}}}
+\newcommand{\Cov}{{\mymacro{ \mathrm{Cov}}}}
+
+
+% named functions / activation functions
+\newcommand{\loss}{{\mymacro{ \ell}}}
+\newcommand{\sparsemax}{{\mymacro{ \mathrm{sparsemax}}}}
+\newcommand{\softmaxfunc}[2]{{\mymacro{ \mathrm{softmax}\!\left(#1\right)_{#2}}}} % vector, index}
+\newcommand{\sparsemaxfunc}[2]{{\mymacro{ \mathrm{sparsemax}\!\left(#1\right)_{#2}}}} % vector, index}
+\newcommand{\ReLUfunc}[1]{{\mymacro{ \ReLU\!\left(#1\right)}}} % vector, index}
+\newcommand{\determinant}[1]{{\mymacro{ \mathrm{det}\!\left(#1\right)}}}
+
+\newcommand{\heaviside}{{\mymacro{ H}}}
+\newcommand{\heavisideFun}[1]{{\mymacro{ \heaviside\left(#1\right)}}}
+\newcommand{\sigmoid}{{\mymacro{ \sigma}}}
+\newcommand{\sigmoidFun}[1]{{\mymacro{ \sigmoid\left(#1\right)}}}
+\newcommand{\sigmoidVecPrime}[1]{{\mymacro{ \boldsymbol{\sigmoid}^\prime_{#1}}}}
+\newcommand{\thrSigmoid}{{\mymacro{ \sigmoid_{\scaleto{\textnormal{T}}{4pt}}}}}
+\newcommand{\softplus}{{\mymacro{ \zeta}}}
+\newcommand{\clipping}{{\mymacro{ \mathrm{clip}}}}
+\newcommand{\gradnorm}{{\mymacro{ \mathrm{gradnorm}}}}
+
+\newcommand{\constbound}{{\mymacro{ M}}}
+% named floating-point
+\newcommand*{\fpfull}{{\mymacro{ \texttt{float32}}}}
+% Wolfram Mathworld says L^2 is for function spaces and \ell^2 is for vectors
+% But then they seem to use L^2 for vectors throughout the site, and so does
+% wikipedia.
+\newcommand{\normlzero}{{\mymacro{L^0}}}
+\newcommand{\normlone}{{\mymacro{L^1}}}
+\newcommand{\normltwo}{{\mymacro{L^2}}}
+\newcommand{\normlp}{{\mymacro{L^p}}}
+\newcommand{\normmax}{{\mymacro{L^\infty}}}
+
+\newcommand{\matNormOne}[1]{{\mymacro{\norm{#1}_{1}}}}
+\newcommand{\matNormTwo}[1]{{\mymacro{\norm{#1}_{2}}}}
+\newcommand{\matNormP}[1]{{\mymacro{\norm{#1}_{p}}}}
+
+\newcommand{\parents}{{\mymacro{Pa}}} % See usage in notation.tex. Chosen to match Daphne's book.}
+
+\DeclareMathOperator*{\argmax}{{\mymacro{ argmax}}}
+\DeclareMathOperator*{\argmin}{{\mymacro{ argmin}}}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Tr}{Tr}
