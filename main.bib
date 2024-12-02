@@ -350,23 +350,83 @@
     abstract = "Transformers have supplanted recurrent models in a large number of NLP tasks. However, the differences in their abilities to model different syntactic properties remain largely unknown. Past works suggest that LSTMs generalize very well on regular languages and have close connections with counter languages. In this work, we systematically study the ability of Transformers to model such languages as well as the role of its individual components in doing so. We first provide a construction of Transformers for a subclass of counter languages, including well-studied languages such as n-ary Boolean Expressions, Dyck-1, and its generalizations. In experiments, we find that Transformers do well on this subclass, and their learned mechanism strongly correlates with our construction. Perhaps surprisingly, in contrast to LSTMs, Transformers do well only on a subset of regular languages with degrading performance as we make languages more complex according to a well-known measure of complexity. Our analysis also provides insights on the role of self-attention mechanism in modeling certain behaviors and the influence of positional encoding schemes on the learning and generalization abilities of the model.",
 }
 
-@inproceedings{yao2021self,
-  title = "Self-Attention Networks Can Process Bounded Hierarchical Languages",
-  author = "Yao, Shunyu  and
-    Peng, Binghui  and
-    Papadimitriou, Christos  and
-    Narasimhan, Karthik",
-  editor = "Zong, Chengqing  and
-    Xia, Fei  and
-    Li, Wenjie  and
-    Navigli, Roberto",
-  booktitle = "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
-  month = aug,
-  year = "2021",
-  address = "Online",
-  publisher = "Association for Computational Linguistics",
-  url = "https://aclanthology.org/2021.acl-long.292",
-  doi = "10.18653/v1/2021.acl-long.292",
-  pages = "3770--3785",
-  abstract = "Despite their impressive performance in NLP, self-attention networks were recently proved to be limited for processing formal languages with hierarchical structure, such as Dyck-k, the language consisting of well-nested parentheses of k types. This suggested that natural language can be approximated well with models that are too weak for formal languages, or that the role of hierarchy and recursion in natural language might be limited. We qualify this implication by proving that self-attention networks can process Dyck-(k, D), the subset of Dyck-k with depth bounded by D, which arguably better captures the bounded hierarchical structure of natural language. Specifically, we construct a hard-attention network with D+1 layers and O(log k) memory size (per token per layer) that recognizes Dyck-(k, D), and a soft-attention network with two layers and O(log k) memory size that generates Dyck-(k, D). Experiments show that self-attention networks trained on Dyck-(k, D) generalize to longer inputs with near-perfect accuracy, and also verify the theoretical memory advantage of self-attention networks over recurrent networks.",
+@article{ba2016layer,
+  title   = {Layer normalization},
+  author  = {Lei Ba, Jimmy and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  journal = {ArXiv e-prints},
+  pages   = {arXiv--1607},
+  year    = {2016}
 }
+
+@inproceedings{xiong2020layer,
+  title        = {On layer normalization in the transformer architecture},
+  author       = {Xiong, Ruibin and Yang, Yunchang and He, Di and Zheng, Kai and Zheng, Shuxin and Xing, Chen and Zhang, Huishuai and Lan, Yanyan and Wang, Liwei and Liu, Tieyan},
+  booktitle    = {International Conference on Machine Learning},
+  pages        = {10524--10533},
+  year         = {2020},
+  organization = {PMLR}
+}
+
+@inproceedings{hahn-rofin-2024-sensitive,
+  title     = {Why are Sensitive Functions Hard for Transformers?},
+  author    = {Hahn, Michael  and
+               Rofin, Mark},
+  editor    = {Ku, Lun-Wei  and
+               Martins, Andre  and
+               Srikumar, Vivek},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2024.acl-long.800},
+  doi       = {10.18653/v1/2024.acl-long.800},
+  pages     = {14973--15008},
+  abstract  = {Empirical studies have identified a range of learnability biases and limitations of transformers, such as a persistent difficulty in learning to compute simple formal languages such as PARITY, and a bias towards low-degree functions. However, theoretical understanding remains limited, with existing expressiveness theory either overpredicting or underpredicting realistic learning abilities. We prove that, under the transformer architecture, the loss landscape is constrained by the input-space sensitivity: Transformers whose output is sensitive to many parts of the input string inhabit isolated points in parameter space, leading to a low-sensitivity bias in generalization. We show theoretically and empirically that this theory unifies a broad array of empirical observations about the learning abilities and biases of transformers, such as their generalization bias towards low sensitivity and low degree, and difficulty in length generalization for PARITY. This shows that understanding transformers{'} inductive biases requires studying not just their in-principle expressivity, but also their loss landscape.}
+}
+@article{mielke2021between,
+  title={Between words and characters: A brief history of open-vocabulary modeling and tokenization in NLP},
+  author={Mielke, Sabrina J and Alyafeai, Zaid and Salesky, Elizabeth and Raffel, Colin and Dey, Manan and Gall{\'e}, Matthias and Raja, Arun and Si, Chenglei and Lee, Wilson Y and Sagot, Beno{\^\i}t and others},
+  journal={arXiv preprint arXiv:2112.10508},
+  year={2021}
+}
+
+@article{radford2019language,
+  title={Language models are unsupervised multitask learners},
+  author={Radford, Alec and Wu, Jeffrey and Child, Rewon and Luan, David and Amodei, Dario and Sutskever, Ilya and others},
+  journal={OpenAI blog},
+  volume={1},
+  number={8},
+  pages={9},
+  year={2019}
+}
+
+@inproceedings{merrill2024little,
+  title={A Little Depth Goes a Long Way: The Expressive Power of Log-Depth Transformers},
+  author={William Merrill and Ashish Sabharwal},
+  booktitle={NeurIPS 2024 Workshop on Mathematics of Modern Machine Learning},
+  year={2024},
+  url={https://openreview.net/forum?id=njycONK0JG}
+}
+
+@inproceedings{yao-2021-self-attention,
+    title = "Self-Attention Networks Can Process Bounded Hierarchical Languages",
+    author = "Yao, Shunyu  and
+      Peng, Binghui  and
+      Papadimitriou, Christos  and
+      Narasimhan, Karthik",
+    editor = "Zong, Chengqing  and
+      Xia, Fei  and
+      Li, Wenjie  and
+      Navigli, Roberto",
+    booktitle = "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.acl-long.292",
+    doi = "10.18653/v1/2021.acl-long.292",
+    pages = "3770--3785",
+    abstract = "Despite their impressive performance in NLP, self-attention networks were recently proved to be limited for processing formal languages with hierarchical structure, such as Dyck-k, the language consisting of well-nested parentheses of k types. This suggested that natural language can be approximated well with models that are too weak for formal languages, or that the role of hierarchy and recursion in natural language might be limited. We qualify this implication by proving that self-attention networks can process Dyck-(k, D), the subset of Dyck-k with depth bounded by D, which arguably better captures the bounded hierarchical structure of natural language. Specifically, we construct a hard-attention network with D+1 layers and O(log k) memory size (per token per layer) that recognizes Dyck-(k, D), and a soft-attention network with two layers and O(log k) memory size that generates Dyck-(k, D). Experiments show that self-attention networks trained on Dyck-(k, D) generalize to longer inputs with near-perfect accuracy, and also verify the theoretical memory advantage of self-attention networks over recurrent networks.",
+}
+

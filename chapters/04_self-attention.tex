@@ -188,10 +188,10 @@ This is true even if either $q_i$ or $k_j$ is scaled by some factor.
 \citep{perez-etal-2021-turing}
 \fi
 
-\section{Dot-Product and Disjunctive Normal Form}
-\label{sec:att_dnf}
+% \section{Dot-Product and Disjunctive Normal Form}
+% \label{sec:att_dnf}
 
-\AY{ToDo}
+% \AY{ToDo}
 
 \section{Predecessor}
 
@@ -211,6 +211,8 @@ constructing the word vectors as in Equation~\ref{eq:maximising-attention} and a
     A\mathbf{v}_i \cdot \mathbf{v}_j &=\cos\left(\frac{\pi(2^{-i}-2^{-j})}{10}\right) + (-1)^{i + j + 1}\cdot 10
 \end{align}
 
+This could also have been achieved using quadratic maximization, as in the previous section. However, this specific construction only requires periodic positional encodings, rather than unbounded ones.
+
 \section{Tie Breaking}\label{sec:tie-breaking}
 
 \begin{tabularx}{\textwidth}{>{\columncolor{orange!40}}p{1cm}|X}
@@ -219,6 +221,7 @@ constructing the word vectors as in Equation~\ref{eq:maximising-attention} and a
 \end{tabularx}
 \\
 
-When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost-hard} or \emph{rightmost-hard} attention. It suffices to simulate an equivalent $\textbf{B-RASP}$ program \cite{angluin2023masked}. In this case, we can simply add a small tie-breaking factor to each activation value, in order to ensure that the maximum value is unique.
+When using \emph{average-hard} attention, sometimes we want to be able to simulate \emph{leftmost unique-hard} or \emph{rightmost unique-hard} attention. Using results from \cite{angluin2023masked}, including the unary score lemma, this means it suffices to consider transformers whose activations are all in $\{0,1\}$, and whose attention scores only depend on the query position. As such, the scores $S(j)$ can be precomputed in each query position by a feed-forward layer, and $\frac{1}{j+1}$ can be added or subtracted to each score, thus breaking ties in the desired direction.
 
-\AY{Fill in details later}
+
+
