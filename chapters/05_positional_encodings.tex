@@ -11,7 +11,7 @@ Transformers most often incorporate positional encodings as a method for injecti
 
 \subsection{$\frac{1}{i}$}
 
-Obtaining the value $\frac{1}{i}$ at position $i$ can be introduced via a positional encoding, or it can be computed using a future-masked uniform attention layer \cref{sec:uniform-attention} and the presence of a beginning-of-sequence token. \AY{refer to tokenization section, talk about causal masking} This positional encoding plays a role in the constructions of \citet{barcelo-etal-2024-logical}, \citet{merrill-sabharwal-2024-cot}, and others. Additionally, as described in \cref{sec:tie-breaking}, this value may be used to simulate a $\UHAT$ using an $\AHAT$.
+Obtaining the value $\frac{1}{i}$ at position $i$ can be introduced via a positional encoding, or it can be computed using a future-masked uniform attention layer \cref{sec:uniform-attention} and the presence of a beginning-of-sequence token (as in \cref{sec:BOS}). This positional encoding plays a role in the constructions of \citet{barcelo-etal-2024-logical}, \citet{merrill-sabharwal-2024-cot}, and others. Additionally, as described in \cref{sec:tie-breaking}, this value may be used to simulate a $\UHAT$ using an $\AHAT$.
 
 
 
