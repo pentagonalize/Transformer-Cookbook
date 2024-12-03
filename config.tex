@@ -151,20 +151,42 @@
 \newcommand\msf[1]{\mathsf{#1}}
 
 
+\setlength {\marginparwidth }{2cm}
+% TODO notes
+% \usepackage[disable]{todonotes}
+\usepackage{todonotes}
+\makeatletter
+\newcommand*\iftodonotes{\if@todonotes@disabled\expandafter\@secondoftwo\else\expandafter\@firstoftwo\fi}  %
+\makeatother
+\newcommand{\noindentaftertodo}{\iftodonotes{\noindent}{}}
+\newcommand{\fixme}[2][]{\todo[color=yellow,size=\scriptsize,fancyline,caption={},#1]{#2}}
+\newcommand{\note}[4][]{\todo[author=#2,color=#3,size=\scriptsize,fancyline,caption={},#1]{#4}}
+
+\newcommand{\AY}[2][]{\note[#1]{\textbf{Andy}}{ForestGreen!20}{#2}}
+\newcommand{\AS}[2][]{\note[#1]{\textbf{Anej}}{AnejBlue!40}{#2}}
+\newcommand{\DA}[2][]{\note[#1]{\textbf{Dana}}{RedViolet!20}{#2}}
+\newcommand{\DC}[2][]{\note[#1]{\textbf{David}}{Dandelion!20}{#2}}
+\newcommand{\WM}[2][]{\note[#1]{\textbf{Will}}{RoyalPurple!20}{#2}}
+\newcommand{\AX}[2][]{\note[#1]{\textbf{Anton}}{blue!20}{#2}}
+\newcommand{\CW}[2][]{\note[#1]{\textbf{Chris}}{gray!20}{#2}}
+\newcommand{\LS}[2][]{\note[#1]{\textbf{Lena}}{MidnightBlue!20}{#2}}
+
+\newcommand{\response}[1]{\vspace{3pt}\hrule\vspace{3pt}\textbf{#1:}}    % insert \response{myname} within someone else's todonote
+
 % colorful comments
-\newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
-\newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
-\newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
-\newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
-\newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
+% \newcommand{\DA}[1]{({\textcolor{RedViolet}{\textbf{DA: #1}}})}
+% \newcommand{\LS}[1]{({\textcolor{MidnightBlue}{\textbf{LS: #1}}})}
+% \newcommand{\AY}[1]{({\textcolor{ForestGreen}{\textbf{AY: #1}}})}
+% \newcommand{\DC}[1]{({\textcolor{Dandelion}{\textbf{DC: #1}}})}
+% \newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
 \newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
 \newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
 
-\newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
+% \newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
 \newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
 \newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
-\newcommand{\AS}[1]{({\textcolor{AnejBlue}{\textbf{AS: #1}}})}
-\newcommand{\CW}[1]{({\textcolor{gray}{\textbf{CW: #1}}})}
+% \newcommand{\AS}[1]{({\textcolor{AnejBlue}{\textbf{AS: #1}}})}
+% \newcommand{\CW}[1]{({\textcolor{gray}{\textbf{CW: #1}}})}
 \newcommand{\NS}[1]{({\textcolor{CarnationPink}{\textbf{NS: #1}}})}
 \newcommand{\DF}[1]{({\textcolor{orange}{\textbf{DF: #1}}})}
 
