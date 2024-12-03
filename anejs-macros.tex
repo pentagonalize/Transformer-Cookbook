@@ -67,9 +67,12 @@
 \newcommand{\tfenc}{{\mymacro{\enc_{\tf}}}}
 \newcommand{\onehot}[1]{{\mymacro{ \llbracket#1\rrbracket}}}
 \newcommand{\innerProd}[2]{{\mymacro{\langle #1, #2 \rangle}}}
+\newcommand{\vzero}{{\mymacro{\mathbf{0}}}}
+\newcommand{\vone}{{\mymacro{\mathbf{1}}}}
 
 % Alphabets, symbols
 \newcommand{\alphabet}{{\mymacro{\Sigma}}}
+\newcommand{\nsymbols}{{\mymacro{|\alphabet|}}}
 \newcommand{\eosalphabet}{{\mymacro{\overline{\alphabet}}}}
 \newcommand{\augalphabet}{{\mymacro{\Delta}}}
 \newcommand{\intalphabet}{{\mymacro{\Xi}}}
@@ -93,6 +96,12 @@
 \newcommand{\headCombineFunc}{\mymacro{\mathcal{H}}}
 \newcommand{\nLayer}{\mymacro{L}}
 
+\newcommand{\statRep}{\mymacro{r}}
+\newcommand{\statRepFun}[1]{\mymacro{\statRep}\left(#1\right)}
+\newcommand{\posEnc}{\mymacro{\textsc{PE}}}
+\newcommand{\posEncFun}[1]{\mymacro{\posEnc}\left(#1\right)}
+\newcommand{\posStatRep}{\mymacro{\boldsymbol{r}}}
+\newcommand{\posStatRepFun}[1]{\mymacro{\posStatRep}\left(#1\right)}
 \newcommand{\tfScore}{\mymacro{\textnormal{score}}}
 \newcommand{\tfScoreFun}[1]{\mymacro{\tfScore}\left(#1\right)}
 \newcommand{\tfO}{\mymacro{O}}
