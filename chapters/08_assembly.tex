@@ -22,10 +22,9 @@
 \section{Dyck Language}
 \CW{Will write}
 We include three recipes to recognize variants of \textit{Dyck languages}:\begin{itemize}
-    \item A single-layer \SMAT{} with one attention head, future positional masking, and ReLU activations to recognize the Dyck language \dyckk{1} (construction due to~\citet{bhattamishra2020ability}).
+    \item A single-layer \SMAT{} with one attention head and future positional masking to recognize the Dyck language \dyckk{1} (construction due to~\citet{bhattamishra2020ability}).
     \item A $D{+}1$-layer \UHAT{} with multiple attention heads, future-positional masking, the $\frac{i}{n}$ positional encoding scheme, and ReLU activations to recognize the \textit{depth-bounded} Dyck language $\dyckkd{k}{D}$ with $k$ kinds of brackets and bounded nesting depth bounded by $D$ (construction due to~\citet{yao-2021-self-attention}).
-    \item A two-layer with multiple attention heads, future-positional masking, the $\frac{i}{n}$ positional encoding scheme, and FFN activations to generate \dyckkd{k}{D} (construction due to~\citet{yao-2021-self-attention}).
-    
+    \item A two-layer \SMAT{} with multiple attention heads, future-positional masking, the $\frac{i}{n}$ positional encoding scheme, residual connections, and layernorm to generate \dyckkd{k}{D} (construction due to~\citet{yao-2021-self-attention}). \CW{Should I show the version that recognizes rather than generates?}
 \end{itemize}
 
 The language \dyckk{k} comprises all strings of well-nested brackets, where at most $k$ distinct kinds of bracket may occur. The following context-free grammar generates \dyckk{k}:\begin{align*}
