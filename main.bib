@@ -330,9 +330,29 @@
   year      = {2023}
 }
 
+@inproceedings{bhattamishra2020ability,
+    title = "On the {A}bility and {L}imitations of {T}ransformers to {R}ecognize {F}ormal {L}anguages",
+    author = "Bhattamishra, Satwik  and
+      Ahuja, Kabir  and
+      Goyal, Navin",
+    editor = "Webber, Bonnie  and
+      Cohn, Trevor  and
+      He, Yulan  and
+      Liu, Yang",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.emnlp-main.576",
+    doi = "10.18653/v1/2020.emnlp-main.576",
+    pages = "7096--7116",
+    abstract = "Transformers have supplanted recurrent models in a large number of NLP tasks. However, the differences in their abilities to model different syntactic properties remain largely unknown. Past works suggest that LSTMs generalize very well on regular languages and have close connections with counter languages. In this work, we systematically study the ability of Transformers to model such languages as well as the role of its individual components in doing so. We first provide a construction of Transformers for a subclass of counter languages, including well-studied languages such as n-ary Boolean Expressions, Dyck-1, and its generalizations. In experiments, we find that Transformers do well on this subclass, and their learned mechanism strongly correlates with our construction. Perhaps surprisingly, in contrast to LSTMs, Transformers do well only on a subset of regular languages with degrading performance as we make languages more complex according to a well-known measure of complexity. Our analysis also provides insights on the role of self-attention mechanism in modeling certain behaviors and the influence of positional encoding schemes on the learning and generalization abilities of the model.",
+}
+
 @article{ba2016layer,
   title   = {Layer normalization},
-  author  = {Lei Ba, Jimmy and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  author  = {Ba, Jimmy and Kiros, Jamie Ryan and Hinton, Geoffrey E},
   journal = {ArXiv e-prints},
   pages   = {arXiv--1607},
   year    = {2016}
@@ -351,6 +371,73 @@
   title     = {Why are Sensitive Functions Hard for Transformers?},
   author    = {Hahn, Michael  and
                Rofin, Mark},
+  url       = {https://aclanthology.org/2024.acl-long.800},
+  doi       = {10.18653/v1/2024.acl-long.800},
+  pages     = {14973--15008},
+  abstract  = {Empirical studies have identified a range of learnability biases and limitations of transformers, such as a persistent difficulty in learning to compute simple formal languages such as PARITY, and a bias towards low-degree functions. However, theoretical understanding remains limited, with existing expressiveness theory either overpredicting or underpredicting realistic learning abilities. We prove that, under the transformer architecture, the loss landscape is constrained by the input-space sensitivity: Transformers whose output is sensitive to many parts of the input string inhabit isolated points in parameter space, leading to a low-sensitivity bias in generalization. We show theoretically and empirically that this theory unifies a broad array of empirical observations about the learning abilities and biases of transformers, such as their generalization bias towards low sensitivity and low degree, and difficulty in length generalization for PARITY. This shows that understanding transformers{'} inductive biases requires studying not just their in-principle expressivity, but also their loss landscape.}
+}
+
+
+@inproceedings{wei2023chain,
+  author    = {Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and ichter, brian and Xia, Fei and Chi, Ed and Le, Quoc V and Zhou, Denny},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  pages     = {24824--24837},
+  publisher = {Curran Associates, Inc.},
+  title     = {Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2022/file/9d5609613524ecf4f15af0f7b31abca4-Paper-Conference.pdf},
+  volume    = {35},
+  year      = {2022}
+}
+
+
+@article{feng2023revealing,
+  title         = {Towards Revealing the Mystery behind Chain of Thought: {A} Theoretical Perspective},
+  author        = {Guhao Feng and Bohang Zhang and Yuntian Gu and Haotian Ye and Di He and Liwei Wang},
+  year          = {2023},
+  eprint        = {2305.15408},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  journal       = {arXiv preprint arXiv:2305.15408},
+  url           = {https://arxiv.org/abs/2305.15408}
+}
+
+@inproceedings{merrill2024the,
+  title     = {The Expressive Power of Transformers with Chain of Thought},
+  author    = {William Merrill and Ashish Sabharwal},
+  booktitle = {The Twelfth International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://arxiv.org/abs/2310.07923}
+}
+
+@inproceedings{du-etal-2023-measure,
+  title     = {A Measure-Theoretic Characterization of Tight Language Models},
+  author    = {Du, Li  and
+               Torroba Hennigen, Lucas  and
+               Pimentel, Tiago  and
+               Meister, Clara  and
+               Eisner, Jason  and
+               Cotterell, Ryan},
+  editor    = {Rogers, Anna  and
+               Boyd-Graber, Jordan  and
+               Okazaki, Naoaki},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2023.acl-long.543},
+  doi       = {10.18653/v1/2023.acl-long.543},
+  pages     = {9744--9770},
+  abstract  = {Language modeling, a central task in natural language processing, involves estimating a probability distribution over strings. In most cases, the estimated distribution sums to 1 over all finite strings. However, in some pathological cases, probability mass can {``}leak{''} onto the set of infinite sequences. In order to characterize the notion of leakage more precisely, this paper offers a measure-theoretic treatment of language modeling. We prove that many popular language model families are in fact tight, meaning that they will not leak in this sense. We also generalize characterizations of tightness proposed in previous works.}
+}
+
+@inproceedings{nowak-etal-2024-representational,
+  title     = {On the Representational Capacity of Neural Language Models with Chain-of-Thought Reasoning},
+  author    = {Nowak, Franz  and
+               Svete, Anej  and
+               Butoi, Alexandra  and
+               Cotterell, Ryan},
   editor    = {Ku, Lun-Wei  and
                Martins, Andre  and
                Srikumar, Vivek},
@@ -359,11 +446,12 @@
   year      = {2024},
   address   = {Bangkok, Thailand},
   publisher = {Association for Computational Linguistics},
-  url       = {https://aclanthology.org/2024.acl-long.800},
-  doi       = {10.18653/v1/2024.acl-long.800},
-  pages     = {14973--15008},
-  abstract  = {Empirical studies have identified a range of learnability biases and limitations of transformers, such as a persistent difficulty in learning to compute simple formal languages such as PARITY, and a bias towards low-degree functions. However, theoretical understanding remains limited, with existing expressiveness theory either overpredicting or underpredicting realistic learning abilities. We prove that, under the transformer architecture, the loss landscape is constrained by the input-space sensitivity: Transformers whose output is sensitive to many parts of the input string inhabit isolated points in parameter space, leading to a low-sensitivity bias in generalization. We show theoretically and empirically that this theory unifies a broad array of empirical observations about the learning abilities and biases of transformers, such as their generalization bias towards low sensitivity and low degree, and difficulty in length generalization for PARITY. This shows that understanding transformers{'} inductive biases requires studying not just their in-principle expressivity, but also their loss landscape.}
+  url       = {https://aclanthology.org/2024.acl-long.676},
+  doi       = {10.18653/v1/2024.acl-long.676},
+  pages     = {12510--12548},
+  abstract  = {The performance of modern language models (LMs) has been improved by chain-of-thought (CoT) reasoning, i.e., the process of generating intermediate results that guide the model towards a final answer. A possible explanation for this improvement is that CoT reasoning extends an LM{'}s computational power, as RNNs and transformers with additional scratch space are known to be Turing complete. Comparing LMs to Turing machines, however, introduces a category error{---}Turing machines decide language membership, whereas LMs define distributions over strings. To bridge this gap, we formalize CoT reasoning in a probabilistic setting. We present several results on the representational capacity of recurrent and transformer LMs with CoT reasoning, showing that they can represent the same family of distributions over strings as probabilistic Turing machines.}
 }
+
 @article{mielke2021between,
   title={Between words and characters: A brief history of open-vocabulary modeling and tokenization in NLP},
   author={Mielke, Sabrina J and Alyafeai, Zaid and Salesky, Elizabeth and Raffel, Colin and Dey, Manan and Gall{\'e}, Matthias and Raja, Arun and Si, Chenglei and Lee, Wilson Y and Sagot, Beno{\^\i}t and others},
@@ -381,7 +469,7 @@
   year={2019}
 }
 
-@inproceedings{merrill2024little,
+@inproceedings{merrill-2024-little-depth,
   title={A Little Depth Goes a Long Way: The Expressive Power of Log-Depth Transformers},
   author={William Merrill and Ashish Sabharwal},
   booktitle={NeurIPS 2024 Workshop on Mathematics of Modern Machine Learning},
@@ -409,6 +497,7 @@
     pages = "3770--3785",
     abstract = "Despite their impressive performance in NLP, self-attention networks were recently proved to be limited for processing formal languages with hierarchical structure, such as Dyck-k, the language consisting of well-nested parentheses of k types. This suggested that natural language can be approximated well with models that are too weak for formal languages, or that the role of hierarchy and recursion in natural language might be limited. We qualify this implication by proving that self-attention networks can process Dyck-(k, D), the subset of Dyck-k with depth bounded by D, which arguably better captures the bounded hierarchical structure of natural language. Specifically, we construct a hard-attention network with D+1 layers and O(log k) memory size (per token per layer) that recognizes Dyck-(k, D), and a soft-attention network with two layers and O(log k) memory size that generates Dyck-(k, D). Experiments show that self-attention networks trained on Dyck-(k, D) generalize to longer inputs with near-perfect accuracy, and also verify the theoretical memory advantage of self-attention networks over recurrent networks.",
 }
+
 
 @article{sennrich2015neural,
   title={Neural machine translation of rare words with subword units},

@@ -7,9 +7,24 @@ However, it has since been shown to have an impact on the expressiveness of the 
 In theoretical work, LayerNorm in some cases may complicate the proof, and in other cases may be an essential compoment of the proof.
 In this section, we discuss the theoretical aspects of layer normalization, and how the literature on expressivity proofs has treated it.
 
-\begin{definition}
-    \AY{Will write}
+\begin{definition}{LayerNorm~\citep{ba2016layer}}{}
+For an input \(x \in \mathbb{R}^{d}\), let
+\begin{equation*}
+    \mathrm{LayerNorm}(x) = \frac{\overline{x}}{\sqrt{\sigma^2 + \varepsilon}} \in \mathbb{R}^{d},
+    \quad \mu = \frac{1}{d} \sum_{i = 1}^{d} x_i,
+    \quad \sigma^2 = \frac{1}{d}\sum_{i = 1}^{d} (x_i - \mu)^2,
+\end{equation*}
+where each \(\overline{x}_i = x_i - \mu\), and \(\varepsilon > 0\) is a small constant for numerical stability.
 \end{definition}
+
+We remark that, in practice\footnote{\url{https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html}},
+\(\mathrm{LayerNorm}\) often comes with trainable parameters \(\gamma \in \mathbb{R}^{d}\) and \(\beta \in \mathbb{R}\), such that the usual definition may be parametrized as
+
+\begin{equation*}
+    \mathrm{LayerNorm} = \frac{\overline{x}}{\sqrt{\sigma^2 + \varepsilon}} \odot \gamma + \beta
+\end{equation*}
+where recall that \(\odot\) is the element-wise product of two vectors.
+
 
 \section{Root Mean Square (RMS) Layer Norm}
 RMS layer normalization~\citep{zhang2019root} is a normalization technique based on only re-scaling invariance, while ignoring re-centering invariance.

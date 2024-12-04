@@ -16,3 +16,36 @@ We hope you enjoy!
 % \end{theorem}
 
 \AY{intro to architecture details}
+
+\subsection{Transformer Language Models} \label{sec:language-models}
+
+Let $\alphabet$ be an alphabet, i.e., a finite, non-empty set of symbols, and $\kleene{\alphabet}$ the (countably infinite) set of all strings formed from symbols of $\alphabet$.
+A \defn{language model} (LM) $\plm$ is a probability distribution over $\kleene{\alphabet}$.
+Most modern LMs define $\plm\left(\str\right)$ for $\str \in \kleene{\alphabet}$ autoregressively---as a product of conditional probability distributions:
+\begin{equation} \label{eq:lnlm}
+    \plm\left(\str\right) \defeq \plm\left(\eos\mid\str\right) \prod_{\tstep = 1}^{|\str|} \plm\left(\symt \mid \strlt\right).
+\end{equation}
+Here, $\eos \notin \alphabet$ is a distinguished \underline{e}nd-\underline{o}f-\underline{s}tring symbol.
+The $\eos$ symbol enables us to define the probability of a string purely based on the conditional distributions.
+Such a factorization can be done without loss of generality \citep{du-etal-2023-measure}.
+We define $\eosalphabet \defeq \alphabet \cup \left\{\eos\right\}$.
+
+In the case of transformer-based LMs, the conditional probability distributions $\plm\left(\symt \mid \strlt\right)$ are defined based on vectorial representations of $\strlt$ computed by a transformer model.
+\begin{definition}{Transformer-based Language Model}{tf-lm} 
+    Let $\alphabet$ be an alphabet and $\enc\colon \kleene{\alphabet} \to \R^\hiddDim$ a transformer model that maps strings to $\hiddDim$-dimensional representations.
+    Let $\outMtx \in \R^{|\eosalphabet| \times \hiddDim}$ be an \defn{output} matrix and $\bias \in \R^{|\eosalphabet|}$ a \defn{bias} vector.
+    A \defn{transformer-based language model} $\plm$ defines the conditional probability distributions $\plm\left(\symt \mid \strlt\right)$ as
+    \begin{equation}
+        \plm\left(\symt \mid \strlt\right) \defeq \softmaxfunc{\outMtx \; \enc\left(\strlt\right) + \bias}{\symt},
+    \end{equation}
+    where 
+    \begin{equation}
+        \softmaxfunc{\vx}{d} \defeq \frac{\exp\left(\evx_d\right)}{\sum_{d' = 1}^{D} \exp\left(\evx_{d'}\right)}
+    \end{equation}
+    is the \defn{softmax} function for $\vx \in \R^D$ and $d \in \left\{1, \ldots, D\right\}$.
+\end{definition}
+We will later compare transformer-based LMs to other LMs, such as $n$-gram LMs.
+For that, the following natural definition will be useful useful.
+\begin{definition}{Language model equivalence}{lm-equivalence}
+    Two LMs $\plm$ and $q$ over $\kleene{\alphabet}$ are \defn{equivalent} if $\plm\left(\str\right) = q\left(\str\right)$ for all $\str \in \kleene{\alphabet}$.
+\end{definition}
