@@ -27,12 +27,12 @@ A simplified but representative text-to-vector pipeline is as follows:
     \underbrace{\texttt{["I", "love", "NLP"]}}_{\text{tokens}}
     \xrightarrow{\text{Embed}}
     \underbrace{
-    \begin{bmatrix}
-        0.94 & \cdots & - 1.60 \\
-        - 0.57 & \cdots & 2.58 \\
-        0.34 & \cdots & 0.05
-    \end{bmatrix}
-}_{\text{embedded inputs in \(\mathbb{R}^{3 \times d}\)}}
+        \begin{bmatrix}
+            0.94   & \cdots & - 1.60 \\
+            - 0.57 & \cdots & 2.58   \\
+            0.34   & \cdots & 0.05
+        \end{bmatrix}
+    }_{\text{embedded inputs in \(\mathbb{R}^{3 \times d}\)}}
 \end{equation*}
 
 In the above, we have mapped each token to a vector in \(\mathbb{R}^{d}\) and laid them out horizontally in a single matrix following convention, where the numbers were arbitrarily chosen for illustrative purposes.
@@ -96,15 +96,25 @@ Other methods of forming a language model vocabulary include WordPiece~\citep{sc
 
 
 
-\section{Extra Symbols}
+\section{Additional Symbols and Representational Capacity}
+
+While the effect of tokenization schemes on the representational capacity of language models is not well-understood, the \emph{alphabet} that a transformer works over is known to have a significant impact on the model's ability to represent certain models of computation.
+A classic example of this is how transformers can simulate Turing machines by using extra symbols to represent their internal configuration \citep{perez-etal-2021-turing}.
+Intuitively, in a sequence-to-sequence or a language modeling task, the transformer uses the richer alphabet of internal representations to output the (changes to the) current internal state of the computational model and access those changes as the output string is fed ot the model as input in the future.
+
+Concretely, rather than working over the alphabet of input symbols $\alphabet$, the transformer (deterministically) outputs symbols from an \emph{augmented} alphabet $\augalphabet = \alphabet \times \intalphabet$, where $\intalphabet$ can be thought of as the alphabet whose symbols represent the (changes to the) internal state of the computational model.
+Elements of $\augalphabet$ then represent pairs of string symbols and internal states, and the transformer can use the internal state to keep track of the current state of the computational model while still processing the input string.
+As a concrete example, \citet{perez-etal-2021-turing} use an internal alphabet $\intalphabet$ that, among other things, contains the current state of the Turing machine, the content written on the tape, and the position of the tape head.
+The same principle can also be used to simulate simpler sequential models of computation, such as finite automata.
+In this case, the internal alphabet $\intalphabet$ simply contains the current state of the automaton, meaning that the elements $\left(\sym, \fsaState\right) \in \augalphabet$ represent the symbol $\sym$ on the transition taken by the automaton and the state $\fsaState$ transitioned into the automaton.
+Simulating the automaton is then particularly simple: The transformer can simply attend to the previously output internal state to determine the current state of the simulated automaton and then process the strings accordingly.
+While not discussed by \citet{perez-etal-2021-turing} initially, outputting the internal states from $\intalphabet$ can be thought of as a form of performing \defn{chain-of-thought} reasoning \citep{wei2023chain}, where the transformer can keep track of the internal state of the computational model as it processes the input string \citep{feng2023revealing,merrill2024the,nowak-etal-2024-representational}.
+
 
 \subsection{BOS}\label{sec:BOS}
 
 The use of a special symbol such as BOS (beginning of sequence), EOS (end of sequence), and CLS (classification) These are special symbols outside of the usual alphabet of symbols. These special symbols are often used as distinguished positions to carry information about the input - for instance, one might take the output at the CLS position as an embedding of the entire input sentence. Having one of these tokens in the sequence also serves the functional purpose of allowing a transformer to create the value $\frac{1}{n}$ (or $\frac{1}{i+1}$ if future-masked) by using uniform attention \cref{sec:uniform-attention}. For instance, constructing $\frac{1}{i+1}$ was used in \citet{merrill-sabharwal-2024-cot} to do retrieval using the layer-norm hash.
 
-\subsection{Turing Machine Proof?}
-
-\AS{Will write}
 
 
 \section{Notes to be deleted}
