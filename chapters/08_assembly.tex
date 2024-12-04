@@ -17,7 +17,28 @@
 
 \section{Computing MOD without positional encodings}
 
-\WM{Will write}
+If their positional embeddings contain appropriate period functions, transformers can use them to implement modular counting and recognize parity.
+However, even without positional embeddings (but a beginning of sequence token), it is possible to recognize parity and implement related modular counting tasks with transformers.
+We now present a construction by which masked pre-norm saturated transformers without any positional embeddings can recognize parity.
+The construction is a special case of a more general result in Lemma 1 of \citet{merrill-2024-little-depth}, as the idea can be generalized to implement other problems involving modular counting.
+
+We define the parity task as follows: given a string $w \in \{a, b\}^*$, the goal is to map $\$ w$ to 1 if the number of $a$'s in $w$ is even and 0 otherwise.
+$\$$ can be interpreted as a beginning of sequence token.
+The construction uses two layers with two heads, and the output at each token $i$ will be the parity of prefix $i$.
+The first layer uses a uniform head to compute, at each token $i$, $a_i / i$, where $a_i$ is the number of $a$'s in the prefix of tokens up to and including index $i$.
+It also computes $1/i$ via uniform attention.
+Next, the second layer will implement a head that checks whether there exists $j < i$ such that $2j = a_i$.
+This is done via a layer-norm hash construction (\Cref{sec:ln_hash}): we attend with the following head:
+
+\begin{head}{returns $\phi(a_i)$ iff $i$ is even}
+    \item query $\phi(a_i/i, 1/i) = \phi(a_i)$;
+    \item key $\phi(2j, 1) = \phi(2j)$;
+    \item value $\phi(2j, 1) = \phi(2j)$.
+\end{head}
+
+Direct implementation of this head requires selective pre-norm (cf.~\Cref{sec:ln_hash}), but it is possible it could be modified to not need this.
+The last feedforward layer then verifies that the value retrieved by the head equals $\phi(a_i)$ and returns 1 iff so.
+For further details of the construction and working with layer-norm hash, see \Cref{sec:ln_hash} and \citet{merrill-2024-little-depth,merrill-sabharwal-2024-cot}.
 
 \section{Dyck Language}
 \CW{Will write}

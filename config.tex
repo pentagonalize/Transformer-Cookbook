@@ -87,6 +87,21 @@
 
 \newtcbtheorem[]{rem}{Remark}{theorembox,colframe=Peach,colback=Peach!3,colbacktitle=Peach!3}{rem}
 
+\colorlet{HeadColor}{SeaGreen}
+\newtcbtheorem[crefname={head}{Head},Crefname={Head}{Head}]{headwrapper}{Head}{
+    theorembox,
+    colframe=HeadColor,
+    colback=HeadColor!3,
+    colbacktitle=HeadColor!3,
+    separator sign=:\ , % Use a period and space instead of parentheses
+    description delimiters={} % Remove parentheses around the description
+}{headwrapper}
+\newenvironment{head}[1]
+    {\begin{headwrapper}{#1}{}
+    \begin{itemize}}
+    {\end{itemize} 
+    \end{headwrapper}}
+
 % Transformer component shortcuts
 \newcommand{\ReLU}{\text{ReLU}}
 \newcommand{\GELU}{\text{GELU}}
