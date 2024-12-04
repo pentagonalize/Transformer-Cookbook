@@ -52,7 +52,49 @@ Although this simplification is convenient for theoretical analysis, the details
 
 \subsection{Byte Pair Encoding (BPE)}
 
-\AX{Maybe will write}
+Byte pair encoding~\citep{gage1994new,sennrich2015neural} is a class of methods for data compression or text segmentation that iteratively introduces new symbols by merging the most frequent pairs in a sequence.
+It is used to construct the vocabulary in language modeling, where it is applied to the corpus prior to training.
+One objective of BPE is to better capture rare words that would otherwise be out-of-vocabulary during deployment, without significantly expanding the overall vocabulary size.
+As an example, suppose that our initial corpus is as follows:
+\begin{center}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+aaabdaaabac
+\end{verbatim}
+\end{minipage}
+\end{center}
+where we begin with the initial vocabulary of \texttt{["a", "b", "c"]}.
+The pair (bigram) \texttt{"aa"} occurs most often, so we replace it with a new token \texttt{"Z"}, which results in:
+\begin{center}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+ZabdZabac, Z=aa
+\end{verbatim}
+\end{minipage}
+\end{center}
+We then repeat this by substituting the pair \texttt{"ab"} with \texttt{"Y"}:
+\begin{center}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+ZYdZYac, Y=ab, Z=aa
+\end{verbatim}
+\end{minipage}
+\end{center}
+And finally, replacing \texttt{"ZY"} with \texttt{"X"} we get:
+\begin{center}
+\begin{minipage}{0.5\linewidth}
+\begin{verbatim}
+XdXac, X=ZY, Y=ab, Z=aa
+\end{verbatim}
+\end{minipage}
+\end{center}
+Because all bigrams have the same frequency, no more substitutions may be made, and so we terminate with the final vocabulary of \texttt{["a", "b", "c", "X", "Y", "Z"]}.
+The above is a simplified example with an initial vocabulary of single-character tokens, which may more generally also include unicode characters or sequences.
+Moreover, one may also define more complex new-symbol and termination conditions, so as to better control the final vocabulary.
+Other methods of forming a language model vocabulary include WordPiece~\citep{schuster2012japanese} and unigram tokenization~\citep{kudo2018subword}.
+
+
+
 
 \section{Additional Symbols and Representational Capacity}
 

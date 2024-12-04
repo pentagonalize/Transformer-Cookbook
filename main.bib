@@ -330,9 +330,29 @@
   year      = {2023}
 }
 
+@inproceedings{bhattamishra2020ability,
+    title = "On the {A}bility and {L}imitations of {T}ransformers to {R}ecognize {F}ormal {L}anguages",
+    author = "Bhattamishra, Satwik  and
+      Ahuja, Kabir  and
+      Goyal, Navin",
+    editor = "Webber, Bonnie  and
+      Cohn, Trevor  and
+      He, Yulan  and
+      Liu, Yang",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.emnlp-main.576",
+    doi = "10.18653/v1/2020.emnlp-main.576",
+    pages = "7096--7116",
+    abstract = "Transformers have supplanted recurrent models in a large number of NLP tasks. However, the differences in their abilities to model different syntactic properties remain largely unknown. Past works suggest that LSTMs generalize very well on regular languages and have close connections with counter languages. In this work, we systematically study the ability of Transformers to model such languages as well as the role of its individual components in doing so. We first provide a construction of Transformers for a subclass of counter languages, including well-studied languages such as n-ary Boolean Expressions, Dyck-1, and its generalizations. In experiments, we find that Transformers do well on this subclass, and their learned mechanism strongly correlates with our construction. Perhaps surprisingly, in contrast to LSTMs, Transformers do well only on a subset of regular languages with degrading performance as we make languages more complex according to a well-known measure of complexity. Our analysis also provides insights on the role of self-attention mechanism in modeling certain behaviors and the influence of positional encoding schemes on the learning and generalization abilities of the model.",
+}
+
 @article{ba2016layer,
   title   = {Layer normalization},
-  author  = {Lei Ba, Jimmy and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  author  = {Ba, Jimmy and Kiros, Jamie Ryan and Hinton, Geoffrey E},
   journal = {ArXiv e-prints},
   pages   = {arXiv--1607},
   year    = {2016}
@@ -449,7 +469,7 @@
   year={2019}
 }
 
-@inproceedings{merrill2024little,
+@inproceedings{merrill-2024-little-depth,
   title={A Little Depth Goes a Long Way: The Expressive Power of Log-Depth Transformers},
   author={William Merrill and Ashish Sabharwal},
   booktitle={NeurIPS 2024 Workshop on Mathematics of Modern Machine Learning},
@@ -476,4 +496,39 @@
     doi = "10.18653/v1/2021.acl-long.292",
     pages = "3770--3785",
     abstract = "Despite their impressive performance in NLP, self-attention networks were recently proved to be limited for processing formal languages with hierarchical structure, such as Dyck-k, the language consisting of well-nested parentheses of k types. This suggested that natural language can be approximated well with models that are too weak for formal languages, or that the role of hierarchy and recursion in natural language might be limited. We qualify this implication by proving that self-attention networks can process Dyck-(k, D), the subset of Dyck-k with depth bounded by D, which arguably better captures the bounded hierarchical structure of natural language. Specifically, we construct a hard-attention network with D+1 layers and O(log k) memory size (per token per layer) that recognizes Dyck-(k, D), and a soft-attention network with two layers and O(log k) memory size that generates Dyck-(k, D). Experiments show that self-attention networks trained on Dyck-(k, D) generalize to longer inputs with near-perfect accuracy, and also verify the theoretical memory advantage of self-attention networks over recurrent networks.",
+}
+
+
+@article{sennrich2015neural,
+  title={Neural machine translation of rare words with subword units},
+  author={Sennrich, Rico and Haddow, Barry and Birch, Alexandra},
+  journal={arXiv preprint arXiv:1508.07909},
+  year={2015}
+}
+
+@article{kudo2018subword,
+  title={Subword regularization: Improving neural network translation models with multiple subword candidates},
+  author={Kudo, Taku},
+  journal={arXiv preprint arXiv:1804.10959},
+  year={2018}
+}
+
+@article{gage1994new,
+  title={A new algorithm for data compression},
+  author={Gage, Philip},
+  journal={The C Users Journal},
+  volume={12},
+  number={2},
+  pages={23--38},
+  year={1994},
+  publisher={R \& D Publications, Inc. Lawrence, KS, USA}
+}
+
+@inproceedings{schuster2012japanese,
+  title={Japanese and korean voice search},
+  author={Schuster, Mike and Nakajima, Kaisuke},
+  booktitle={2012 IEEE international conference on acoustics, speech and signal processing (ICASSP)},
+  pages={5149--5152},
+  year={2012},
+  organization={IEEE}
 }

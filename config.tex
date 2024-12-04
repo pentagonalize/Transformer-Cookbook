@@ -96,6 +96,21 @@
 
 \newtcbtheorem[]{rem}{Remark}{theorembox,colframe=Peach,colback=Peach!3,colbacktitle=Peach!3}{rem}
 
+\colorlet{HeadColor}{SeaGreen}
+\newtcbtheorem[crefname={head}{Head},Crefname={Head}{Head}]{headwrapper}{Head}{
+    theorembox,
+    colframe=HeadColor,
+    colback=HeadColor!3,
+    colbacktitle=HeadColor!3,
+    separator sign=:\ , % Use a period and space instead of parentheses
+    description delimiters={} % Remove parentheses around the description
+}{headwrapper}
+\newenvironment{head}[1]
+    {\begin{headwrapper}{#1}{}
+    \begin{itemize}}
+    {\end{itemize} 
+    \end{headwrapper}}
+
 % Transformer component shortcuts
 \newcommand{\tf}{\mymacro{\mathcal{T}}}
 \newcommand{\ReLU}{\text{ReLU}}
@@ -114,6 +129,11 @@
 \newcommand{\UHAT}{\textsf{UHAT}}
 \newcommand{\AHAT}{\textsf{AHAT}}
 \newcommand{\SMAT}{\textsf{SMAT}}
+
+% Language names
+\newcommand{\dyckk}[1]{\textsc{Dyck}\text{-}\ensuremath{#1}}
+\newcommand{\dyckkd}[2]{\textsc{Dyck}\text{-}\ensuremath{#1}\text{-}\ensuremath{#2}}
+\newcommand{\shuffledyckk}[2]{\textsc{ShuffleDyck}\text{-}\ensuremath{#1}}
 
 % Math shortcuts
 \def\R{\mathbb{R}}
@@ -181,12 +201,10 @@
 % \newcommand{\WM}[1]{({\textcolor{RoyalPurple}{\textbf{WM: #1}}})}
 \newcommand{\uvp}[1]{({\textcolor{Cyan}{\textbf{YP: #1}}})}
 \newcommand{\GF}[1]{({\textcolor{Salmon}{\textbf{GF: #1}}})}
-
-% \newcommand{\AX}[1]{({\textcolor{blue}{\textbf{AX: #1}}})}
 \newcommand{\BD}[1]{({\textcolor{BlueGreen}{\textbf{BD: #1}}})}
 \newcommand{\EF}[1]{({\textcolor{gray}{\textbf{EF: #1}}})}
 % \newcommand{\AS}[1]{({\textcolor{AnejBlue}{\textbf{AS: #1}}})}
-% \newcommand{\CW}[1]{({\textcolor{gray}{\textbf{CW: #1}}})}
+\newcommand{\CW}[1]{({\textcolor{PineGreen}{\textbf{CW: #1}}})}
 \newcommand{\NS}[1]{({\textcolor{CarnationPink}{\textbf{NS: #1}}})}
 \newcommand{\DF}[1]{({\textcolor{orange}{\textbf{DF: #1}}})}
 
