@@ -1,6 +1,6 @@
 %-----------------------------------
 %
-\chapter{Assembly}
+\chapter{Recipes}
 %
 %-----------------------------------
 
@@ -11,9 +11,310 @@
 
 \LS{Will write}
 
-\section{n-grams}
+\section{Exchanging Heads for Layers}
+We now show how one can exchange the computations performed by a transformer head with those of a transformer layer, assuming no layer normalization is performed.\AS{Check the layer norm thing}
+This will allow us to focus on transformer constructions that only use heads, since those can be converted to layer-based ones.
 
-\AY{Will write}
+Consider a transformer layer with $\nHead$ heads, where $\tfQ_h$, $\tfK_h$, and $\tfV_h$ are the query, key, and value transformations of the $h$\textsuperscript{th} head, respectively.
+Intuitively, we will simply reuse the head's parameters as the parameters of the single head in a transformer block.
+Since the head combining function $\headCombineFunc$ can look at the outputs of all the heads at once, we will also have to provide it with the outputs of all the heads at some point.
+To enable this, we will make heavy use of the residual connections to accumulate the outputs of the layers that implement the individual heads.
+
+Concretely, we define $\nHead$ transformer blocks with single heads---the head of $h$\textsuperscript{th} block will compute the transformation of the $h$\textsuperscript{th} head of the original block.
+Supposing that each of the $\nHead$ heads computes $\hiddDim$-dimensional representations (with $\hiddDim'$-dimensional key and query vectors), we construct $\nHead$ layers working with $\left(\nHead + 1\right)\hiddDim$-dimensional representations.
+The original input representations to the heads $\vx^{(0)}_1, \ldots, \vx^{(0)}_T \in \R^\hiddDim$ will be zero-padded to $\left(\nHead + 1\right)\hiddDim$ dimensions and each of the layers will then ``fill out'' one of the remaining $\nHead$ ``slots'' with the output of the corresponding head based on the input representations.
+Schematically, denoting with $\mX^h$ the output of the $h$\textsuperscript{th} layer, one can think of the transformations performed by the $\nHead$ layers as follows:
+\begin{subequations}
+    \begin{align}
+        \mX^0        & \colon \begin{pmatrix}
+                                  \vx^{(0)}_1     & \vx^{(0)}_2     & \vx^{(0)}_3     & \cdots & \vx^{(0)}_{\tstep} & \cdots & \vx^{(0)}_T     \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \vzero_\hiddDim    & \cdots & \vzero_\hiddDim \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \vzero_\hiddDim    & \cdots & \vzero_\hiddDim \\
+                                  \vdots          & \vdots          & \vdots          & \ddots & \vdots             & \ddots & \vdots          \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \vzero_\hiddDim    & \cdots & \vzero_\hiddDim \\
+                                  % 1               & 2               & 3               & \cdots & T               \\
+                                  % 1               & 1               & 1               & \cdots & 1                     \\
+                              \end{pmatrix}               \\
+        \mX^1        & \colon \begin{pmatrix}
+                                  \vx^{(0)}_1     & \vx^{(0)}_2     & \vx^{(0)}_3     & \cdots & \vx^{(0)}_{\tstep} & \cdots & \vx^{(0)}_T     \\
+                                  \vx^{(1)}_1     & \vx^{(1)}_2     & \vx^{(1)}_3     & \cdots & \vx^{(1)}_{\tstep} & \cdots & \vx^{(1)}_T     \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \vzero_\hiddDim    & \cdots & \vzero_\hiddDim \\
+                                  \vdots          & \vdots          & \vdots          & \ddots & \vdots             & \ddots & \vdots          \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \cdots             & \cdots & \vzero_\hiddDim \\
+                                  % 1               & 2               & 3               & \cdots & T                     \\
+                                  % 1               & 1               & 1               & \cdots & 1                           \\
+                              \end{pmatrix}               \\
+        \mX^2        & \colon \begin{pmatrix}
+                                  \vx^{(0)}_1     & \vx^{(0)}_2     & \vx^{(0)}_3     & \cdots & \vx^{(0)}_{\tstep} & \cdots & \vx^{(0)}_T     \\
+                                  \vx^{(1)}_1     & \vx^{(1)}_2     & \vx^{(1)}_3     & \cdots & \vx^{(1)}_{\tstep} & \cdots & \vx^{(1)}_T     \\
+                                  \vx^{(2)}_1     & \vx^{(2)}_2     & \vx^{(2)}_3     & \cdots & \vx^{(2)}_{\tstep} & \cdots & \vx^{(2)}_T     \\
+                                  \vdots          & \vdots          & \vdots          & \ddots & \vdots             & \ddots & \vdots          \\
+                                  \vzero_\hiddDim & \vzero_\hiddDim & \vzero_\hiddDim & \cdots & \cdots             & \cdots & \vzero_\hiddDim \\
+                                  % 1               & 2               & 3               & \cdots & T                     \\
+                                  % 1               & 1               & 1               & \cdots & 1                           \\
+                              \end{pmatrix}               \\
+                     & \vdots   \nonumber                                                                                                                \\
+        \mX^{\nHead} & \colon \begin{pmatrix}
+                                  \vx^{(0)}_1      & \vx^{(0)}_2           & \vx^{(0)}_3      & \cdots & \vx^{(0)}_{\tstep}      & \cdots & \vx^{(0)}_T      \\
+                                  \vx^{(1)}_1      & \vx^{(1)}_2           & \vx^{(1)}_3      & \cdots & \vx^{(1)}_{\tstep}      & \cdots & \vx^{(1)}_T      \\
+                                  \vx^{(2)}_1      & \vx^{(2)}_2           & \vx^{(2)}_3      & \cdots & \vx^{(2)}_{\tstep}      & \cdots & \vx^{(2)}_T      \\
+                                  \vdots           & \vdots                & \vdots           & \ddots & \vdots                  & \ddots & \vdots           \\
+                                  \vx^{(\nHead)}_1 & \vx^{(\nHead)}_\nHead & \vx^{(\nHead)}_3 & \cdots & \vx^{(\nHead)}_{\tstep} & \cdots & \vx^{(\nHead)}_T \\
+                              \end{pmatrix}
+    \end{align}
+\end{subequations}
+Here, and $\vx^{(h)}_t$ is the output of the $h$\textsuperscript{th} head at position $t$.
+To achieve this, we can the query, key, and value transformations of the $h$\textsuperscript{th} layer to be the same as the query, key, and value transformations of the $h$\textsuperscript{th} head of the original layer.
+More concretely, let $\qproj_h \in \R^{\hiddDim' \times \hiddDim}, \kproj_h \in \R^{\hiddDim' \times \hiddDim}, \vproj_h \in \R^{\hiddDim \times \hiddDim}$ be the query, key, and value projection matrices of the $h$\textsuperscript{th} head of the original layer.\AS{handle the head MLPs}
+Then, we define the query, key, and value projection matrices $\qproj_{L, h} \in \R^{\hiddDim' \times \left(\nHead + 1\right)\hiddDim}, \kproj_{L, h} \in \R^{\hiddDim' \times \left(\nHead + 1\right)\hiddDim}, \vproj_{L, h} \in \R^{\left(\nHead + 1\right)\hiddDim\times \left(\nHead + 1\right)\hiddDim}$ of the $h$\textsuperscript{th} layer as
+\begin{subequations}
+    \begin{align}
+        \qproj_{L, h} = \begin{blockarray}{ccc}
+                            \overbrace{\hspace{1.5cm}}^{\text{$\hiddDim$}} & \overbrace{\hspace{1.5cm}}^{\text{$\nHead \hiddDim$}} & \\
+                            \begin{block}{(cc)c}
+                \qproj_h & \mO_{\hiddDim' \times \nHead \hiddDim} & {\scriptstyle \hiddDim'} \\
+            \end{block}
+                        \end{blockarray} \\
+        \kproj_{L, h} = \begin{blockarray}{ccc}
+                            \overbrace{\hspace{1.5cm}}^{\text{$\hiddDim$}} & \overbrace{\hspace{1.5cm}}^{\text{$\nHead \hiddDim$}} & \\
+                            \begin{block}{(cc)c}
+                \kproj_h & \mO_{\hiddDim' \times \nHead \hiddDim} & {\scriptstyle \hiddDim'} \\
+            \end{block}
+                        \end{blockarray} \\
+        \vproj_{L, h} = \begin{blockarray}{ccc}
+                            \overbrace{\hspace{1.5cm}}^{\text{$\hiddDim$}} & \overbrace{\hspace{1.5cm}}^{\text{$\nHead \hiddDim$}} & \\
+                            \begin{block}{(cc)c}
+                \mO_{h \hiddDim \times \hiddDim} & \mO_{h \hiddDim \times \nHead \hiddDim} & {\scriptstyle h \hiddDim} \\
+                \vproj_h & \mO_{\hiddDim \times \nHead \hiddDim} & {\scriptstyle \hiddDim} \\
+                \mO_{\left(\nHead - h\right) \hiddDim \times \hiddDim} & \mO_{\left(\nHead - h\right) \hiddDim \times \nHead \hiddDim} & {\scriptstyle \left(\nHead - h\right) \hiddDim} \\
+            \end{block}
+                        \end{blockarray}.
+    \end{align}
+\end{subequations}
+Each of the matrices $\qproj_{L, h}, \kproj_{L, h}, \vproj_{L, h}$ ``looks at'' the first $\hiddDim$ dimensions of the input representation to the layer (ones containing the original input representations to the heads).
+This ensures that the $h$\textsuperscript{th} layer will compute the same transformation as the $h$\textsuperscript{th} head of the original layer and place it in the $h$\textsuperscript{th} ``slot'' of the output representation (which was previously zero-valued).
+The MLPs can be set to implement the identity function.
+Residual connections between the layers then ensure that the outputs of the heads are accumulated in the output of the layer.
+At the end of the $\nHead$ layers, the $\nHead + 1$ ``slots'' thus contain the outputs of the $\nHead$ heads of the original layer and the input representations.
+The MLP of the final layer can then combine these outputs to compute the final output of the layer by setting it to implement the head combining function $\headCombineFunc$.
+This shows that the computations performed by transformer heads can be simulated by transformer layers, assuming no layer normalization is performed.
+
+\section{\texorpdfstring{$n$}{n}-grams}
+
+We now turn to the language modeling task (cf. \cref{sec:language-models}) and connect the transformer architecture to one of the simplest language model families: $n$-gram language models (\ngram{} LMs).
+The next-symbol probabilities in \ngram{} LMs are computed under the \ngram{} assumption.
+\begin{assumption}{\ngram{} Assumption}{ngram}
+    The \defn{\ngram{} assumption} states that the conditional probability of the symbol $\sym_\tstep$ given $\strlt$ only depends on $n-1$ previous symbols $\str^{\tstep - 1}_{\tstep - n + 1} \defeq \sym_{\tstep-1},\ldots,\sym_{\tstep-n+1}$:\looseness=-1
+    \begin{equation} \label{eq:n-gram-assumption}
+        \plm\left(\sym_\tstep\mid \str_{<\tstep}\right) = \plm\left(\sym_\tstep \mid \str^{\tstep - 1}_{\tstep - n + 1}\right).
+    \end{equation}
+    \noindent We will refer to $\str^{\tstep - 1}_{\tstep - n + 1}$ as the \defn{history} of $\sym_\tstep$.
+\end{assumption}
+
+In the following, we describe how a transformer LM can simulate an \ngram LM in the sense of \cref{definition:lm-equivalence}.
+We will need the following ingredients:
+\begin{enumerate}[label=\textit{(\arabic*)}, topsep=5pt, itemsep=2pt,parsep=2pt]
+    \item Hard attention (unique or averaging),
+    \item No layer normalization,
+    \item Unbounded positional encodings,
+    \item Logarithmic precision,
+    \item One-hot symbol encodings, and
+    \item $n - 1$ heads.
+\end{enumerate}
+
+
+\begin{figure}
+    \centering
+
+    \begin{tikzpicture}[
+        tape node/.style={draw=ETHBlue!80,minimum size=0.85cm,fill=ETHBlue!20},
+        head node/.style={draw=ETHGreen!80,circle,minimum size=0.65cm,fill=ETHGreen!60,text=white},
+        attn arrow/.style={-{Latex[length=2.25mm,width=1.5mm]},ETHGreen!100},
+        comb arrow/.style={-{Latex[length=2.25mm,width=1.5mm]},ETHRed!70},
+        comb node/.style={draw=ETHRed!80,circle,minimum size=0.75cm,fill=ETHRed!40},
+        ]
+
+        % Draw tape
+        \foreach \i/\y in {0/$\sym_1$,1/$\sym_2$,2/$\cdots$,3/$\sym_{\tstep-4}$,4/$\sym_{\tstep-3}$,5/$\sym_{\tstep-2}$,6/$\sym_{\tstep-1}$,7/$\symt$,8/$\cdots$} {
+                \ifnum \i=7
+                    \node[tape node,fill=ETHBlue!40] (tape-\i) at (0.85*\i,0) {\footnotesize \y};
+                \else
+                    \ifnum \i>3
+                        \ifnum \i<7
+                            \node[tape node,fill=ETHBlue!25] (tape-\i) at (0.85*\i,0) {\footnotesize \y};
+                        \fi
+                    \else
+                        \node[tape node,fill=ETHBlue!15] (tape-\i) at (0.85*\i,0) {\footnotesize \y};
+                    \fi
+                    \ifnum \i>7
+                        \node[tape node,fill=ETHBlue!15] (tape-\i) at (0.85*\i,0) {\footnotesize \y};
+                    \fi
+                \fi
+            }
+
+        % Draw attention heads
+        \node[head node] (head-1) at (2,1.7) {\scriptsize \texttt{Head 3}};
+        \node[head node] (head-2) at (3.5,1.7) {\scriptsize \texttt{Head 2}};
+        \node[head node] (head-3) at (5,1.7) {\scriptsize \texttt{Head 1}};
+
+        % Draw arrows from heads to tape
+        \draw[attn arrow, ETHGreen!20] (head-1) to[out=270,in=90] (tape-0.north);
+        \draw[attn arrow, ETHGreen!20] (head-1) to[out=270,in=90] (tape-1.north);
+        \draw[attn arrow, ETHGreen!20] (head-1) to[out=270,in=90] (tape-3.north);
+        % \draw[attn arrow, ETHGreen!20] (head-1) to[out=270,in=90] (tape-4.north);
+        \draw[attn arrow, ETHGreen!20] (head-1) to[out=270,in=90] (tape-5.north);
+        \draw[attn arrow, ETHGreen!20] (head-2) to[out=270,in=90] (tape-0.north);
+        \draw[attn arrow, ETHGreen!20] (head-2) to[out=270,in=90] (tape-1.north);
+        \draw[attn arrow, ETHGreen!20] (head-2) to[out=270,in=90] (tape-3.north);
+        \draw[attn arrow, ETHGreen!20] (head-2) to[out=270,in=90] (tape-4.north);
+        % \draw[attn arrow, ETHGreen!20] (head-2) to[out=270,in=90] (tape-5.north);
+        \draw[attn arrow, ETHGreen!20] (head-3) to[out=270,in=90] (tape-0.north);
+        \draw[attn arrow, ETHGreen!20] (head-3) to[out=270,in=90] (tape-1.north);
+        \draw[attn arrow, ETHGreen!20] (head-3) to[out=270,in=90] (tape-3.north);
+        \draw[attn arrow, ETHGreen!20] (head-3) to[out=270,in=90] (tape-4.north);
+        \draw[attn arrow, ETHGreen!20] (head-3) to[out=270,in=90] (tape-5.north);
+        \draw[attn arrow] (head-1) to[out=270,in=90] (tape-4.north);
+        \draw[attn arrow] (head-2) to[out=270,in=90] (tape-5.north);
+        \draw[attn arrow] (head-3) to[out=270,in=90] (tape-6.north);
+
+        % Draw combiner node
+        \node[comb node] (combiner) at (4.5,3.4) {$\headCombineFunc$};
+
+        % Draw arrows from tape to combiner
+        \draw[comb arrow] (head-1.north) to[out=90,in=270] (combiner.south);
+        \draw[comb arrow] (head-2.north) to[out=90,in=270] (combiner.south);
+        \draw[comb arrow] (head-3.north) to[out=90,in=270] (combiner.south);
+
+        \node[fill=none] (out) at (0.5,4.25) {$\plm\left(\symt\mid\strlt\right)$};
+
+        % Draw an arrow from the combiner to the output
+        % \draw[comb arrow] (combiner.north) -- ++(0,1.25) node[above] {};
+        % \draw (combiner) edge[comb arrow, right] node{\footnotesize $\outMtx$} (out.south);
+        \draw[comb arrow] (combiner.north) to[out=90,in=270] (out.south) ;
+        % \node[fill=none] (out) at (3.45,3.7) {\footnotesize $\outMtx$};
+        \node[fill=none] (out) at (3.2,4.5) {\footnotesize $\softmax\left(\outMtx \; \cdot\right)$};
+
+    \end{tikzpicture}
+    \caption{A transformer LM can simulate a $4$-gram LM using \textcolor{ETHGreen}{3 heads}. The stronger arrows from the heads to the symbols show where the heads focus their attention.}
+    \label{fig:transformer-n-gram-label}
+    \vspace{-10pt}
+\end{figure}
+
+The idea of the recipe is quite simple.
+Given an $n$-gram LM $\plm$, we construct an equivalent transformer LM $\tfplm$ that looks back at the preceding $n - 1$ positions using the $n - 1$ heads, each of them uniquely attending to exactly one position.
+The symbols attended to can be used to identify the full history, which can be used to access the conditional distribution over the next symbol.
+This intuition is outlined in \cref{fig:transformer-n-gram-label}.\footnote{For simplicity, we disregard the role of residual connections in the following outline. Residual connections are, however, considered in the full proof later.}
+
+To ease the exposition, we start with the final step of the construction: Assuming we have identified the appropriate history $\str^{\tstep - 1}_{\tstep - n + 1}$ after combining the head values using the head combining function $\headCombineFunc$, we show how $\tfplm$ can encode the conditional probability distribution $\plm\left(\sym_\tstep\mid\str_{\tstep- n + 1 : \tstep - 1}\right)$.
+The intuition of this step is simple: Knowing what the individual $\plm\left(\sym_\tstep\mid\str^{\tstep - 1}_{\tstep - n + 1}\right)$ for $\sym_\tstep \in \eosalphabet$ are, we can simply put their logits into a vector and combine the constructed vectors for all possible histories into the output matrix $\outMtx$:\footnote{To be able to take the $\log$ of $0$ probabilities, we work over the set of \emph{extended} reals $\Rex = \R \cup \set{-\infty, \infty}$.}\textsuperscript{,}\footnote{Throughout the paper, we implicitly index the matrices directly with symbols and histories. We assume that the symbols and histories are ordered in some way and that the matrices are ordered accordingly.}
+\begin{equation}
+    \eOutMtx_{\sym, \str^{\tstep - 1}_{\tstep - n + 1}} \defeq \log{\plm\left(\sym_\tstep\mid\str^{\tstep - 1}_{\tstep - n + 1}\right)}
+\end{equation}
+In the following, we write $\tfenc\left(\strlt\right)$ as shorthand notation for $\tfenc\left(\strlt\right) \defeq \tfF\left(\vx_{\tstep - 1}^\nLayer\right)$ (i.e., the representation which is linearly transformed by $\outMtx$ to compute $\plm\left(\symt \mid \strlt\right)$ after normalization) where $\mX^\nLayer = \tf\left(\mX^0\right)\left(\strlt\right)$.
+If we one-hot encode the identified history with $\tf$ as
+\begin{equation}
+    \tfenc\left(\strlt\right) \defeq \onehot{\str^{\tstep - 1}_{\tstep - n + 1}}
+\end{equation}
+we can then, using the formulation of the transformer LM from \cref{def:transformer-plnsm}, use the $\tfenc\left(\strlt\right)$ to look up the appropriate column in $\outMtx$ containing the logits of the conditional probabilities given the identified history for all possible $\sym_\tstep \in \eosalphabet$, i.e., $\left(\outMtx \ \tfenc\left(\strlt\right)\right)_\sym = \log\plm\left(\sym \mid\str^{\tstep - 1}_{\tstep - n + 1}\right)$.
+
+We now consider the preceding step of the simulation: Identifying the history given that the $n - 1$ heads identified the symbols $\sym_1, \ldots, \sym_{n - 1}$ in the positions they attended to.
+If we concatenate the values of the $n - 1$ heads into a vector $\vv$, this vector of size $\left(n - 1\right)|\eosalphabet|$ will contain the \defn{multi-hot} representation of the history of interest:
+\begin{equation}
+    \vv = \begin{pmatrix}
+        \onehot{\sym_1} \\
+        \vdots          \\
+        \onehot{\sym_{n - 1}}
+    \end{pmatrix}
+\end{equation}
+and $\vv_{i |\eosalphabet| + j} = 1$ if and only if $r\left(\sym_i\right) = j$ for a bijection $r\colon \eosalphabet \to \NTo{|\eosalphabet|}$ that determines the indices of the one-hot representations of the symbols.
+We would then like to transform this vector into a vector $\vu \in \R^{|\alphabet|^{n - 1}}$ such that
+\begin{equation}
+    \evu_{i} = 1 \iff i = r'\left(\sym_1, \ldots, \sym_{n - 1}\right)
+\end{equation}
+for a bijection $r'\colon \underbrace{\eosalphabet \times \cdots \times \eosalphabet}_{n - 1\text{ times}} \to \NTo{|\eosalphabet|^{n - 1}}$.
+This can be equivalently written as
+\begin{equation}
+    \evu_{i} = 1 \iff \evv_{j |\eosalphabet| + r\left(\sym_j\right)} = 1 \text{ for all } j = 1, \ldots, n - 1
+\end{equation}
+where $i = r'\left(\sym_1, \ldots, \sym_{n - 1}\right)$.
+This is an instance of performing the logical \texttt{AND} operation, which can be implemented by an MLP as described in \cref{sec:ffnn_boolean}.
+This MLP will form the transformation $\headCombineFunc$ combining the information obtained from all the heads of the transformer.
+
+This brings us to the final part of the proof: Identifying the symbols at the previous $n - 1$ positions by the $n - 1$ transformer heads.
+To show how this can be done, let us consider the parameters we can still set to define a transformer:
+\begin{itemize}
+    \item The static symbol representations $\statRep$ and the positional encodings $\posEnc$.
+          For static representations, we use simple one-hot encodings $\onehot{\sym}$: $\statRepFun{\sym} \defeq \onehot{\sym}$.
+          For positional encodings, we use the following function:
+          \begin{equation}
+              \posEncFun{\tstep} = \begin{pmatrix}
+                  \tstep - h \\
+                  1
+              \end{pmatrix} \in \R^{2}
+          \end{equation}
+          We concatenate $\statRep$ and $\posEnc$ to obtain the symbol representations $\posStatRepFun{\sym_\tstep, \tstep} \in \R^{\nsymbols + 2}$.
+    \item The attention scoring function $\tfScore$.
+          We will use the a slightly modified version of the standard dot-product scoring function:
+          \begin{equation} \label{eq:transformer-ngram-function}
+              \tfScore\left(\vq, \vk\right) \defeq -\abs{\innerProd{\vq}{\vk}}.
+          \end{equation}
+          $\tfScore$ will, together with the positional encodings, allow us to easily single out the relevant positions in the string.
+    \item The parameters of each of the attention heads, that is, the transformations $\tfQ$, $\tfK$, and $\tfV$.
+          Each of those will take the form of a linear transformation of the static representations.
+          We describe them in more detail below.
+\end{itemize}
+The parameters of all the heads will be identical, with the only difference being a single parameter that depends on the ``index'' of the head, $h \in \NTo{\nHead}$.
+We describe the individual transformations $\tfQ_h$, $\tfK_h$, $\tfV_h$, and $\tfO_h$ of the head $h$.
+At any time step $\tstep$ (i.e., when computing the conditional distribution $\plm\left(\sym_\tstep \mid \strlt\right)$), the head $h$ will attend to the symbol at position $\tstep - h$, $\sym_{\tstep - h}$.
+In \cref{fig:transformer-n-gram-label}, for example, \texttt{Head $3$} attends to the position $\tstep - 3$, which is denoted by the stronger arrow to that position.
+We want it to put all its attention to this position: Given the query $\vq_{\tstep - 1}$, we want the attention function in \cref{eq:transformer-ngram-function} to be uniquely maximized by the key of the symbol at position $\tstep - h$.
+Notice that, therefore, the key does not have to depend on the identity of the symbol at position $\tstep - h$---only the positional information matters.
+We consider the following query and key transformations for head $h$:
+\begin{align}
+    \tfQ_h\colon & \begin{pmatrix}
+                       \onehot{\symt} \\
+                       \tstep - h     \\
+                       1
+                   \end{pmatrix} \mapsto \begin{pmatrix}
+                                             \tstep - h \\
+                                             -1
+                                         \end{pmatrix} \\
+    \tfK_h\colon & \begin{pmatrix}
+                       \onehot{\symt} \\
+                       \tstep - h     \\
+                       1
+                   \end{pmatrix} \mapsto \begin{pmatrix}
+                                             1 \\
+                                             \tstep
+                                         \end{pmatrix}.
+\end{align}
+Both are clearly linear.
+Intuitively, both transformations keep only the positional information.
+The query transformation ``injects'' the knowledge of which position should maximize the attention score, while the key transformation simply ``exposes'' the positional information about the symbol.
+The constants $1$ and $-1$ and the index of the position ensure that the inner product simply computes the difference between the position of the symbol and the position of interest:
+\begin{equation} \label{eq:hard-attention-scores}
+    \tfScore\left(\vq_\tstep, \vk_j\right) = \innerProd{\begin{pmatrix}
+            \tstep - h \\
+            -1
+        \end{pmatrix}}{\begin{pmatrix}
+            1 \\
+            j
+        \end{pmatrix}} = -\abs{j - \tstep + h},
+\end{equation}
+which is maximized by $j = \tstep - h$.
+
+This leaves us with the question of how to use the position of the symbol of interest ($\tstep - h$) to extract the one-hot encoding of the symbol at that position.
+Due to the information contained in the symbol representations $\posStatRepFun{\symt}$, this is trivial:
+\begin{equation} \label{eq:hard-attention-values}
+    \tfV\colon \begin{pmatrix}
+        \onehot{\symt} \\
+        \tstep - h     \\
+        1
+    \end{pmatrix} \mapsto \onehot{\sym_\tstep}.
+\end{equation}
+With this, the identity of the symbol is carried forward through the attention mechanism.
+
+
 
 \section{Computing MOD without positional encodings}
 
@@ -134,7 +435,7 @@ The attention weight $e_{i,D}+1-m_{i,D}$ will be $0$ for any position $i$ that h
 
 \section{ELIZA}
 
-\DF{Will write}
+\AY{Will write}
 
 \section{Comparison}
 \label{sec:assembly_comparison}
@@ -144,85 +445,85 @@ The attention weight $e_{i,D}+1-m_{i,D}$ will be $0$ for any position $i$ that h
 Assumptions:
 \begin{itemize}
     \item Function from $\Z\times\Z\to \left\{\begin{bmatrix}
-            -1\\\phantom- 1
-        \end{bmatrix}, \begin{bmatrix}
-            \phantom- 1\\-1
-        \end{bmatrix}\right\}$
+                  -1 \\\phantom- 1
+              \end{bmatrix}, \begin{bmatrix}
+                  \phantom- 1 \\-1
+              \end{bmatrix}\right\}$
 \end{itemize}
 
 This requires access to $\pm\frac{1}{i+1}$ in some dimensions $2k_0-1,2k_0$.
 
-    First we explain how to simulate a comparison of two count terms $C_1(i)\leq C_2(i)$. Then, we describe how to extend this to %simulate, for sets of indices $X_1$ and $X_2$, the expression \[\sum_{x\in X_1} c_{x} \cdot C_x(i) \leq \sum_{x\in X_2} c_{x} \cdot C_x(i).\]
-    compare linear combinations of count terms.
+First we explain how to simulate a comparison of two count terms $C_1(i)\leq C_2(i)$. Then, we describe how to extend this to %simulate, for sets of indices $X_1$ and $X_2$, the expression \[\sum_{x\in X_1} c_{x} \cdot C_x(i) \leq \sum_{x\in X_2} c_{x} \cdot C_x(i).\]
+compare linear combinations of count terms.
 
-    Suppose that we want to compare $C_1$ and $C_2$ in dimensions $2k_1-1,2k_1$ and $2k_2-1,2k_2$, and put the result in dimension $2k_3-1,2k_3$. Initially, the residual stream looks like this:
-    \begin{equation*}
+Suppose that we want to compare $C_1$ and $C_2$ in dimensions $2k_1-1,2k_1$ and $2k_2-1,2k_2$, and put the result in dimension $2k_3-1,2k_3$. Initially, the residual stream looks like this:
+\begin{equation*}
     \begin{blockarray}{cccc}
         & & i & \\
         \begin{block}{c[ccc]}
-                &  & \vdots &  \\
-               2k_0-1 & \cdots & -\frac{1}{i+1} & \cdots \\[6pt]
-                2k_0 & \cdots & +\frac{1}{i+1} & \cdots \\
-                & & \vdots & \\[6pt]
-               2k_1-1 & \cdots & -\frac{C_1(i)}{i+1} & \cdots \\[6pt]
-                2k_1 & \cdots & +\frac{C_1(i)}{i+1} & \cdots \\
-                & & \vdots & \\
-               2k_2-1 & \cdots & -\frac{C_2(i)}{i+1} & \cdots \\[6pt]
-                2k_2 & \cdots & +\frac{C_2(i)}{i+1} & \cdots \\
-              & & \vdots & \\
-               2k_3-1 & \cdots & 0 & \cdots \\[6pt]
-                2k_3 & \cdots & 0 & \cdots \\
-                & & \vdots & \\
+            &  & \vdots &  \\
+            2k_0-1 & \cdots & -\frac{1}{i+1} & \cdots \\[6pt]
+            2k_0 & \cdots & +\frac{1}{i+1} & \cdots \\
+            & & \vdots & \\[6pt]
+            2k_1-1 & \cdots & -\frac{C_1(i)}{i+1} & \cdots \\[6pt]
+            2k_1 & \cdots & +\frac{C_1(i)}{i+1} & \cdots \\
+            & & \vdots & \\
+            2k_2-1 & \cdots & -\frac{C_2(i)}{i+1} & \cdots \\[6pt]
+            2k_2 & \cdots & +\frac{C_2(i)}{i+1} & \cdots \\
+            & & \vdots & \\
+            2k_3-1 & \cdots & 0 & \cdots \\[6pt]
+            2k_3 & \cdots & 0 & \cdots \\
+            & & \vdots & \\
         \end{block}
     \end{blockarray}
-    \end{equation*}
+\end{equation*}
 
-    \newcommand{\clipfn}{\operatorname{gtz}}
+\newcommand{\clipfn}{\operatorname{gtz}}
 
-    We construct a feed-forward layer that computes the function:
-    \[\clipfn(X(i)) = \min\left(\frac{0.5}{i+1},\frac{X(i)}{i+1}-\frac{0.5}{i+1}\right)-\min\left(0,\frac{X(i)}{i+1}\right).
+We construct a feed-forward layer that computes the function:
+\[\clipfn(X(i)) = \min\left(\frac{0.5}{i+1},\frac{X(i)}{i+1}-\frac{0.5}{i+1}\right)-\min\left(0,\frac{X(i)}{i+1}\right).
     \qquad
     \begin{tikzpicture}[baseline=0.8cm]
-    \begin{axis}[width=4cm,xlabel={$X(i)$},xtick={-1,0,1,2},ylabel={$\clipfn(X(i))$},ytick={-0.5,0,0.5},yticklabels={$-\frac{0.5}{i+1}$,$0$,$\frac{0.5}{i+1}$}]
-    \addplot[mark=none,samples at={-1,0,1,2}] { min(0.5, x-0.5)-min(0,x) };
-    \end{axis}
+        \begin{axis}[width=4cm,xlabel={$X(i)$},xtick={-1,0,1,2},ylabel={$\clipfn(X(i))$},ytick={-0.5,0,0.5},yticklabels={$-\frac{0.5}{i+1}$,$0$,$\frac{0.5}{i+1}$}]
+            \addplot[mark=none,samples at={-1,0,1,2}] { min(0.5, x-0.5)-min(0,x) };
+        \end{axis}
     \end{tikzpicture}\]
 
-    Observe that $\clipfn(C_2(i)-C_1(i)+0.5)$ equals $\frac{0.5}{i+1}$ if $C_1(i)\leq C_2(i)$, and $-\frac{0.5}{i+1}$ otherwise.
-    This is because the counts $C_1(i),C_2(i)$ must be integers, so if $C_1(i)\leq C_2(i)$, then $C_2(i)-C_1(i)+0.5\geq 0.5$, and the expression will evaluate to $\frac{0.5}{i+1}$. Otherwise, $C_2(i)-C_1(i)+0.5<-0.5$, and the expression will evaluate to $-\frac{0.5}{i+1}$.
+Observe that $\clipfn(C_2(i)-C_1(i)+0.5)$ equals $\frac{0.5}{i+1}$ if $C_1(i)\leq C_2(i)$, and $-\frac{0.5}{i+1}$ otherwise.
+This is because the counts $C_1(i),C_2(i)$ must be integers, so if $C_1(i)\leq C_2(i)$, then $C_2(i)-C_1(i)+0.5\geq 0.5$, and the expression will evaluate to $\frac{0.5}{i+1}$. Otherwise, $C_2(i)-C_1(i)+0.5<-0.5$, and the expression will evaluate to $-\frac{0.5}{i+1}$.
 
-    It is straightforward, then, to use the construction for $\min$/$\max$ from above to produce a feed-forward layer that computes $\clipfn\left(C_2(i)-C_1(i)\right)$. Essentially, we use $W_1$ to compute the values (using the pre-existing values from the residual stream)
+It is straightforward, then, to use the construction for $\min$/$\max$ from above to produce a feed-forward layer that computes $\clipfn\left(C_2(i)-C_1(i)\right)$. Essentially, we use $W_1$ to compute the values (using the pre-existing values from the residual stream)
 
-    \[\frac{0.5}{i+1}, \frac{C_2(i)-C_1(i)+0.5}{i+1}, -\frac{C_2(i)-C_1(i)+0.5}{i+1}\]
+\[\frac{0.5}{i+1}, \frac{C_2(i)-C_1(i)+0.5}{i+1}, -\frac{C_2(i)-C_1(i)+0.5}{i+1}\]
 
-    Then we use $W_2$ to compute
+Then we use $W_2$ to compute
 
-    \[\frac{0.5}{i+1}+\ReLU\left(\frac{0.5}{i+1}-\frac{C_2(i)-C_1(i)+0.5}{i+1}\right)-\ReLU\left(\frac{0.5}{i+1}-\frac{C_2(i)-C_1(i)-0.5}{i+1}\right)\]
-    which equals $\clipfn(C_2(i)-C_1(i))$ as desired.
+\[\frac{0.5}{i+1}+\ReLU\left(\frac{0.5}{i+1}-\frac{C_2(i)-C_1(i)+0.5}{i+1}\right)-\ReLU\left(\frac{0.5}{i+1}-\frac{C_2(i)-C_1(i)-0.5}{i+1}\right)\]
+which equals $\clipfn(C_2(i)-C_1(i))$ as desired.
 
-    Similarly, it is straightforward to construct a feed-forward layer to compare linear combinations of count terms. That is, for disjoint sets of indices $K_1$ and $K_2$, to compute
-    \[\clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right).\]
+Similarly, it is straightforward to construct a feed-forward layer to compare linear combinations of count terms. That is, for disjoint sets of indices $K_1$ and $K_2$, to compute
+\[\clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right).\]
 
-    So we can construct a feed-forward layer $f:\R^d\to\R^d$ that computes in each dimension $i$ the following
+So we can construct a feed-forward layer $f:\R^d\to\R^d$ that computes in each dimension $i$ the following
 
-    \[f\left(\begin{bmatrix}
-        v_1\\
-        v_2\\
-        \vdots\\
-        v_{2k_3-1}\\
-        v_{2k_3}\\
-        \vdots\\
-        v_{d-1}\\
-        v_{d}\\
-    \end{bmatrix}\right) =\begin{bmatrix}
-        \clipfn(v_1)\\
-        \clipfn(v_2)\\
-        \vdots\\
-        \clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right)\\
-        \clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right)\\
-        \vdots\\
-        \clipfn(v_{d-1})\\
-        \clipfn(v_{d})\\
+\[f\left(\begin{bmatrix}
+            v_1        \\
+            v_2        \\
+            \vdots     \\
+            v_{2k_3-1} \\
+            v_{2k_3}   \\
+            \vdots     \\
+            v_{d-1}    \\
+            v_{d}      \\
+        \end{bmatrix}\right) =\begin{bmatrix}
+        \clipfn(v_1)                                                                               \\
+        \clipfn(v_2)                                                                               \\
+        \vdots                                                                                     \\
+        \clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right) \\
+        \clipfn\left(\sum_{k\in K_2} c_{k} \cdot C_k(i) -\sum_{k\in K_1} c_{k} \cdot C_k(i)\right) \\
+        \vdots                                                                                     \\
+        \clipfn(v_{d-1})                                                                           \\
+        \clipfn(v_{d})                                                                             \\
     \end{bmatrix}. \]
 
-    This truncates all positive values in the residual stream at this point to be $\frac{0.5}{i+1}$ at position~$i$, and all nonpositive values to be $-\frac{0.5}{i+1}$. As a result, the next application of LayerNorm (with appropriate parameter settings) scales every single value to $\pm 1$. In particular, all previously-computed Boolean values are preserved, and the newly-computed dimensions $2k_3-1,2k$ hold the correct Boolean value based on the desired comparison
+This truncates all positive values in the residual stream at this point to be $\frac{0.5}{i+1}$ at position~$i$, and all nonpositive values to be $-\frac{0.5}{i+1}$. As a result, the next application of LayerNorm (with appropriate parameter settings) scales every single value to $\pm 1$. In particular, all previously-computed Boolean values are preserved, and the newly-computed dimensions $2k_3-1,2k$ hold the correct Boolean value based on the desired comparison
