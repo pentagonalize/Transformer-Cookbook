@@ -5,13 +5,13 @@
 %-----------------------------------
 
 
-Feed-Forward layers are an essential component of any good transformer!
+Feed-Forward layers are a fundamental building block of transformers.
 Empirically, they have been observed to contribute to the expressive power transformer models \cite{geva-etal-2021-transformer}.
-Here, we give a theoretical treatment of the feed-forward layer, and show how it can be used to compute a variety of important functions.
-Although given enough parameters and a large enough input and hidden dimension, a feed-forward layer can approximate many functions \cite{hornik1989multilayer}, we focus on those that can be expressed exactly.
+Here, we show how feed-forward layers can compute a variety of important functions.
+We note that given enough parameters and a large enough input and hidden dimension, a feed-forward layer can approximate many functions \cite{hornik1989multilayer} - however, we focus on those that can be expressed exactly, with a fixed number of parameters.
 
 
-Much of the expressive power of feed-forward layers comes from their non-linear \emph{activation functions}, of which there are many. We define two popular activation functions. Other notable activation functions include sigmoid, softmax, hyperbolic tangent, Exponential Linear Unit (ELU) and Gated Linear Unit (GLU).
+Much of the expressive power of feed-forward layers comes from their non-linear \emph{activation functions}, of which there are many. We define two popular activation functions. Other notable activation functions include sigmoid, softmax, hyperbolic tangent, Exponential Linear Unit (ELU) and Gated Linear Unit (GLU). In this chapter we focus on ReLU.
 
 \begin{definition}{Pointwise function application}{}
   For any function $f \colon \R^d \to \R^d$ and any vector $\mathbf{x} = [x_i]_{i=1}^d \in \R^d$, we write

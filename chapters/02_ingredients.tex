@@ -4,6 +4,12 @@
 %
 %-----------------------------------
 
+At their core, transformers are length-preserving functions that operate on sequences of real-valued vectors.
+In many cases (such as formal language recognition or string transduction) we would like to examine how transformers operate on discrete data, such as Booleans or integers.
+These make up the intermediate values that are used in many constructions, and often shed light on the expressive capacity of transformers.
+Here, we discuss how to represent these discrete values in a way that is compatible with the architectural specifics of the transformer.
+
+
 % \AY{Introduce basic ingredients and the most rudimentry of constructions. Boolean representations, residual stream, routing, etc}
 
 % \uvp{Training practice? Masking strategies? \textleftarrow{} this has some very interesting theoretical discussions around it}
@@ -11,26 +17,57 @@
 \section{Boolean Representations}
 \label{sec:booleans}
 
-A very common ingredient is truth (Boolean) values, and there are many choices for how to represent them.
-There are two main issues to think about: how the Boolean operators are defined, and how they interact with layer normalization.
+Boolean values are a very useful and commonly-used ingredient, and there are many ways to represent them.
+Within transformers we have two concerns: how the Boolean operators are defined to permite Boolean operations, and how the representations interact with layer normalization.
 
-\paragraph{Boolean operations} are covered in detail in \cref{sec:ffnn_boolean}. We want them to be continuous functions, because transformers are continuous functions. This rules out $\text{false}=0, \text{true}>0$, because negation is not continuous.
-And sometimes, we want Boolean $\lor$ and $\land$ to be computed using arithmetic $+$ and $\times$ (namely, when using a dot-product to simulate disjunctive normal form, \cref{sec:att_dnf}). We can get this with
+\paragraph{Boolean operations} are covered in detail in \cref{sec:ffnn_boolean}. We want them to be continuous functions, because transformers are continuous functions.
+This rules out the representation where $\text{false}=0, \text{true}=\delta>0$, as negation would not be a continuous function in this case.
+And sometimes, we want Boolean $\lor$ and $\land$ to be computed using arithmetic $+$ and $\times$
+% (namely, when using a dot-product to simulate disjunctive normal form, \cref{sec:att_dnf})
+.
+We can achieve this by using the following representation, stored in a single dimension of an activation vector:
+
 \begin{align*}
-  \text{false} &= 0 &\text{true} &\ge 1.
+  \text{false} &= [0] &\text{true} &\ge [1].
 \end{align*}
 
 \paragraph{Layer normalization} is covered in detail in \cref{sec:layernorm}. Usually, we want layer normalization to preserve truth values (false stays false, true stays true). Two schemes to do this are:
 \begin{itemize}
-\item If the components of a feature vector have \emph{fixed mean and variance}, then we can set the layer normalization to the same mean and variance, and it will have no effect. Representations that have this property are
+\item If the components of an activation have \emph{fixed mean and variance}, then we can set the layer normalization to the same mean and variance, and it will have no effect. Representations that have this property are
   \begin{align*}
-    \text{true} &= (0, 1) & \text{false} &= (1, 0) \\
+    \text{true} &=
+    \begin{bmatrix}
+      0 \\ 1
+    \end{bmatrix}
+    &
+    \text{false} &=
+    \begin{bmatrix}
+      1 \\ 0
+    \end{bmatrix} \\
     \intertext{or}
-    \text{true} &= (-1, +1) & \text{false} &= (+1, -1).
+    \text{true} &=
+    \begin{bmatrix}
+      -1 \\ +1
+    \end{bmatrix}
+    &
+    \text{false} &=
+    \begin{bmatrix}
+      +1 \\ -1
+    \end{bmatrix} \\
   \end{align*}
-\item However, sometimes we can't guarantee fixed mean and variance (for example, because the feature vectors also contain integer representations, \cref{sec:integers}). If the components of a feature vector have \emph{zero mean} and are \emph{scale-invariant}, that is, $\mathbf{v}$ and $k\mathbf{v}$ have the same meaning, then we can set the layer normalization to have zero mean and any variance, and it will not change the meaning of anything. A representation that has this property is
+\item However, sometimes we can't guarantee fixed mean and variance (for example, because the activations also contain integer representations, \cref{sec:integers}). If the components of an have \emph{zero mean} and are \emph{scale-invariant}, that is, $\mathbf{v}$ and $k\mathbf{v}$ have the same meaning, then we can set the layer normalization to have zero mean and any variance, and it will not change the meaning of anything. A representation that has this property is
   \begin{align*}
-    \text{true} &= (-\delta, +\delta) \quad (\delta>0) & \text{false} &= (+\delta, -\delta) \quad (\delta>0).
+    \text{true} &=
+    \begin{bmatrix}
+      -\delta \\ +\delta
+    \end{bmatrix}
+    \quad (\delta>0)
+    &
+    \text{false} &=
+    \begin{bmatrix}
+      +\delta \\ -\delta
+    \end{bmatrix}
+    \quad (\delta>0)
   \end{align*}
 \end{itemize}
 
@@ -40,22 +77,22 @@ Unfortunately, there doesn't seem to be any one representation that has all the 
 \label{sec:integers}
 
 
-Integer values are another common ingredient, often used to represent counts or indices. The same issues arise as with Boolean values, but furthermore the sign and magnitude of the integers can be important, as we may need to add and compare them.
-
-A common choice is to represent an integer $C\in \Z$ as
+Integer values are another common ingredient, frequently used to represent counts, indices, or other discrete quantities.
+These representations share the same concerns as Boolean values in transformers, but furthermore the sign and magnitude of the integers can be important, as we may need to add and compare them. A common choice is to represent an integer $C\in \Z$ as
 
   \begin{align*}
-    \frac{C}{i} & & \text{where $i$ is the current position where this integer is stored}\\
+    \left[\frac{C}{i}\right] & & \text{where $i$ is the current position where this integer is stored}\\
   \end{align*}
 
 In constructions, we often end up with a denominator of $i$ when using future-masked uniform-attention to compute integer values.
 Without masking, we may see $C/n$ where $n$ is the length of the input \cite{chiang+:icml2023}.
-This representation also has the zero-mean variant of $(-C/i, +C/i)$.
+This representation also has the zero-mean variant of $\begin{bmatrix}
+  -C/i \\ +C/i
+\end{bmatrix}$.
 
-Since each position has the same denominator, position-wise operations are fairly straightforward to implement using this representation. Position-wise addition and subtraction using this representation is straightforward, and described in \cref{sec:ffnn_addition}. Position-wise comparison of integers is more complicated, as it depends on the Boolean representation used as well as the presence of layernorm, but is described in \cref{sec:assembly_comparison}.
+Since each position has the same denominator, position-wise operations are straightforward to implement using this representation. Position-wise addition and subtraction is described in \cref{sec:ffnn_addition}. Position-wise comparison of integers is more complicated, as it depends on the Boolean representation used as well as the presence of layernorm, but is described in \cref{sec:assembly_comparison}. We note that since integers stored in different positions may have different denominators, functions that operate on integers across positions may be tricky. One solution is to use the layernorm hash \cref{sec:ln_hash}.
 
-Since different positions have different denominators,  binary operations over integers in different positions is tricky using this representation.
-\AY{define layernorm hash and selective layernorm}
-
-\cref{sec:ln_hash}
+As a final note, we observe that this representation of integers requires greater numerical precision to represent integers at large positions.
+This means that the numerical precision of the transformer plays a role in the maximum size of integers that can be represented.
+We do not explore this further in this chapter, but it is something to keep in mind when considering what intermediate values a transformer can operate upon, under various assumptions.
 
